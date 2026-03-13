@@ -1,0 +1,65 @@
+@import "./tokens.css";
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-bg text-text antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+@layer components {
+  .shell {
+    @apply min-h-screen flex flex-col bg-bg;
+  }
+
+  .container {
+    @apply w-full max-w-(--width-container) mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .glass-card {
+    @apply bg-surface/80 backdrop-blur-md border border-border shadow-futuristic rounded-xl overflow-hidden transition-all duration-300;
+  }
+
+  .card {
+    @apply bg-surface border border-border rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md;
+  }
+  
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold uppercase tracking-widest transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold uppercase tracking-widest transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed bg-primary text-white shadow-lg shadow-primary/10 hover:bg-primary/90 hover:shadow-primary/20 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold uppercase tracking-widest transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed bg-secondary text-white shadow-lg shadow-secondary/10 hover:bg-secondary/90 active:scale-95;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold uppercase tracking-widest transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed bg-transparent border-2 border-border text-text hover:border-primary hover:text-primary active:scale-95;
+  }
+
+  .input-field {
+    @apply flex h-12 w-full rounded-xl border border-border bg-surface px-4 py-2 text-sm transition-all duration-200 placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .grid-layout {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+  }
+
+  .pagination-container {
+    @apply flex items-center justify-center gap-2 py-8;
+  }
+
+  .pagination-item {
+    @apply w-10 h-10 flex items-center justify-center rounded-xl border border-border bg-surface text-sm font-bold transition-all hover:border-primary hover:text-primary;
+  }
+
+  .pagination-item-active {
+    @apply bg-primary text-white border-primary shadow-lg shadow-primary/10;
+  }
+}
