@@ -16,22 +16,22 @@ export interface IApiClient {
      * @param body (optional) 
      * @return OK
      */
-    login(body?: LoginRequestDto | undefined): Promise<void>;
+    login(body?: LoginRequestDto | undefined): Promise<LoginResponseDtoApiResponse>;
     /**
      * @param body (optional) 
      * @return OK
      */
-    changePassword(body?: ChangePasswordRequestDto | undefined): Promise<void>;
+    changePassword(body?: ChangePasswordRequestDto | undefined): Promise<StringApiResponse>;
     /**
      * @param body (optional) 
      * @return OK
      */
-    forgotPassword(body?: ForgotPasswordRequestDto | undefined): Promise<void>;
+    forgotPassword(body?: ForgotPasswordRequestDto | undefined): Promise<ForgotPasswordResponseDtoApiResponse>;
     /**
      * @param body (optional) 
      * @return OK
      */
-    resetPassword(body?: ResetPasswordRequestDto | undefined): Promise<void>;
+    resetPassword(body?: ResetPasswordRequestDto | undefined): Promise<StringApiResponse>;
     /**
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
@@ -40,34 +40,34 @@ export interface IApiClient {
      * @param sortDirection (optional) 
      * @return OK
      */
-    inventory(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<void>;
+    inventory(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<InventoryListItemResponseDtoPageResponseApiResponse>;
     /**
      * @param body (optional) 
      * @return OK
      */
-    stockIn(body?: StockInRequestDto | undefined): Promise<void>;
+    stockIn(body?: StockInRequestDto | undefined): Promise<StringApiResponse>;
     /**
      * @param body (optional) 
      * @return OK
      */
-    adjust(body?: AdjustStockRequestDto | undefined): Promise<void>;
+    adjust(body?: AdjustStockRequestDto | undefined): Promise<StringApiResponse>;
     /**
      * @param body (optional) 
      * @return OK
      */
-    transfers(body?: CreateStockTransferRequestDto | undefined): Promise<void>;
+    transfers(body?: CreateStockTransferRequestDto | undefined): Promise<GuidApiResponse>;
     /**
      * @return OK
      */
-    dispatch(id: string): Promise<void>;
+    dispatch(id: string): Promise<StringApiResponse>;
     /**
      * @return OK
      */
-    receive(id: string): Promise<void>;
+    receive(id: string): Promise<StringApiResponse>;
     /**
      * @return OK
      */
-    bundle(): Promise<void>;
+    bundle(): Promise<LookupBundleResponseDtoApiResponse>;
     /**
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
@@ -76,7 +76,7 @@ export interface IApiClient {
      * @param sortDirection (optional) 
      * @return OK
      */
-    notifications(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<void>;
+    notifications(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<NotificationListItemResponseDtoPageResponseApiResponse>;
     /**
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
@@ -85,60 +85,25 @@ export interface IApiClient {
      * @param sortDirection (optional) 
      * @return OK
      */
-    ordersGET(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<void>;
+    ordersGET(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<OrderListItemResponseDtoPageResponseApiResponse>;
     /**
      * @param body (optional) 
      * @return OK
      */
-    ordersPOST(body?: CreateOrderRequestDto | undefined): Promise<void>;
+    ordersPOST(body?: CreateOrderRequestDto | undefined): Promise<GuidApiResponse>;
     /**
      * @return OK
      */
-    ready(id: string): Promise<void>;
+    ready(id: string): Promise<StringApiResponse>;
     /**
      * @return OK
      */
-    complete(id: string): Promise<void>;
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    unableToFulfill(id: string, body?: UnableToFulfillRequest | undefined): Promise<void>;
-    /**
-     * @param pageNumber (optional) 
-     * @param pageSize (optional) 
-     * @param search (optional) 
-     * @param sortBy (optional) 
-     * @param sortDirection (optional) 
-     * @return OK
-     */
-    public(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<void>;
-    /**
-     * @return OK
-     */
-    public2(id: string): Promise<void>;
-    /**
-     * @param pageNumber (optional) 
-     * @param pageSize (optional) 
-     * @param search (optional) 
-     * @param sortBy (optional) 
-     * @param sortDirection (optional) 
-     * @return OK
-     */
-    productsGET(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<void>;
+    complete(id: string): Promise<StringApiResponse>;
     /**
      * @param body (optional) 
      * @return OK
      */
-    productsPOST(body?: CreateProductRequestDto | undefined): Promise<void>;
-    /**
-     * @return OK
-     */
-    productsGET2(id: string): Promise<void>;
-    /**
-     * @return OK
-     */
-    theme(): Promise<void>;
+    unableToFulfill(id: string, body?: UnableToFulfillRequest | undefined): Promise<StringApiResponse>;
     /**
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
@@ -147,24 +112,33 @@ export interface IApiClient {
      * @param sortDirection (optional) 
      * @return OK
      */
-    products(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<void>;
+    public(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<ProductListItemResponseDtoPageResponseApiResponse>;
     /**
      * @return OK
      */
-    products2(id: string): Promise<void>;
+    public2(id: string): Promise<ProductDetailResponseDtoApiResponse>;
     /**
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param search (optional) 
+     * @param sortBy (optional) 
+     * @param sortDirection (optional) 
      * @return OK
      */
-    currentGET(): Promise<void>;
+    productsGET(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<ProductListItemResponseDtoPageResponseApiResponse>;
     /**
      * @param body (optional) 
      * @return OK
      */
-    currentPUT(body?: UpdateThemeRequestDto | undefined): Promise<void>;
+    productsPOST(body?: CreateProductRequestDto | undefined): Promise<GuidApiResponse>;
     /**
      * @return OK
      */
-    me(): Promise<void>;
+    productsGET2(id: string): Promise<ProductDetailResponseDtoApiResponse>;
+    /**
+     * @return OK
+     */
+    theme(): Promise<ThemeResponseDtoApiResponse>;
     /**
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
@@ -173,7 +147,33 @@ export interface IApiClient {
      * @param sortDirection (optional) 
      * @return OK
      */
-    users(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<void>;
+    products(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<ProductListItemResponseDtoPageResponseApiResponse>;
+    /**
+     * @return OK
+     */
+    products2(id: string): Promise<ProductDetailResponseDtoApiResponse>;
+    /**
+     * @return OK
+     */
+    currentGET(): Promise<ThemeResponseDtoApiResponse>;
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    currentPUT(body?: UpdateThemeRequestDto | undefined): Promise<StringApiResponse>;
+    /**
+     * @return OK
+     */
+    me(): Promise<UserProfileResponseDtoApiResponse>;
+    /**
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param search (optional) 
+     * @param sortBy (optional) 
+     * @param sortDirection (optional) 
+     * @return OK
+     */
+    users(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<UserListItemResponseDtoPageResponseApiResponse>;
 }
 
 export class ApiClient implements IApiClient {
@@ -193,7 +193,7 @@ export class ApiClient implements IApiClient {
      * @param body (optional) 
      * @return OK
      */
-    login(body?: LoginRequestDto | undefined, cancelToken?: CancelToken): Promise<void> {
+    login(body?: LoginRequestDto | undefined, cancelToken?: CancelToken): Promise<LoginResponseDtoApiResponse> {
         let url_ = this.baseUrl + "/api/Auth/login";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -205,6 +205,7 @@ export class ApiClient implements IApiClient {
             url: url_,
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -220,7 +221,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processLogin(response: AxiosResponse): Promise<void> {
+    protected processLogin(response: AxiosResponse): Promise<LoginResponseDtoApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -232,20 +233,23 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<LoginResponseDtoApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<LoginResponseDtoApiResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    changePassword(body?: ChangePasswordRequestDto | undefined, cancelToken?: CancelToken): Promise<void> {
+    changePassword(body?: ChangePasswordRequestDto | undefined, cancelToken?: CancelToken): Promise<StringApiResponse> {
         let url_ = this.baseUrl + "/api/Auth/change-password";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -257,6 +261,7 @@ export class ApiClient implements IApiClient {
             url: url_,
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -272,7 +277,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processChangePassword(response: AxiosResponse): Promise<void> {
+    protected processChangePassword(response: AxiosResponse): Promise<StringApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -284,20 +289,23 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<StringApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<StringApiResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    forgotPassword(body?: ForgotPasswordRequestDto | undefined, cancelToken?: CancelToken): Promise<void> {
+    forgotPassword(body?: ForgotPasswordRequestDto | undefined, cancelToken?: CancelToken): Promise<ForgotPasswordResponseDtoApiResponse> {
         let url_ = this.baseUrl + "/api/Auth/forgot-password";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -309,6 +317,7 @@ export class ApiClient implements IApiClient {
             url: url_,
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -324,7 +333,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processForgotPassword(response: AxiosResponse): Promise<void> {
+    protected processForgotPassword(response: AxiosResponse): Promise<ForgotPasswordResponseDtoApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -336,20 +345,23 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<ForgotPasswordResponseDtoApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<ForgotPasswordResponseDtoApiResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    resetPassword(body?: ResetPasswordRequestDto | undefined, cancelToken?: CancelToken): Promise<void> {
+    resetPassword(body?: ResetPasswordRequestDto | undefined, cancelToken?: CancelToken): Promise<StringApiResponse> {
         let url_ = this.baseUrl + "/api/Auth/reset-password";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -361,6 +373,7 @@ export class ApiClient implements IApiClient {
             url: url_,
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -376,7 +389,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processResetPassword(response: AxiosResponse): Promise<void> {
+    protected processResetPassword(response: AxiosResponse): Promise<StringApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -388,13 +401,16 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<StringApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<StringApiResponse>(null as any);
     }
 
     /**
@@ -405,7 +421,7 @@ export class ApiClient implements IApiClient {
      * @param sortDirection (optional) 
      * @return OK
      */
-    inventory(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<void> {
+    inventory(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<InventoryListItemResponseDtoPageResponseApiResponse> {
         let url_ = this.baseUrl + "/api/Inventory?";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
@@ -433,6 +449,7 @@ export class ApiClient implements IApiClient {
             method: "GET",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -448,7 +465,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processInventory(response: AxiosResponse): Promise<void> {
+    protected processInventory(response: AxiosResponse): Promise<InventoryListItemResponseDtoPageResponseApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -460,20 +477,23 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<InventoryListItemResponseDtoPageResponseApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<InventoryListItemResponseDtoPageResponseApiResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    stockIn(body?: StockInRequestDto | undefined, cancelToken?: CancelToken): Promise<void> {
+    stockIn(body?: StockInRequestDto | undefined, cancelToken?: CancelToken): Promise<StringApiResponse> {
         let url_ = this.baseUrl + "/api/Inventory/stock-in";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -485,6 +505,7 @@ export class ApiClient implements IApiClient {
             url: url_,
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -500,7 +521,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processStockIn(response: AxiosResponse): Promise<void> {
+    protected processStockIn(response: AxiosResponse): Promise<StringApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -512,20 +533,23 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<StringApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<StringApiResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    adjust(body?: AdjustStockRequestDto | undefined, cancelToken?: CancelToken): Promise<void> {
+    adjust(body?: AdjustStockRequestDto | undefined, cancelToken?: CancelToken): Promise<StringApiResponse> {
         let url_ = this.baseUrl + "/api/Inventory/adjust";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -537,6 +561,7 @@ export class ApiClient implements IApiClient {
             url: url_,
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -552,7 +577,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processAdjust(response: AxiosResponse): Promise<void> {
+    protected processAdjust(response: AxiosResponse): Promise<StringApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -564,20 +589,23 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<StringApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<StringApiResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    transfers(body?: CreateStockTransferRequestDto | undefined, cancelToken?: CancelToken): Promise<void> {
+    transfers(body?: CreateStockTransferRequestDto | undefined, cancelToken?: CancelToken): Promise<GuidApiResponse> {
         let url_ = this.baseUrl + "/api/Inventory/transfers";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -589,6 +617,7 @@ export class ApiClient implements IApiClient {
             url: url_,
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -604,7 +633,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processTransfers(response: AxiosResponse): Promise<void> {
+    protected processTransfers(response: AxiosResponse): Promise<GuidApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -616,19 +645,22 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<GuidApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<GuidApiResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    dispatch(id: string, cancelToken?: CancelToken): Promise<void> {
+    dispatch(id: string, cancelToken?: CancelToken): Promise<StringApiResponse> {
         let url_ = this.baseUrl + "/api/Inventory/transfers/{id}/dispatch";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -639,6 +671,7 @@ export class ApiClient implements IApiClient {
             method: "POST",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -654,7 +687,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processDispatch(response: AxiosResponse): Promise<void> {
+    protected processDispatch(response: AxiosResponse): Promise<StringApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -666,19 +699,22 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<StringApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<StringApiResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    receive(id: string, cancelToken?: CancelToken): Promise<void> {
+    receive(id: string, cancelToken?: CancelToken): Promise<StringApiResponse> {
         let url_ = this.baseUrl + "/api/Inventory/transfers/{id}/receive";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -689,6 +725,7 @@ export class ApiClient implements IApiClient {
             method: "POST",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -704,7 +741,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processReceive(response: AxiosResponse): Promise<void> {
+    protected processReceive(response: AxiosResponse): Promise<StringApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -716,19 +753,22 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<StringApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<StringApiResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    bundle(cancelToken?: CancelToken): Promise<void> {
+    bundle( cancelToken?: CancelToken): Promise<LookupBundleResponseDtoApiResponse> {
         let url_ = this.baseUrl + "/api/Lookups/bundle";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -736,6 +776,7 @@ export class ApiClient implements IApiClient {
             method: "GET",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -751,7 +792,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processBundle(response: AxiosResponse): Promise<void> {
+    protected processBundle(response: AxiosResponse): Promise<LookupBundleResponseDtoApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -763,13 +804,16 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<LookupBundleResponseDtoApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<LookupBundleResponseDtoApiResponse>(null as any);
     }
 
     /**
@@ -780,7 +824,7 @@ export class ApiClient implements IApiClient {
      * @param sortDirection (optional) 
      * @return OK
      */
-    notifications(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<void> {
+    notifications(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<NotificationListItemResponseDtoPageResponseApiResponse> {
         let url_ = this.baseUrl + "/api/Notifications?";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
@@ -808,6 +852,7 @@ export class ApiClient implements IApiClient {
             method: "GET",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -823,7 +868,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processNotifications(response: AxiosResponse): Promise<void> {
+    protected processNotifications(response: AxiosResponse): Promise<NotificationListItemResponseDtoPageResponseApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -835,13 +880,16 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<NotificationListItemResponseDtoPageResponseApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<NotificationListItemResponseDtoPageResponseApiResponse>(null as any);
     }
 
     /**
@@ -852,7 +900,7 @@ export class ApiClient implements IApiClient {
      * @param sortDirection (optional) 
      * @return OK
      */
-    ordersGET(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<void> {
+    ordersGET(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<OrderListItemResponseDtoPageResponseApiResponse> {
         let url_ = this.baseUrl + "/api/Orders?";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
@@ -880,6 +928,7 @@ export class ApiClient implements IApiClient {
             method: "GET",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -895,7 +944,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processOrdersGET(response: AxiosResponse): Promise<void> {
+    protected processOrdersGET(response: AxiosResponse): Promise<OrderListItemResponseDtoPageResponseApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -907,20 +956,23 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<OrderListItemResponseDtoPageResponseApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<OrderListItemResponseDtoPageResponseApiResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    ordersPOST(body?: CreateOrderRequestDto | undefined, cancelToken?: CancelToken): Promise<void> {
+    ordersPOST(body?: CreateOrderRequestDto | undefined, cancelToken?: CancelToken): Promise<GuidApiResponse> {
         let url_ = this.baseUrl + "/api/Orders";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -932,6 +984,7 @@ export class ApiClient implements IApiClient {
             url: url_,
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -947,7 +1000,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processOrdersPOST(response: AxiosResponse): Promise<void> {
+    protected processOrdersPOST(response: AxiosResponse): Promise<GuidApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -959,19 +1012,22 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<GuidApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<GuidApiResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    ready(id: string, cancelToken?: CancelToken): Promise<void> {
+    ready(id: string, cancelToken?: CancelToken): Promise<StringApiResponse> {
         let url_ = this.baseUrl + "/api/Orders/{id}/ready";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -982,6 +1038,7 @@ export class ApiClient implements IApiClient {
             method: "POST",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -997,7 +1054,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processReady(response: AxiosResponse): Promise<void> {
+    protected processReady(response: AxiosResponse): Promise<StringApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1009,19 +1066,22 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<StringApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<StringApiResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    complete(id: string, cancelToken?: CancelToken): Promise<void> {
+    complete(id: string, cancelToken?: CancelToken): Promise<StringApiResponse> {
         let url_ = this.baseUrl + "/api/Orders/{id}/complete";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1032,6 +1092,7 @@ export class ApiClient implements IApiClient {
             method: "POST",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -1047,7 +1108,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processComplete(response: AxiosResponse): Promise<void> {
+    protected processComplete(response: AxiosResponse): Promise<StringApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1059,20 +1120,23 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<StringApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<StringApiResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    unableToFulfill(id: string, body?: UnableToFulfillRequest | undefined, cancelToken?: CancelToken): Promise<void> {
+    unableToFulfill(id: string, body?: UnableToFulfillRequest | undefined, cancelToken?: CancelToken): Promise<StringApiResponse> {
         let url_ = this.baseUrl + "/api/Orders/{id}/unable-to-fulfill";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1087,6 +1151,7 @@ export class ApiClient implements IApiClient {
             url: url_,
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -1102,7 +1167,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processUnableToFulfill(response: AxiosResponse): Promise<void> {
+    protected processUnableToFulfill(response: AxiosResponse): Promise<StringApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1114,13 +1179,16 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<StringApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<StringApiResponse>(null as any);
     }
 
     /**
@@ -1131,7 +1199,7 @@ export class ApiClient implements IApiClient {
      * @param sortDirection (optional) 
      * @return OK
      */
-    public(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<void> {
+    public(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<ProductListItemResponseDtoPageResponseApiResponse> {
         let url_ = this.baseUrl + "/api/Products/public?";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
@@ -1159,6 +1227,7 @@ export class ApiClient implements IApiClient {
             method: "GET",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -1174,7 +1243,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processPublic(response: AxiosResponse): Promise<void> {
+    protected processPublic(response: AxiosResponse): Promise<ProductListItemResponseDtoPageResponseApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1186,19 +1255,22 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<ProductListItemResponseDtoPageResponseApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<ProductListItemResponseDtoPageResponseApiResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    public2(id: string, cancelToken?: CancelToken): Promise<void> {
+    public2(id: string, cancelToken?: CancelToken): Promise<ProductDetailResponseDtoApiResponse> {
         let url_ = this.baseUrl + "/api/Products/public/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1209,6 +1281,7 @@ export class ApiClient implements IApiClient {
             method: "GET",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -1224,7 +1297,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processPublic2(response: AxiosResponse): Promise<void> {
+    protected processPublic2(response: AxiosResponse): Promise<ProductDetailResponseDtoApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1236,13 +1309,16 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<ProductDetailResponseDtoApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<ProductDetailResponseDtoApiResponse>(null as any);
     }
 
     /**
@@ -1253,7 +1329,7 @@ export class ApiClient implements IApiClient {
      * @param sortDirection (optional) 
      * @return OK
      */
-    productsGET(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<void> {
+    productsGET(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<ProductListItemResponseDtoPageResponseApiResponse> {
         let url_ = this.baseUrl + "/api/Products?";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
@@ -1281,6 +1357,7 @@ export class ApiClient implements IApiClient {
             method: "GET",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -1296,7 +1373,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processProductsGET(response: AxiosResponse): Promise<void> {
+    protected processProductsGET(response: AxiosResponse): Promise<ProductListItemResponseDtoPageResponseApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1308,20 +1385,23 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<ProductListItemResponseDtoPageResponseApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<ProductListItemResponseDtoPageResponseApiResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    productsPOST(body?: CreateProductRequestDto | undefined, cancelToken?: CancelToken): Promise<void> {
+    productsPOST(body?: CreateProductRequestDto | undefined, cancelToken?: CancelToken): Promise<GuidApiResponse> {
         let url_ = this.baseUrl + "/api/Products";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1333,6 +1413,7 @@ export class ApiClient implements IApiClient {
             url: url_,
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -1348,7 +1429,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processProductsPOST(response: AxiosResponse): Promise<void> {
+    protected processProductsPOST(response: AxiosResponse): Promise<GuidApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1360,19 +1441,22 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<GuidApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<GuidApiResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    productsGET2(id: string, cancelToken?: CancelToken): Promise<void> {
+    productsGET2(id: string, cancelToken?: CancelToken): Promise<ProductDetailResponseDtoApiResponse> {
         let url_ = this.baseUrl + "/api/Products/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1383,6 +1467,7 @@ export class ApiClient implements IApiClient {
             method: "GET",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -1398,7 +1483,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processProductsGET2(response: AxiosResponse): Promise<void> {
+    protected processProductsGET2(response: AxiosResponse): Promise<ProductDetailResponseDtoApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1410,19 +1495,22 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<ProductDetailResponseDtoApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<ProductDetailResponseDtoApiResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    theme(cancelToken?: CancelToken): Promise<void> {
+    theme( cancelToken?: CancelToken): Promise<ThemeResponseDtoApiResponse> {
         let url_ = this.baseUrl + "/api/public/storefront/theme";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1430,6 +1518,7 @@ export class ApiClient implements IApiClient {
             method: "GET",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -1445,7 +1534,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processTheme(response: AxiosResponse): Promise<void> {
+    protected processTheme(response: AxiosResponse): Promise<ThemeResponseDtoApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1457,13 +1546,16 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<ThemeResponseDtoApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<ThemeResponseDtoApiResponse>(null as any);
     }
 
     /**
@@ -1474,7 +1566,7 @@ export class ApiClient implements IApiClient {
      * @param sortDirection (optional) 
      * @return OK
      */
-    products(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<void> {
+    products(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<ProductListItemResponseDtoPageResponseApiResponse> {
         let url_ = this.baseUrl + "/api/public/storefront/products?";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
@@ -1502,6 +1594,7 @@ export class ApiClient implements IApiClient {
             method: "GET",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -1517,7 +1610,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processProducts(response: AxiosResponse): Promise<void> {
+    protected processProducts(response: AxiosResponse): Promise<ProductListItemResponseDtoPageResponseApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1529,19 +1622,22 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<ProductListItemResponseDtoPageResponseApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<ProductListItemResponseDtoPageResponseApiResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    products2(id: string, cancelToken?: CancelToken): Promise<void> {
+    products2(id: string, cancelToken?: CancelToken): Promise<ProductDetailResponseDtoApiResponse> {
         let url_ = this.baseUrl + "/api/public/storefront/products/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1552,6 +1648,7 @@ export class ApiClient implements IApiClient {
             method: "GET",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -1567,7 +1664,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processProducts2(response: AxiosResponse): Promise<void> {
+    protected processProducts2(response: AxiosResponse): Promise<ProductDetailResponseDtoApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1579,19 +1676,22 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<ProductDetailResponseDtoApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<ProductDetailResponseDtoApiResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    currentGET(cancelToken?: CancelToken): Promise<void> {
+    currentGET( cancelToken?: CancelToken): Promise<ThemeResponseDtoApiResponse> {
         let url_ = this.baseUrl + "/api/Themes/current";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1599,6 +1699,7 @@ export class ApiClient implements IApiClient {
             method: "GET",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -1614,7 +1715,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processCurrentGET(response: AxiosResponse): Promise<void> {
+    protected processCurrentGET(response: AxiosResponse): Promise<ThemeResponseDtoApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1626,20 +1727,23 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<ThemeResponseDtoApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<ThemeResponseDtoApiResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    currentPUT(body?: UpdateThemeRequestDto | undefined, cancelToken?: CancelToken): Promise<void> {
+    currentPUT(body?: UpdateThemeRequestDto | undefined, cancelToken?: CancelToken): Promise<StringApiResponse> {
         let url_ = this.baseUrl + "/api/Themes/current";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1651,6 +1755,7 @@ export class ApiClient implements IApiClient {
             url: url_,
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -1666,7 +1771,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processCurrentPUT(response: AxiosResponse): Promise<void> {
+    protected processCurrentPUT(response: AxiosResponse): Promise<StringApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1678,19 +1783,22 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<StringApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<StringApiResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    me(cancelToken?: CancelToken): Promise<void> {
+    me( cancelToken?: CancelToken): Promise<UserProfileResponseDtoApiResponse> {
         let url_ = this.baseUrl + "/api/Users/me";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1698,6 +1806,7 @@ export class ApiClient implements IApiClient {
             method: "GET",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -1713,7 +1822,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processMe(response: AxiosResponse): Promise<void> {
+    protected processMe(response: AxiosResponse): Promise<UserProfileResponseDtoApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1725,13 +1834,16 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<UserProfileResponseDtoApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<UserProfileResponseDtoApiResponse>(null as any);
     }
 
     /**
@@ -1742,7 +1854,7 @@ export class ApiClient implements IApiClient {
      * @param sortDirection (optional) 
      * @return OK
      */
-    users(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<void> {
+    users(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<UserListItemResponseDtoPageResponseApiResponse> {
         let url_ = this.baseUrl + "/api/Users?";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
@@ -1770,6 +1882,7 @@ export class ApiClient implements IApiClient {
             method: "GET",
             url: url_,
             headers: {
+                "Accept": "text/plain"
             },
             cancelToken
         };
@@ -1785,7 +1898,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processUsers(response: AxiosResponse): Promise<void> {
+    protected processUsers(response: AxiosResponse): Promise<UserListItemResponseDtoPageResponseApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1797,13 +1910,16 @@ export class ApiClient implements IApiClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<UserListItemResponseDtoPageResponseApiResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<UserListItemResponseDtoPageResponseApiResponse>(null as any);
     }
 }
 
@@ -1874,8 +1990,70 @@ export interface CreateStockTransferRequestDto {
     items?: CreateStockTransferItemRequestDto[];
 }
 
+export interface CurrencyLookupResponseDto {
+    id?: string;
+    name?: string;
+    code?: string;
+    symbol?: string;
+}
+
 export interface ForgotPasswordRequestDto {
     email?: string;
+}
+
+export interface ForgotPasswordResponseDto {
+    message?: string;
+    resetToken?: string | undefined;
+}
+
+export interface ForgotPasswordResponseDtoApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: ForgotPasswordResponseDto;
+}
+
+export interface GuidApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: string;
+}
+
+export interface InventoryListItemResponseDto {
+    productId?: string;
+    productName?: string;
+    shopId?: string;
+    shopName?: string;
+    brandId?: string | undefined;
+    brandName?: string | undefined;
+    modelId?: string | undefined;
+    modelName?: string | undefined;
+    sku?: string;
+    barcode?: string | undefined;
+    trackingType?: string;
+    quantityOnHand?: number;
+    reservedQuantity?: number;
+    availableQuantity?: number;
+    lowStockThreshold?: number;
+}
+
+export interface InventoryListItemResponseDtoPageResponse {
+    items?: InventoryListItemResponseDto[];
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+}
+
+export interface InventoryListItemResponseDtoPageResponseApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: InventoryListItemResponseDtoPageResponse;
+}
+
+export interface LanguageLookupResponseDto {
+    id?: string;
+    name?: string;
+    code?: string;
+    isRtl?: boolean;
 }
 
 export interface LoginRequestDto {
@@ -1883,9 +2061,182 @@ export interface LoginRequestDto {
     password?: string;
 }
 
+export interface LoginResponseDto {
+    userId?: string;
+    tenantId?: string;
+    fullName?: string;
+    email?: string;
+    role?: string;
+    token?: string;
+}
+
+export interface LoginResponseDtoApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: LoginResponseDto;
+}
+
+export interface LookupBundleResponseDto {
+    categories?: LookupItemResponseDto[];
+    brands?: LookupItemResponseDto[];
+    models?: LookupItemResponseDto[];
+    partTypes?: LookupItemResponseDto[];
+    shops?: ShopLookupResponseDto[];
+    clients?: LookupItemResponseDto[];
+    currencies?: CurrencyLookupResponseDto[];
+    languages?: LanguageLookupResponseDto[];
+}
+
+export interface LookupBundleResponseDtoApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: LookupBundleResponseDto;
+}
+
+export interface LookupItemResponseDto {
+    id?: string;
+    name?: string;
+}
+
+export interface NotificationListItemResponseDto {
+    id?: string;
+    type?: string;
+    title?: string;
+    message?: string;
+    isRead?: boolean;
+    createdAt?: Date;
+}
+
+export interface NotificationListItemResponseDtoPageResponse {
+    items?: NotificationListItemResponseDto[];
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+}
+
+export interface NotificationListItemResponseDtoPageResponseApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: NotificationListItemResponseDtoPageResponse;
+}
+
+export interface OrderListItemResponseDto {
+    id?: string;
+    orderNumber?: string;
+    shopId?: string;
+    shopName?: string;
+    clientId?: string;
+    clientName?: string;
+    status?: string;
+    currencyId?: string;
+    currencyCode?: string;
+    totalAmount?: number;
+    createdAt?: Date;
+}
+
+export interface OrderListItemResponseDtoPageResponse {
+    items?: OrderListItemResponseDto[];
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+}
+
+export interface OrderListItemResponseDtoPageResponseApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: OrderListItemResponseDtoPageResponse;
+}
+
 export type PricingMode = "Direct" | "PercentageBased";
 
+export interface ProductDetailResponseDto {
+    id?: string;
+    sku?: string;
+    barcode?: string | undefined;
+    name?: string;
+    categoryId?: string;
+    categoryName?: string;
+    brandId?: string | undefined;
+    brandName?: string | undefined;
+    modelId?: string | undefined;
+    modelName?: string | undefined;
+    partTypeId?: string | undefined;
+    partTypeName?: string | undefined;
+    trackingType?: TrackingType;
+    qualityType?: QualityType;
+    defaultSellingPrice?: number | undefined;
+    primaryImageUrl?: string | undefined;
+    isActive?: boolean;
+    isPriceLocked?: boolean;
+    canOrder?: boolean;
+    shortDescription?: string | undefined;
+    longDescription?: string | undefined;
+    specifications?: string | undefined;
+    defaultBuyingPrice?: number | undefined;
+    defaultPricingMode?: PricingMode;
+    defaultMarkupPercentage?: number | undefined;
+    warrantyDays?: number;
+    lowStockThreshold?: number;
+    images?: ProductImageResponseDto[];
+    relatedProducts?: RelatedProductResponseDto[];
+    availabilityMessage?: string | undefined;
+}
+
+export interface ProductDetailResponseDtoApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: ProductDetailResponseDto;
+}
+
+export interface ProductImageResponseDto {
+    id?: string;
+    filePath?: string;
+    altText?: string | undefined;
+    isPrimary?: boolean;
+}
+
+export interface ProductListItemResponseDto {
+    id?: string;
+    sku?: string;
+    barcode?: string | undefined;
+    name?: string;
+    categoryId?: string;
+    categoryName?: string;
+    brandId?: string | undefined;
+    brandName?: string | undefined;
+    modelId?: string | undefined;
+    modelName?: string | undefined;
+    partTypeId?: string | undefined;
+    partTypeName?: string | undefined;
+    trackingType?: TrackingType;
+    qualityType?: QualityType;
+    defaultSellingPrice?: number | undefined;
+    primaryImageUrl?: string | undefined;
+    isActive?: boolean;
+    isPriceLocked?: boolean;
+    canOrder?: boolean;
+}
+
+export interface ProductListItemResponseDtoPageResponse {
+    items?: ProductListItemResponseDto[];
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+}
+
+export interface ProductListItemResponseDtoPageResponseApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: ProductListItemResponseDtoPageResponse;
+}
+
 export type QualityType = "Original" | "OEM" | "HighCopy" | "Refurbished";
+
+export interface RelatedProductResponseDto {
+    productId?: string;
+    name?: string;
+    relationType?: string;
+}
 
 export interface ResetPasswordRequestDto {
     email?: string;
@@ -1899,6 +2250,12 @@ export interface SerializedStockInUnitRequestDto {
     imei1?: string | undefined;
     imei2?: string | undefined;
     salePrice?: number | undefined;
+}
+
+export interface ShopLookupResponseDto {
+    id?: string;
+    name?: string;
+    code?: string;
 }
 
 export interface StockInRequestDto {
@@ -1915,6 +2272,28 @@ export interface StockInRequestDto {
     serializedUnits?: SerializedStockInUnitRequestDto[];
 }
 
+export interface StringApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: string | undefined;
+}
+
+export interface ThemeResponseDto {
+    logoPath?: string | undefined;
+    primaryColor?: string;
+    secondaryColor?: string;
+    accentColor?: string;
+    bannerImagePath?: string | undefined;
+    fontFamily?: string | undefined;
+    footerText?: string | undefined;
+}
+
+export interface ThemeResponseDtoApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: ThemeResponseDto;
+}
+
 export type TrackingType = "QuantityBased" | "Serialized";
 
 export interface UnableToFulfillRequest {
@@ -1929,6 +2308,46 @@ export interface UpdateThemeRequestDto {
     bannerImagePath?: string | undefined;
     fontFamily?: string | undefined;
     footerText?: string | undefined;
+}
+
+export interface UserListItemResponseDto {
+    id?: string;
+    shopId?: string | undefined;
+    shopName?: string | undefined;
+    fullName?: string;
+    email?: string;
+    role?: string;
+    isActive?: boolean;
+}
+
+export interface UserListItemResponseDtoPageResponse {
+    items?: UserListItemResponseDto[];
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+}
+
+export interface UserListItemResponseDtoPageResponseApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: UserListItemResponseDtoPageResponse;
+}
+
+export interface UserProfileResponseDto {
+    id?: string;
+    tenantId?: string;
+    shopId?: string | undefined;
+    shopName?: string | undefined;
+    fullName?: string;
+    email?: string;
+    phone?: string | undefined;
+    role?: string;
+}
+
+export interface UserProfileResponseDtoApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: UserProfileResponseDto;
 }
 
 export class ApiException extends Error {
