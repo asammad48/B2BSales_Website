@@ -193,7 +193,7 @@ export class ApiClient implements IApiClient {
      * @param body (optional) 
      * @return OK
      */
-    login(body?: LoginRequestDto | undefined, cancelToken?: CancelToken): Promise<any> {
+    login(body?: LoginRequestDto | undefined, cancelToken?: CancelToken): Promise<void> {
         let url_ = this.baseUrl + "/api/Auth/login";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -220,7 +220,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processLogin(response: AxiosResponse): Promise<any> {
+    protected processLogin(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -231,13 +231,14 @@ export class ApiClient implements IApiClient {
             }
         }
         if (status === 200) {
-            return Promise.resolve<any>(response.data);
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
-            return throwException(`Server error (${status}): ${JSON.stringify(_responseText)}`, status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<any>(null as any);
+        return Promise.resolve<void>(null as any);
     }
 
     /**
@@ -727,7 +728,7 @@ export class ApiClient implements IApiClient {
     /**
      * @return OK
      */
-    bundle( cancelToken?: CancelToken): Promise<void> {
+    bundle(cancelToken?: CancelToken): Promise<void> {
         let url_ = this.baseUrl + "/api/Lookups/bundle";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1130,7 +1131,7 @@ export class ApiClient implements IApiClient {
      * @param sortDirection (optional) 
      * @return OK
      */
-    public(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<any> {
+    public(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<void> {
         let url_ = this.baseUrl + "/api/Products/public?";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
@@ -1173,7 +1174,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processPublic(response: AxiosResponse): Promise<any> {
+    protected processPublic(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1184,19 +1185,20 @@ export class ApiClient implements IApiClient {
             }
         }
         if (status === 200) {
-            return Promise.resolve<any>(response.data);
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
-            return throwException(`Server error (${status}): ${JSON.stringify(_responseText)}`, status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<any>(null as any);
+        return Promise.resolve<void>(null as any);
     }
 
     /**
      * @return OK
      */
-    public2(id: string, cancelToken?: CancelToken): Promise<any> {
+    public2(id: string, cancelToken?: CancelToken): Promise<void> {
         let url_ = this.baseUrl + "/api/Products/public/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1222,7 +1224,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processPublic2(response: AxiosResponse): Promise<any> {
+    protected processPublic2(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1233,13 +1235,14 @@ export class ApiClient implements IApiClient {
             }
         }
         if (status === 200) {
-            return Promise.resolve<any>(response.data);
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
-            return throwException(`Server error (${status}): ${JSON.stringify(_responseText)}`, status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<any>(null as any);
+        return Promise.resolve<void>(null as any);
     }
 
     /**
@@ -1419,7 +1422,7 @@ export class ApiClient implements IApiClient {
     /**
      * @return OK
      */
-    theme( cancelToken?: CancelToken): Promise<void> {
+    theme(cancelToken?: CancelToken): Promise<void> {
         let url_ = this.baseUrl + "/api/public/storefront/theme";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1588,7 +1591,7 @@ export class ApiClient implements IApiClient {
     /**
      * @return OK
      */
-    currentGET( cancelToken?: CancelToken): Promise<void> {
+    currentGET(cancelToken?: CancelToken): Promise<void> {
         let url_ = this.baseUrl + "/api/Themes/current";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1687,7 +1690,7 @@ export class ApiClient implements IApiClient {
     /**
      * @return OK
      */
-    me( cancelToken?: CancelToken): Promise<any> {
+    me(cancelToken?: CancelToken): Promise<void> {
         let url_ = this.baseUrl + "/api/Users/me";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1710,7 +1713,7 @@ export class ApiClient implements IApiClient {
         });
     }
 
-    protected processMe(response: AxiosResponse): Promise<any> {
+    protected processMe(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1721,13 +1724,14 @@ export class ApiClient implements IApiClient {
             }
         }
         if (status === 200) {
-            return Promise.resolve<any>(response.data);
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
-            return throwException(`Server error (${status}): ${JSON.stringify(_responseText)}`, status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<any>(null as any);
+        return Promise.resolve<void>(null as any);
     }
 
     /**
