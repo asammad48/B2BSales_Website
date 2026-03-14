@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShoppingCart, ArrowRight, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -7,6 +7,15 @@ import { qualityTypeLabels, getEnumLabel } from '@/utils/enumLabels';
 
 export function ProductCard({ product, variant = 'grid' }: { product: any, variant?: 'grid' | 'list' }) {
   const { currency } = useCurrency();
+  const location = useLocation();
+
+  const loginState = {
+    from: {
+      pathname: location.pathname,
+      search: location.search,
+      hash: location.hash,
+    },
+  };
   
   if (variant === 'list') {
     return (
@@ -50,7 +59,9 @@ export function ProductCard({ product, variant = 'grid' }: { product: any, varia
           <div className="flex items-center gap-8 flex-shrink-0">
             <div className="flex flex-col items-end">
               {product?.isPriceLocked ? (
-                <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">Login for price</span>
+                <Link to="/login" state={loginState} className="text-[10px] font-black uppercase tracking-widest text-text-muted">
+                  Login for price
+                </Link>
               ) : (
                 <span className="text-xl font-black text-primary">
                   {product?.currencyCode ?? currency}{product?.price ?? '0.00'}
@@ -134,7 +145,9 @@ export function ProductCard({ product, variant = 'grid' }: { product: any, varia
         <div className="mt-auto pt-4 flex items-center justify-between gap-4">
           <div className="flex flex-col">
             {product?.isPriceLocked ? (
-              <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">Login for price</span>
+              <Link to="/login" state={loginState} className="text-[10px] font-black uppercase tracking-widest text-text-muted">
+                Login for price
+              </Link>
             ) : (
               <span className="text-xl font-black text-primary">
                 {product?.currencyCode ?? currency}{product?.price ?? '0.00'}
