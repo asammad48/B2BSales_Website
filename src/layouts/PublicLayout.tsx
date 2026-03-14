@@ -101,7 +101,14 @@ export function PublicLayout() {
                 </button>
 
                 {isUserMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-32 bg-surface border border-border rounded-xl p-2 shadow-lg">
+                  <div className="absolute right-0 mt-2 w-36 bg-surface border border-border rounded-xl p-2 shadow-lg">
+                    <Link
+                      to="/account"
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="block w-full text-left text-xs font-black uppercase tracking-widest text-text-muted hover:text-primary transition-colors px-2 py-2"
+                    >
+                      My Profile
+                    </Link>
                     <button
                       type="button"
                       onClick={() => {
