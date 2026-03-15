@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { useCurrency } from '@/state/CurrencyContext';
 import { useAuth } from '@/state/AuthContext';
 import { useCart } from '@/state/CartContext';
+import { useLanguage } from '@/state/LanguageContext';
 import { qualityTypeLabels, getEnumLabel } from '@/utils/enumLabels';
 
 const DUMMY_IMAGE =
@@ -12,6 +13,7 @@ const DUMMY_IMAGE =
 
 export function ProductCard({ product, variant = 'grid' }: { product: any; variant?: 'grid' | 'list' }) {
   const { currency } = useCurrency();
+  const { t } = useLanguage();
   const { isAuthenticated } = useAuth();
   const { addItem } = useCart();
   const location = useLocation();
@@ -45,7 +47,7 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
         <div className="relative w-32 h-32 flex-shrink-0 overflow-hidden rounded-xl bg-background">
           <img
             src={imageUrl}
-            alt={product?.name || 'Product image'}
+            alt={product?.name || t('product.productImage')}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             referrerPolicy="no-referrer"
           />
@@ -54,17 +56,17 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
         <div className="flex-grow flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div className="flex-grow max-w-xl">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">{product?.brandName || 'Generic'}</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">{product?.brandName || t('product.genericBrand')}</span>
               {product?.qualityType && (
                 <span className="px-2 py-0.5 bg-accent/5 text-accent text-[8px] font-black uppercase tracking-widest rounded-full border border-accent/10">
                   {getEnumLabel(product.qualityType, qualityTypeLabels)}
                 </span>
               )}
             </div>
-            <h3 className="font-bold text-lg mb-1 group-hover:text-primary transition-colors">{product?.name ?? 'Premium Spare Part'}</h3>
-            <p className="text-xs text-text-muted line-clamp-1">{product?.shortDescription || 'High-quality replacement component verified for performance.'}</p>
+            <h3 className="font-bold text-lg mb-1 group-hover:text-primary transition-colors">{product?.name ?? t('product.premiumSparePart')}</h3>
+            <p className="text-xs text-text-muted line-clamp-1">{product?.shortDescription || t('product.shortDescription')}</p>
             <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted mt-2">
-              {product?.isInStock ? `Stock: ${product?.stockQuantity ?? 0}` : 'Out of stock'}
+              {product?.isInStock ? t('product.stockLabel', { count: product?.stockQuantity ?? 0 }) : t('product.outOfStock')}
             </p>
           </div>
 
@@ -77,11 +79,11 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
                 </span>
               ) : (
                 <Link to="/login" state={loginState} className="text-[10px] font-black uppercase tracking-widest text-text-muted">
-                  Login for price
+                  {t('product.loginForPrice')}
                 </Link>
               )}
               {product?.isPriceLocked && !isAuthenticated && (
-                <span className="text-[10px] text-text-muted uppercase tracking-widest mt-1">Price locked for guests</span>
+                <span className="text-[10px] text-text-muted uppercase tracking-widest mt-1">{t('product.guestPriceLocked')}</span>
               )}
             </div>
 
@@ -97,7 +99,7 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
                       ? 'bg-primary text-white shadow-lg shadow-primary/20 hover:scale-110'
                       : 'bg-surface border border-border text-text-muted cursor-not-allowed opacity-50',
                   )}
-                  title={canOrder ? 'Add to cart' : 'Ordering unavailable'}
+                  title={canOrder ? t('product.addToCart') : t('product.orderingUnavailable')}
                 >
                   <ShoppingCart className="w-5 h-5" />
                 </button>
@@ -121,7 +123,7 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
       <div className="relative aspect-square overflow-hidden bg-background">
         <img
           src={imageUrl}
-          alt={product?.name || 'Product image'}
+          alt={product?.name || t('product.productImage')}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           referrerPolicy="no-referrer"
         />
@@ -138,17 +140,17 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
 
       <div className="p-5 flex flex-col flex-grow">
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">{product?.brandName || 'Generic'}</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">{product?.brandName || t('product.genericBrand')}</span>
           <span className="w-1 h-1 bg-border rounded-full" />
-          <span className="text-[10px] font-medium text-text-muted">{product?.modelName || 'Universal'}</span>
+          <span className="text-[10px] font-medium text-text-muted">{product?.modelName || t('product.universal')}</span>
         </div>
 
-        <h3 className="font-bold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">{product?.name ?? 'Premium Spare Part'}</h3>
+        <h3 className="font-bold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">{product?.name ?? t('product.premiumSparePart')}</h3>
 
-        <p className="text-xs text-text-muted line-clamp-2 mb-4">{product?.shortDescription || 'High-quality replacement component verified for performance and durability.'}</p>
+        <p className="text-xs text-text-muted line-clamp-2 mb-4">{product?.shortDescription || t('product.shortDescriptionLong')}</p>
 
         <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-4">
-          {product?.isInStock ? `In stock (${product?.stockQuantity ?? 0})` : 'Out of stock'}
+          {product?.isInStock ? t('product.inStockLabel', { count: product?.stockQuantity ?? 0 }) : t('product.outOfStock')}
         </p>
 
         <div className="mt-auto pt-4 flex items-center justify-between gap-4">
@@ -160,11 +162,11 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
               </span>
             ) : (
               <Link to="/login" state={loginState} className="text-[10px] font-black uppercase tracking-widest text-text-muted">
-                Login for price
+                {t('product.loginForPrice')}
               </Link>
             )}
             {product?.isPriceLocked && !isAuthenticated && (
-              <span className="text-[10px] text-text-muted uppercase tracking-widest">Guest access locked</span>
+              <span className="text-[10px] text-text-muted uppercase tracking-widest">{t('product.guestAccessLocked')}</span>
             )}
           </div>
 
@@ -180,7 +182,7 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
                     ? 'bg-primary text-white shadow-lg shadow-primary/20 hover:scale-110'
                     : 'bg-surface border border-border text-text-muted cursor-not-allowed opacity-50',
                 )}
-                title={canOrder ? 'Add to cart' : 'Ordering unavailable'}
+                title={canOrder ? t('product.addToCart') : t('product.orderingUnavailable')}
               >
                 <ShoppingCart className="w-5 h-5" />
               </button>

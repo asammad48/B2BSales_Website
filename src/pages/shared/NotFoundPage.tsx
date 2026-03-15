@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Home, AlertCircle } from 'lucide-react';
+import { useLanguage } from '@/state/LanguageContext';
 
 export function NotFoundPage() {
+  const { t } = useLanguage();
   return (
     <div className="min-h-[80vh] flex items-center justify-center p-6">
       <motion.div 
@@ -24,15 +26,15 @@ export function NotFoundPage() {
         </div>
 
         <div className="space-y-4">
-          <h1 className="text-4xl font-black tracking-tight">Lost in the Matrix?</h1>
+          <h1 className="text-4xl font-black tracking-tight">{t('notFound.title')}</h1>
           <p className="text-text-muted leading-relaxed">
-            The part or page you are looking for has been moved, removed, or never existed in this dimension.
+            {t('notFound.description')}
           </p>
         </div>
 
         <Link to="/" className="btn-primary h-12 px-8 inline-flex items-center gap-2 group">
           <Home className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
-          Return to Base
+          {t('notFound.cta')}
         </Link>
       </motion.div>
     </div>

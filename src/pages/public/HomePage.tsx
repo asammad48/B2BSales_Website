@@ -4,8 +4,10 @@ import { motion } from 'framer-motion';
 import { ArrowRight, ShieldCheck, Truck, Zap, Star } from 'lucide-react';
 import { ProductCard } from '@/components/product/ProductCard';
 import { publicCatalogRepository } from '@/repositories/publicCatalogRepository';
+import { useLanguage } from '@/state/LanguageContext';
 
 export function HomePage() {
+  const { t } = useLanguage();
   const [newArrivals, setNewArrivals] = useState<any[]>([]);
 
   useEffect(() => {
@@ -28,29 +30,28 @@ export function HomePage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="inline-block px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-widest mb-6">
-              B2B Wholesale Marketplace
-            </span>
-            <h1 className="text-5xl sm:text-6xl font-black tracking-tight leading-[1.1] mb-6">
-              Premium Parts for <span className="text-accent">Modern</span> Devices.
-            </h1>
-            <p className="text-lg text-white/80 mb-10 leading-relaxed">
-              Access the world's largest catalog of verified mobile spare parts. 
-              Locked wholesale pricing for registered businesses.
-            </p>
+              <span className="inline-block px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-widest mb-6">
+              {t('home.badge')}
+              </span>
+              <h1 className="text-5xl sm:text-6xl font-black tracking-tight leading-[1.1] mb-6">
+              {t('home.titlePrefix')} <span className="text-accent">{t('home.titleAccent')}</span> {t('home.titleSuffix')}
+              </h1>
+              <p className="text-lg text-white/80 mb-10 leading-relaxed">
+              {t('home.subtitle')}
+              </p>
             <div className="flex flex-wrap gap-4">
               <Link 
                 to="/products" 
                 className="px-8 py-4 bg-white text-primary font-bold rounded-xl shadow-lg hover:bg-accent hover:text-white transition-all flex items-center gap-2 group"
               >
-                Browse Catalog
+                {t('home.browseCatalog')}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link 
                 to="/login" 
                 className="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold rounded-xl hover:bg-white/20 transition-all"
               >
-                Partner Login
+                {t('home.partnerLogin')}
               </Link>
             </div>
           </motion.div>
@@ -61,11 +62,11 @@ export function HomePage() {
       <section className="space-y-8">
         <div className="flex items-end justify-between">
           <div className="space-y-2">
-            <h2 className="text-3xl font-black uppercase tracking-tight">New Arrivals</h2>
-            <p className="text-text-muted">The latest components for the newest devices.</p>
+            <h2 className="text-3xl font-black uppercase tracking-tight">{t('home.sectionTitle')}</h2>
+            <p className="text-text-muted">{t('home.sectionSubtitle')}</p>
           </div>
           <Link to="/new-arrivals" className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-2 group">
-            View All <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            {t('home.viewAll')} <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
         
@@ -76,7 +77,7 @@ export function HomePage() {
             ))}
           </div>
         ) : (
-          <div className="glass-card p-8 text-center text-text-muted">No new arrivals available right now.</div>
+          <div className="glass-card p-8 text-center text-text-muted">{t('home.noArrivals')}</div>
         )}
       </section>
 
@@ -85,18 +86,18 @@ export function HomePage() {
         {[
           { 
             icon: <ShieldCheck className="w-8 h-8 text-primary" />, 
-            title: "Verified Quality", 
-            desc: "Every part undergoes a 20-point inspection process before shipping." 
+            title: t('home.features.qualityTitle'), 
+            desc: t('home.features.qualityDesc'), 
           },
           { 
             icon: <Truck className="w-8 h-8 text-primary" />, 
-            title: "Global Shipping", 
-            desc: "Express delivery to over 150 countries with real-time tracking." 
+            title: t('home.features.shippingTitle'), 
+            desc: t('home.features.shippingDesc'), 
           },
           { 
             icon: <Zap className="w-8 h-8 text-primary" />, 
-            title: "Instant Quotes", 
-            desc: "Dynamic wholesale pricing based on your order volume and loyalty." 
+            title: t('home.features.quotesTitle'), 
+            desc: t('home.features.quotesDesc'), 
           }
         ].map((feature, i) => (
           <motion.div 
@@ -122,16 +123,15 @@ export function HomePage() {
           <div className="flex justify-center gap-1 mb-6">
             {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-5 h-5 fill-accent text-accent" />)}
           </div>
-          <h2 className="text-3xl font-bold mb-6">Trusted by 5,000+ Repair Centers</h2>
+          <h2 className="text-3xl font-bold mb-6">{t('home.trustTitle')}</h2>
           <p className="text-text-muted mb-10 italic">
-            "MobileParts has transformed our supply chain. The quality consistency is unmatched in the industry, 
-            and their support team is always there when we need them."
+            {t('home.trustQuote')}
           </p>
           <div className="flex items-center justify-center gap-4">
             <div className="w-12 h-12 bg-border rounded-full" />
             <div className="text-left">
-              <p className="font-bold">David Chen</p>
-              <p className="text-xs text-text-muted uppercase tracking-widest">CEO, TechFix Solutions</p>
+              <p className="font-bold">{t('home.trustAuthor')}</p>
+              <p className="text-xs text-text-muted uppercase tracking-widest">{t('home.trustRole')}</p>
             </div>
           </div>
         </div>
