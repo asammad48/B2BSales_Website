@@ -33,6 +33,11 @@ export interface IApiClient {
      */
     resetPassword(body?: ResetPasswordRequestDto | undefined): Promise<StringApiResponse>;
     /**
+     * @param body (optional) 
+     * @return OK
+     */
+    login2(body?: ClientLoginRequestDto | undefined): Promise<ClientLoginResponseDtoApiResponse>;
+    /**
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
      * @param search (optional) 
@@ -41,6 +46,10 @@ export interface IApiClient {
      * @return OK
      */
     orders(clientId: string, pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<ClientOrderListItemDtoPageResponseApiResponse>;
+    /**
+     * @return OK
+     */
+    summary(clientId: string): Promise<ClientOrderSummaryDtoApiResponse>;
     /**
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
@@ -458,6 +467,62 @@ export class ApiClient implements IApiClient {
     }
 
     /**
+     * @param body (optional) 
+     * @return OK
+     */
+    login2(body?: ClientLoginRequestDto | undefined, cancelToken?: CancelToken): Promise<ClientLoginResponseDtoApiResponse> {
+        let url_ = this.baseUrl + "/api/client-auth/login";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: AxiosRequestConfig = {
+            data: content_,
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processLogin2(_response);
+        });
+    }
+
+    protected processLogin2(response: AxiosResponse): Promise<ClientLoginResponseDtoApiResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<ClientLoginResponseDtoApiResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<ClientLoginResponseDtoApiResponse>(null as any);
+    }
+
+    /**
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
      * @param search (optional) 
@@ -534,6 +599,60 @@ export class ApiClient implements IApiClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<ClientOrderListItemDtoPageResponseApiResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    summary(clientId: string, cancelToken?: CancelToken): Promise<ClientOrderSummaryDtoApiResponse> {
+        let url_ = this.baseUrl + "/api/client/clients/{clientId}/orders/summary";
+        if (clientId === undefined || clientId === null)
+            throw new Error("The parameter 'clientId' must be defined.");
+        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processSummary(_response);
+        });
+    }
+
+    protected processSummary(response: AxiosResponse): Promise<ClientOrderSummaryDtoApiResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<ClientOrderSummaryDtoApiResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<ClientOrderSummaryDtoApiResponse>(null as any);
     }
 
     /**
@@ -2391,6 +2510,36 @@ export interface ChangePasswordRequestDto {
     newPassword?: string;
 }
 
+export interface ClientInfoDto {
+    clientId?: string;
+    name?: string;
+    businessName?: string;
+    phone?: string | undefined;
+    email?: string | undefined;
+    preferredCurrencyCode?: string | undefined;
+    preferredLanguageCode?: string | undefined;
+    status?: string;
+}
+
+export interface ClientLoginRequestDto {
+    email?: string;
+    password?: string;
+}
+
+export interface ClientLoginResponseDto {
+    accessToken?: string;
+    expiresAt?: Date | undefined;
+    userId?: string;
+    clientId?: string;
+    clientInfo?: ClientInfoDto;
+}
+
+export interface ClientLoginResponseDtoApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: ClientLoginResponseDto;
+}
+
 export interface ClientOrderListItemDto {
     orderId?: string;
     orderNumber?: string;
@@ -2420,6 +2569,22 @@ export interface ClientOrderListItemDtoPageResponseApiResponse {
     success?: boolean;
     message?: string;
     data?: ClientOrderListItemDtoPageResponse;
+}
+
+export interface ClientOrderSummaryDto {
+    clientId?: string;
+    totalOrders?: number;
+    completedOrders?: number;
+    pendingOrders?: number;
+    readyForPickupOrders?: number;
+    cancelledOrders?: number;
+    unableToFulfillOrders?: number;
+}
+
+export interface ClientOrderSummaryDtoApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: ClientOrderSummaryDto;
 }
 
 export interface CreateOrderItemRequestDto {
