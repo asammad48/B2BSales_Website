@@ -91,9 +91,9 @@ export function ProductDetailPage() {
           className="space-y-4"
         >
           <div className="aspect-square glass-card overflow-hidden flex items-center justify-center bg-background">
-            {product?.imageUrl ? (
+            {product?.primaryImageUrl || product?.imageUrl ? (
               <img 
-                src={product.imageUrl} 
+                src={product.primaryImageUrl || product.imageUrl} 
                 alt={product.name} 
                 className="w-full h-full object-contain p-8"
                 referrerPolicy="no-referrer"
@@ -140,7 +140,7 @@ export function ProductDetailPage() {
               {canViewPrice ? (
                 <>
                   <span className="text-4xl font-black text-primary">
-                    {product?.currencyCode ?? currency}{product?.price ?? '0.00'}
+                    {product?.currencyCode ?? currency}{product?.price ?? product?.defaultSellingPrice ?? '0.00'}
                   </span>
                   <span className="text-sm text-text-muted font-medium line-through">{currency}129.00</span>
                 </>
@@ -153,20 +153,26 @@ export function ProductDetailPage() {
             </div>
           </div>
 
+          <p className="text-xs font-bold uppercase tracking-widest text-text-muted mb-6">
+            {product?.isInStock ? `In stock (${product?.stockQuantity ?? 0})` : "Out of stock"}
+          </p>
+
           <div className="space-y-4 mb-8">
             {isAuthenticated ? (
-              <button 
+              <Link
+                to="/checkout"
+                state={{ items: [{ product, quantity: 1 }] }}
                 className={cn(
                   "w-full h-14 flex items-center justify-center gap-3 font-black uppercase tracking-widest transition-all",
-                  product?.canOrder 
-                    ? "btn-primary" 
-                    : "btn-outline opacity-50 cursor-not-allowed"
+                  product?.canOrder
+                    ? "btn-primary"
+                    : "btn-outline opacity-50 pointer-events-none"
                 )}
-                disabled={!product?.canOrder}
+                aria-disabled={!product?.canOrder}
               >
                 <ShoppingCart className="w-5 h-5" />
-                {product?.canOrder ? 'Add to Business Cart' : 'Out of Stock'}
-              </button>
+                {product?.canOrder ? 'Order Now' : 'Ordering unavailable'}
+              </Link>
             ) : (
               <Link 
                 to="/login"
