@@ -1,4 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 import { ShoppingCart, User, Search, Menu, Globe, Coins } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -9,8 +10,22 @@ import { CustomDropdown } from '@/components/common/CustomDropdown';
 
 export function PublicLayout() {
   const location = useLocation();
+  const { isAuthenticated, logout } = useAuth();
   const { language, setLanguage } = useLanguage();
   const { currency, setCurrency } = useCurrency();
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const navItems = [
     { label: 'Products', path: '/products' },
@@ -74,9 +89,44 @@ export function PublicLayout() {
               className="hidden sm:block"
             />
 
-            <Link to="/login" className="text-xs font-black uppercase tracking-widest text-text-muted hover:text-primary transition-colors px-4 py-2 bg-surface border border-border rounded-xl">
-              Login
-            </Link>
+            {isAuthenticated ? (
+              <div className="relative" ref={userMenuRef}>
+                <button
+                  type="button"
+                  onClick={() => setIsUserMenuOpen((prev) => !prev)}
+                  className="w-10 h-10 bg-surface border border-border rounded-xl flex items-center justify-center text-text-muted hover:text-primary transition-colors"
+                  aria-label="User menu"
+                >
+                  <User className="w-5 h-5" />
+                </button>
+
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-36 bg-surface border border-border rounded-xl p-2 shadow-lg">
+                    <Link
+                      to="/account"
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="block w-full text-left text-xs font-black uppercase tracking-widest text-text-muted hover:text-primary transition-colors px-2 py-2"
+                    >
+                      My Profile
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        logout();
+                        setIsUserMenuOpen(false);
+                      }}
+                      className="w-full text-left text-xs font-black uppercase tracking-widest text-text-muted hover:text-primary transition-colors px-2 py-2"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link to="/login" className="text-xs font-black uppercase tracking-widest text-text-muted hover:text-primary transition-colors px-4 py-2 bg-surface border border-border rounded-xl">
+                Login
+              </Link>
+            )}
             <button className="md:hidden p-2 hover:bg-bg rounded-full transition-colors text-text-muted">
               <Menu className="w-5 h-5" />
             </button>

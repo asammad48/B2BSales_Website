@@ -1,5 +1,6 @@
 import { createContext, useContext, useMemo, useState, useEffect } from 'react';
 import { authRepository } from '@/repositories/authRepository';
+import type { LoginRequestDto } from '@/api/generated/apiClient';
 
 type User = { id: string; email: string; name: string };
 type AuthState = {
@@ -7,7 +8,7 @@ type AuthState = {
     setAuthenticated: (value: boolean) => void;
     user: User | null;
     isLoading: boolean;
-    login: (credentials: any) => Promise<void>;
+    login: (credentials: LoginRequestDto) => Promise<void>;
     logout: () => void;
 };
 
@@ -21,7 +22,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if (isAuthenticated) {
             authRepository.me()
-                .then(u => setUser(u))
+                .then((u) => setUser({ id: u.id || '', email: u.email || '', name: u.fullName || '' }))
                 .catch(() => {
                     localStorage.removeItem('buyer_access_token');
                     setAuthenticated(false);
@@ -32,10 +33,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     }, [isAuthenticated]);
 
-    const login = async (credentials: any) => {
+    const login = async (credentials: LoginRequestDto) => {
         const response = await authRepository.login(credentials);
+        if (!response.token) {
+            throw new Error('Missing access token in login response');
+        }
+
         localStorage.setItem('buyer_access_token', response.token);
-        setUser(response.user);
+        setUser({ id: response.userId || '', email: response.email || '', name: response.fullName || '' });
         setAuthenticated(true);
     };
 

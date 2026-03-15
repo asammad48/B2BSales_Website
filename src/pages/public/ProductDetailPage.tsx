@@ -17,6 +17,7 @@ export function ProductDetailPage() {
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('description');
+  const canViewPrice = isAuthenticated || !product?.isPriceLocked;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -136,18 +137,18 @@ export function ProductDetailPage() {
 
           <div className="glass-card p-6 mb-8">
             <div className="flex items-baseline gap-3 mb-2">
-              {product?.isPriceLocked ? (
-                <div className="flex flex-col gap-1">
-                  <span className="text-2xl font-black text-text-muted italic">Price Locked</span>
-                  <p className="text-xs text-text-muted">Please sign in as a partner to view wholesale rates.</p>
-                </div>
-              ) : (
+              {canViewPrice ? (
                 <>
                   <span className="text-4xl font-black text-primary">
                     {product?.currencyCode ?? currency}{product?.price ?? '0.00'}
                   </span>
                   <span className="text-sm text-text-muted font-medium line-through">{currency}129.00</span>
                 </>
+              ) : (
+                <div className="flex flex-col gap-1">
+                  <span className="text-2xl font-black text-text-muted italic">Price Locked</span>
+                  <p className="text-xs text-text-muted">Please sign in as a partner to view wholesale rates.</p>
+                </div>
               )}
             </div>
           </div>

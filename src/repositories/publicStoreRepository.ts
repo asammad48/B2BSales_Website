@@ -1,13 +1,32 @@
 import { apiClient } from '@/api/client';
+import type {
+  ProductDetailResponseDto,
+  ProductDetailResponseDtoApiResponse,
+  ProductListItemResponseDtoPageResponse,
+  ProductListItemResponseDtoPageResponseApiResponse,
+  ThemeResponseDto,
+  ThemeResponseDtoApiResponse,
+} from '@/api/generated/apiClient';
+
+function unwrapResponse<T>(response: { success?: boolean; message?: string; data?: T }): T {
+  if (!response.success || !response.data) {
+    throw new Error(response.message || 'Request failed');
+  }
+
+  return response.data;
+}
 
 export const publicStoreRepository = {
-  async getTheme() {
-    return (await apiClient.theme()) as any;
+  async getTheme(): Promise<ThemeResponseDto> {
+    const response = await apiClient.theme();
+    return unwrapResponse<ThemeResponseDto>(response as ThemeResponseDtoApiResponse);
   },
-  async getProducts(params: { pageNumber: number; pageSize: number; search?: string; sortBy?: string; sortDirection?: string }) {
-    return (await apiClient.public(params.pageNumber, params.pageSize, params.search, params.sortBy, params.sortDirection)) as any;
+  async getProducts(params: { pageNumber: number; pageSize: number; search?: string; sortBy?: string; sortDirection?: string }): Promise<ProductListItemResponseDtoPageResponse> {
+    const response = await apiClient.public(params.pageNumber, params.pageSize, params.search, params.sortBy, params.sortDirection);
+    return unwrapResponse<ProductListItemResponseDtoPageResponse>(response as ProductListItemResponseDtoPageResponseApiResponse);
   },
-  async getProductDetail(id: string) {
-    return (await apiClient.public2(id)) as any;
+  async getProductDetail(id: string): Promise<ProductDetailResponseDto> {
+    const response = await apiClient.public2(id);
+    return unwrapResponse<ProductDetailResponseDto>(response as ProductDetailResponseDtoApiResponse);
   },
 };
