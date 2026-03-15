@@ -11,6 +11,29 @@ import type {
 
 type ApiResponse<T> = { success?: boolean; message?: string; data?: T };
 
+const inFlightRequests = new Map<string, Promise<unknown>>();
+
+function buildOrdersRequestKey(
+  clientId: string,
+  params?: { pageNumber?: number; pageSize?: number; search?: string; sortBy?: string; sortDirection?: string },
+) {
+  return `orders:${clientId}:${params?.pageNumber ?? ''}:${params?.pageSize ?? ''}:${params?.search ?? ''}:${params?.sortBy ?? ''}:${params?.sortDirection ?? ''}`;
+}
+
+function withInFlightDedup<T>(key: string, requestFactory: () => Promise<T>): Promise<T> {
+  const inFlight = inFlightRequests.get(key) as Promise<T> | undefined;
+  if (inFlight) {
+    return inFlight;
+  }
+
+  const request = requestFactory().finally(() => {
+    inFlightRequests.delete(key);
+  });
+
+  inFlightRequests.set(key, request);
+  return request;
+}
+
 function unwrapResponse<T>(response: ApiResponse<T>): T {
   if (!response.success || !response.data) {
     throw new Error(response.message || 'Request failed');
@@ -24,16 +47,18 @@ export const clientOrderRepository = {
     clientId: string,
     params?: { pageNumber?: number; pageSize?: number; search?: string; sortBy?: string; sortDirection?: string },
   ): Promise<ClientOrderListItemDtoPageResponse> {
-    const response = await apiClient.orders(
-      clientId,
-      params?.pageNumber,
-      params?.pageSize,
-      params?.search,
-      params?.sortBy,
-      params?.sortDirection,
-    );
+    return withInFlightDedup(buildOrdersRequestKey(clientId, params), async () => {
+      const response = await apiClient.orders(
+        clientId,
+        params?.pageNumber,
+        params?.pageSize,
+        params?.search,
+        params?.sortBy,
+        params?.sortDirection,
+      );
 
-    return unwrapResponse<ClientOrderListItemDtoPageResponse>(response as ClientOrderListItemDtoPageResponseApiResponse);
+      return unwrapResponse<ClientOrderListItemDtoPageResponse>(response as ClientOrderListItemDtoPageResponseApiResponse);
+    });
   },
 
   async placeClientOrder(request: PlaceClientOrderRequestDto): Promise<PlaceClientOrderResponseDto> {
@@ -42,7 +67,9 @@ export const clientOrderRepository = {
   },
 
   async getClientOrderSummary(clientId: string): Promise<ClientOrderSummaryDto> {
-    const response = await apiClient.summary(clientId);
-    return unwrapResponse<ClientOrderSummaryDto>(response as ClientOrderSummaryDtoApiResponse);
+    return withInFlightDedup(`summary:${clientId}`, async () => {
+      const response = await apiClient.summary(clientId);
+      return unwrapResponse<ClientOrderSummaryDto>(response as ClientOrderSummaryDtoApiResponse);
+    });
   },
 };
