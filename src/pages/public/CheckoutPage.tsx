@@ -6,6 +6,7 @@ import { useCart } from '@/state/CartContext';
 import { clientOrderRepository } from '@/repositories/clientOrderRepository';
 import { publicShopRepository } from '@/repositories/publicShopRepository';
 import type { PublicShopLookupItemDto } from '@/api/generated/apiClient';
+import { useToast } from '@/components/common/ToastProvider';
 
 type CheckoutItem = {
   product: any;
@@ -21,11 +22,10 @@ export function CheckoutPage() {
   const [shopId, setShopId] = useState('');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [shops, setShops] = useState<PublicShopLookupItemDto[]>([]);
   const [isShopsLoading, setIsShopsLoading] = useState(false);
-  const [shopsError, setShopsError] = useState<string | null>(null);
+  const { showError, showSuccess } = useToast();
 
   useEffect(() => {
     if (!isAuthenticated || !user?.tenantId) {
@@ -33,7 +33,6 @@ export function CheckoutPage() {
     }
 
     setIsShopsLoading(true);
-    setShopsError(null);
 
     publicShopRepository
       .getPublicTenantShops(user.tenantId)
@@ -47,10 +46,10 @@ export function CheckoutPage() {
         }
       })
       .catch((error: any) => {
-        setShopsError(error?.message || 'Unable to load pickup shops.');
+        showError(error?.message || 'Unable to load pickup shops.');
       })
       .finally(() => setIsShopsLoading(false));
-  }, [isAuthenticated, user?.tenantId]);
+  }, [isAuthenticated, user?.tenantId, showError]);
 
   const total = useMemo(
     () => items.reduce((acc, item) => acc + Number(item.product?.price || 0) * item.quantity, 0),
@@ -61,17 +60,8 @@ export function CheckoutPage() {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  const updateQuantity = (index: number, next: number) => {
-    if (next < 1) {
-      return;
-    }
-
-    setItems((prev) => prev.map((item, i) => (i === index ? { ...item, quantity: next } : item)));
-  };
-
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    setSubmitMessage(null);
     setSubmitError(null);
 
     if (items.length === 0) {
@@ -92,12 +82,12 @@ export function CheckoutPage() {
         items: items.map((item) => ({ productId: item.product?.id, quantity: item.quantity })),
       });
 
-      setSubmitMessage(response.message || `Order ${response.orderNumber || ''} submitted successfully.`);
+      showSuccess(response.message || `Order ${response.orderNumber || ''} submitted successfully.`);
       clearCart();
       setShopId('');
       setNotes('');
     } catch (error: any) {
-      setSubmitError(error?.message || 'Order submission failed. Please try again.');
+      showError(error?.message || 'Order submission failed. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -159,7 +149,6 @@ export function CheckoutPage() {
                   </option>
                 ))}
               </select>
-              {shopsError && <p className="text-xs text-red-600">{shopsError}</p>}
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Notes (optional)</label>
@@ -167,7 +156,6 @@ export function CheckoutPage() {
             </div>
           </section>
 
-          {submitMessage && <p className="text-sm text-primary font-bold">{submitMessage}</p>}
           {submitError && <p className="text-sm text-red-600 font-bold">{submitError}</p>}
 
           <div className="flex justify-end gap-3">

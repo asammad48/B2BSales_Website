@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { User, Package, Settings, LogOut, ChevronRight, ShieldCheck, ArrowLeft, CreditCard, Building2, MapPin, Bell } from 'lucide-react';
 import { clientOrderRepository } from '@/repositories/clientOrderRepository';
 import { PaginationBar } from '@/components/common/PaginationBar';
+import { useToast } from '@/components/common/ToastProvider';
 
 const PAGE_SIZE = 10;
 
@@ -13,7 +14,7 @@ export function AccountPage() {
   const [pageNumber, setPageNumber] = useState(1);
   const [ordersData, setOrdersData] = useState<any>({ items: [], totalCount: 0, pageSize: PAGE_SIZE });
   const [isOrdersLoading, setIsOrdersLoading] = useState(false);
-  const [ordersError, setOrdersError] = useState<string | null>(null);
+  const { showError } = useToast();
 
   useEffect(() => {
     if (activeView !== 'orders' || !user?.id) {
@@ -21,16 +22,15 @@ export function AccountPage() {
     }
 
     setIsOrdersLoading(true);
-    setOrdersError(null);
 
     clientOrderRepository
       .getClientOrders(user.id, { pageNumber, pageSize: PAGE_SIZE, sortBy: 'createdAt', sortDirection: 'desc' })
       .then((result) => setOrdersData(result))
       .catch((error: any) => {
-        setOrdersError(error?.message || 'Unable to load your order history.');
+        showError(error?.message || 'Unable to load your order history.');
       })
       .finally(() => setIsOrdersLoading(false));
-  }, [activeView, user?.id, pageNumber]);
+  }, [activeView, user?.id, pageNumber, showError]);
 
   const getStatusClass = (statusLabel?: string) => {
     const normalized = statusLabel?.toLowerCase() || '';
@@ -61,7 +61,6 @@ export function AccountPage() {
           <p className="text-text-muted">Track and manage your recent wholesale transactions.</p>
         </header>
 
-        {ordersError && <p className="text-sm text-red-600 font-bold">{ordersError}</p>}
 
         <div className="space-y-4">
           {isOrdersLoading ? (

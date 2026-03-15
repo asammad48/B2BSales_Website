@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Mail, Lock, ArrowRight, ShieldCheck, Loader2 } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/state/AuthContext';
+import { useToast } from '@/components/common/ToastProvider';
 
 export function LoginPage() {
   const { login } = useAuth();
@@ -11,7 +12,7 @@ export function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { showError } = useToast();
 
   const fromState = (location.state as any)?.from;
   const resolvedFrom = fromState
@@ -22,12 +23,11 @@ export function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
     try {
       await login({ email, password });
       navigate(from, { replace: true });
-    } catch (err: any) {
-      setError('Invalid email or password. Please try again.');
+    } catch {
+      showError('Invalid email or password. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -50,12 +50,6 @@ export function LoginPage() {
 
         <div className="glass-card p-8">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {error && (
-              <div className="p-3 bg-red-50 border border-red-100 text-red-600 text-xs font-bold rounded-lg animate-shake">
-                {error}
-              </div>
-            )}
-            
             <div className="space-y-2">
               <label className="text-xs font-bold uppercase tracking-widest text-text-muted ml-1">Email Address</label>
               <div className="relative">
