@@ -9,7 +9,9 @@ export const http = axios.create({
 
 http.interceptors.request.use((config) => {
   config.headers = config.headers || {};
-  config.headers['X-Tenant-Id'] = '6ee5fe60-d3ae-4f7f-870f-155bfd6ebd18';
+  if (env.tenantId) {
+    config.headers['X-Tenant-Id'] = env.tenantId;
+  }
 
   const token = localStorage.getItem('buyer_access_token');
   if (token) {
