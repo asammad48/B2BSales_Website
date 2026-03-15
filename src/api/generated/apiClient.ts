@@ -40,6 +40,15 @@ export interface IApiClient {
      * @param sortDirection (optional) 
      * @return OK
      */
+    orders(clientId: string, pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<ClientOrderListItemDtoPageResponseApiResponse>;
+    /**
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param search (optional) 
+     * @param sortBy (optional) 
+     * @param sortDirection (optional) 
+     * @return OK
+     */
     inventory(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<InventoryListItemResponseDtoPageResponseApiResponse>;
     /**
      * @param body (optional) 
@@ -143,6 +152,10 @@ export interface IApiClient {
     /**
      * @return OK
      */
+    shops(tenantId: string): Promise<PublicShopLookupItemDtoIEnumerableApiResponse>;
+    /**
+     * @return OK
+     */
     theme(): Promise<ThemeResponseDtoApiResponse>;
     /**
      * @param pageNumber (optional) 
@@ -174,6 +187,15 @@ export interface IApiClient {
      * @return OK
      */
     products3(search?: string | undefined, categoryId?: string | undefined, brandId?: string | undefined, modelId?: string | undefined, partTypeId?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<PublicProductListItemDtoPageResponseApiResponse>;
+    /**
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param search (optional) 
+     * @param sortBy (optional) 
+     * @param sortDirection (optional) 
+     * @return OK
+     */
+    newArrivals(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse>;
     /**
      * @return OK
      */
@@ -433,6 +455,85 @@ export class ApiClient implements IApiClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<StringApiResponse>(null as any);
+    }
+
+    /**
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param search (optional) 
+     * @param sortBy (optional) 
+     * @param sortDirection (optional) 
+     * @return OK
+     */
+    orders(clientId: string, pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<ClientOrderListItemDtoPageResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/client/clients/{clientId}/orders?";
+        if (clientId === undefined || clientId === null)
+            throw new Error("The parameter 'clientId' must be defined.");
+        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (search === null)
+            throw new Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
+        if (sortBy === null)
+            throw new Error("The parameter 'sortBy' cannot be null.");
+        else if (sortBy !== undefined)
+            url_ += "SortBy=" + encodeURIComponent("" + sortBy) + "&";
+        if (sortDirection === null)
+            throw new Error("The parameter 'sortDirection' cannot be null.");
+        else if (sortDirection !== undefined)
+            url_ += "SortDirection=" + encodeURIComponent("" + sortDirection) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processOrders(_response);
+        });
+    }
+
+    protected processOrders(response: AxiosResponse): Promise<ClientOrderListItemDtoPageResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<ClientOrderListItemDtoPageResponseApiResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<ClientOrderListItemDtoPageResponseApiResponse>(null as any);
     }
 
     /**
@@ -1588,6 +1689,60 @@ export class ApiClient implements IApiClient {
     /**
      * @return OK
      */
+    shops(tenantId: string, cancelToken?: CancelToken): Promise<PublicShopLookupItemDtoIEnumerableApiResponse> {
+        let url_ = this.baseUrl + "/api/public/tenants/{tenantId}/shops";
+        if (tenantId === undefined || tenantId === null)
+            throw new Error("The parameter 'tenantId' must be defined.");
+        url_ = url_.replace("{tenantId}", encodeURIComponent("" + tenantId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processShops(_response);
+        });
+    }
+
+    protected processShops(response: AxiosResponse): Promise<PublicShopLookupItemDtoIEnumerableApiResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<PublicShopLookupItemDtoIEnumerableApiResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<PublicShopLookupItemDtoIEnumerableApiResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     theme( cancelToken?: CancelToken): Promise<ThemeResponseDtoApiResponse> {
         let url_ = this.baseUrl + "/api/public/storefront/theme";
         url_ = url_.replace(/[?&]$/, "");
@@ -1914,6 +2069,82 @@ export class ApiClient implements IApiClient {
     }
 
     /**
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param search (optional) 
+     * @param sortBy (optional) 
+     * @param sortDirection (optional) 
+     * @return OK
+     */
+    newArrivals(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/public/products/new-arrivals?";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (search === null)
+            throw new Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
+        if (sortBy === null)
+            throw new Error("The parameter 'sortBy' cannot be null.");
+        else if (sortBy !== undefined)
+            url_ += "SortBy=" + encodeURIComponent("" + sortBy) + "&";
+        if (sortDirection === null)
+            throw new Error("The parameter 'sortDirection' cannot be null.");
+        else if (sortDirection !== undefined)
+            url_ += "SortDirection=" + encodeURIComponent("" + sortDirection) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processNewArrivals(_response);
+        });
+    }
+
+    protected processNewArrivals(response: AxiosResponse): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<PublicNewArrivalProductItemDtoPageResponseApiResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<PublicNewArrivalProductItemDtoPageResponseApiResponse>(null as any);
+    }
+
+    /**
      * @return OK
      */
     currentGET( cancelToken?: CancelToken): Promise<ThemeResponseDtoApiResponse> {
@@ -2160,6 +2391,37 @@ export interface ChangePasswordRequestDto {
     newPassword?: string;
 }
 
+export interface ClientOrderListItemDto {
+    orderId?: string;
+    orderNumber?: string;
+    clientId?: string;
+    shopId?: string;
+    shopName?: string;
+    status?: OrderStatus;
+    readonly statusLabel?: string;
+    currencyCode?: string;
+    subtotal?: number;
+    discountAmount?: number;
+    taxAmount?: number;
+    totalAmount?: number;
+    createdAt?: Date;
+    pickupConfirmedAt?: Date | undefined;
+    notes?: string | undefined;
+}
+
+export interface ClientOrderListItemDtoPageResponse {
+    items?: ClientOrderListItemDto[];
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+}
+
+export interface ClientOrderListItemDtoPageResponseApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: ClientOrderListItemDtoPageResponse;
+}
+
 export interface CreateOrderItemRequestDto {
     productId?: string;
     quantity?: number;
@@ -2372,6 +2634,8 @@ export interface OrderListItemResponseDtoPageResponseApiResponse {
     data?: OrderListItemResponseDtoPageResponse;
 }
 
+export type OrderStatus = "Pending" | "ReadyForPickup" | "Completed" | "Cancelled" | "UnableToFulfill";
+
 export interface PlaceClientOrderItemRequestDto {
     productId?: string;
     quantity?: number;
@@ -2499,6 +2763,44 @@ export interface PublicLookupItemDto {
     productCount?: number;
 }
 
+export interface PublicNewArrivalProductItemDto {
+    id?: string;
+    name?: string;
+    shortDescription?: string | undefined;
+    sku?: string;
+    barcode?: string | undefined;
+    categoryId?: string;
+    categoryName?: string;
+    brandId?: string | undefined;
+    brandName?: string | undefined;
+    modelId?: string | undefined;
+    modelName?: string | undefined;
+    partTypeId?: string | undefined;
+    partTypeName?: string | undefined;
+    primaryImageUrl?: string | undefined;
+    price?: number;
+    currencyCode?: string;
+    stockQuantity?: number;
+    isInStock?: boolean;
+    isPriceLocked?: boolean;
+    canOrder?: boolean;
+    slug?: string | undefined;
+    createdAt?: Date;
+}
+
+export interface PublicNewArrivalProductItemDtoPageResponse {
+    items?: PublicNewArrivalProductItemDto[];
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+}
+
+export interface PublicNewArrivalProductItemDtoPageResponseApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: PublicNewArrivalProductItemDtoPageResponse;
+}
+
 export interface PublicProductListItemDto {
     id?: string;
     name?: string;
@@ -2534,6 +2836,22 @@ export interface PublicProductListItemDtoPageResponseApiResponse {
     success?: boolean;
     message?: string;
     data?: PublicProductListItemDtoPageResponse;
+}
+
+export interface PublicShopLookupItemDto {
+    id?: string;
+    name?: string;
+    code?: string;
+    address?: string | undefined;
+    phone?: string | undefined;
+    isMain?: boolean;
+    isActive?: boolean;
+}
+
+export interface PublicShopLookupItemDtoIEnumerableApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: PublicShopLookupItemDto[] | undefined;
 }
 
 export type QualityType = "Original" | "OEM" | "HighCopy" | "Refurbished";
