@@ -119,7 +119,7 @@ export function ProductListingPage() {
         </div>
       </div>
 
-      <div className="glass-card p-4 space-y-4">
+      <div className="glass-card p-4 space-y-4 overflow-visible">
         <SearchBar value={search} onChange={setSearch} placeholder="Search by name, SKU, brand, or model..." />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <CustomDropdown value={categoryId} onChange={updateFilter(setCategoryId)} options={toOptions(filters.categories)} label="Category" className="w-full" />
