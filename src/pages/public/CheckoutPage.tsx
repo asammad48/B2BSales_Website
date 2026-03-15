@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
+import { env } from '@/env';
 import { useAuth } from '@/state/AuthContext';
 import { useCurrency } from '@/state/CurrencyContext';
 import { useCart } from '@/state/CartContext';
@@ -14,11 +15,11 @@ type CheckoutItem = {
 };
 
 export function CheckoutPage() {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { currency } = useCurrency();
   const { items: cartItems, clearCart } = useCart();
   const location = useLocation();
-  const [items, setItems] = useState<CheckoutItem[]>(location.state?.items || cartItems);
+  const [items] = useState<CheckoutItem[]>(location.state?.items || cartItems);
   const [shopId, setShopId] = useState('');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,14 +29,14 @@ export function CheckoutPage() {
   const { showError, showSuccess } = useToast();
 
   useEffect(() => {
-    if (!isAuthenticated || !user?.tenantId) {
+    if (!isAuthenticated || !env.tenantId) {
       return;
     }
 
     setIsShopsLoading(true);
 
     publicShopRepository
-      .getPublicTenantShops(user.tenantId)
+      .getPublicTenantShops(env.tenantId)
       .then((shopList) => {
         const activeShops = shopList.filter((shop) => shop.isActive !== false);
         setShops(activeShops);
@@ -49,12 +50,15 @@ export function CheckoutPage() {
         showError(error?.message || 'Unable to load pickup shops.');
       })
       .finally(() => setIsShopsLoading(false));
-  }, [isAuthenticated, user?.tenantId, showError]);
+  }, [isAuthenticated, showError]);
 
   const total = useMemo(
     () => items.reduce((acc, item) => acc + Number(item.product?.price || 0) * item.quantity, 0),
     [items],
   );
+
+  const totalCurrency = items[0]?.product?.currencyCode ?? currency;
+  const hasMixedCurrencies = items.some((item) => (item.product?.currencyCode ?? totalCurrency) !== totalCurrency);
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
@@ -127,7 +131,10 @@ export function CheckoutPage() {
             ))}
             <div className="text-right">
               <p className="text-xs font-bold uppercase tracking-widest text-text-muted">Total</p>
-              <p className="text-2xl font-black text-primary">{currency}{total.toFixed(2)}</p>
+              <p className="text-2xl font-black text-primary">
+                {hasMixedCurrencies ? 'Mixed' : totalCurrency}
+                {total.toFixed(2)}
+              </p>
             </div>
           </section>
 
