@@ -1,6 +1,5 @@
 import { FormEvent, useMemo, useState } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
-import { Minus, Plus, ShoppingCart } from 'lucide-react';
 import { useAuth } from '@/state/AuthContext';
 import { useCurrency } from '@/state/CurrencyContext';
 import { useCart } from '@/state/CartContext';
@@ -14,9 +13,9 @@ type CheckoutItem = {
 export function CheckoutPage() {
   const { isAuthenticated } = useAuth();
   const { currency } = useCurrency();
-  const { items, clearCart } = useCart();
+  const { items: cartItems, clearCart } = useCart();
   const location = useLocation();
-  const [items, setItems] = useState<CheckoutItem[]>(location.state?.items || []);
+  const [items, setItems] = useState<CheckoutItem[]>(location.state?.items || cartItems);
   const [shopId, setShopId] = useState('');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
