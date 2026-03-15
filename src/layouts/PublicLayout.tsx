@@ -12,7 +12,7 @@ import { CustomDropdown } from '@/components/common/CustomDropdown';
 export function PublicLayout() {
   const location = useLocation();
   const { isAuthenticated, logout } = useAuth();
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const { currency, setCurrency } = useCurrency();
   const { itemCount } = useCart();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -30,9 +30,9 @@ export function PublicLayout() {
   }, []);
 
   const navItems = [
-    { label: 'Products', path: '/products' },
-    { label: 'New Arrivals', path: '/new-arrivals' },
-    { label: 'Quality Guide', path: '/quality-guide' },
+    { label: t('nav.products'), path: '/products' },
+    { label: t('nav.newArrivals'), path: '/new-arrivals' },
+    { label: t('nav.qualityGuide'), path: '/quality-guide' },
   ];
 
   return (
@@ -70,7 +70,11 @@ export function PublicLayout() {
             {/* Language Switcher */}
             <CustomDropdown 
               value={language}
-              onChange={setLanguage}
+              onChange={(value) => {
+                if (value === 'en' || value === 'de' || value === 'fr') {
+                  setLanguage(value);
+                }
+              }}
               options={[
                 { value: 'en', label: 'EN', icon: <Globe className="w-3 h-3" /> },
                 { value: 'de', label: 'DE', icon: <Globe className="w-3 h-3" /> },
@@ -91,7 +95,7 @@ export function PublicLayout() {
               className="hidden sm:block"
             />
 
-            <Link to="/cart" className="relative w-10 h-10 bg-surface border border-border rounded-xl flex items-center justify-center text-text-muted hover:text-primary transition-colors" aria-label="Cart">
+            <Link to="/cart" className="relative w-10 h-10 bg-surface border border-border rounded-xl flex items-center justify-center text-text-muted hover:text-primary transition-colors" aria-label={t('nav.cart')}>
               <ShoppingCart className="w-5 h-5" />
               {itemCount > 0 && (
                 <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-primary text-white text-[10px] font-black flex items-center justify-center">
@@ -118,7 +122,7 @@ export function PublicLayout() {
                       onClick={() => setIsUserMenuOpen(false)}
                       className="block w-full text-left text-xs font-black uppercase tracking-widest text-text-muted hover:text-primary transition-colors px-2 py-2"
                     >
-                      My Profile
+                      {t('nav.myProfile')}
                     </Link>
                     <button
                       type="button"
@@ -128,14 +132,14 @@ export function PublicLayout() {
                       }}
                       className="w-full text-left text-xs font-black uppercase tracking-widest text-text-muted hover:text-primary transition-colors px-2 py-2"
                     >
-                      Logout
+                      {t('nav.logout')}
                     </button>
                   </div>
                 )}
               </div>
             ) : (
               <Link to="/login" className="text-xs font-black uppercase tracking-widest text-text-muted hover:text-primary transition-colors px-4 py-2 bg-surface border border-border rounded-xl">
-                Login
+                {t('nav.login')}
               </Link>
             )}
             <button className="md:hidden p-2 hover:bg-bg rounded-full transition-colors text-text-muted">
@@ -160,31 +164,31 @@ export function PublicLayout() {
                 <span className="text-lg font-black tracking-tighter uppercase">Store<span className="text-primary">Front</span></span>
               </Link>
               <p className="text-sm text-text-muted max-w-sm">
-                The future of wholesale electronics. Premium parts, verified quality, and seamless logistics for modern repair businesses.
+                {t('footer.description')}
               </p>
             </div>
             <div>
-              <h4 className="text-xs font-black uppercase tracking-widest mb-6">Explore</h4>
+              <h4 className="text-xs font-black uppercase tracking-widest mb-6">{t('footer.explore')}</h4>
               <ul className="space-y-4 text-sm text-text-muted">
-                <li><Link to="/products" className="hover:text-primary transition-colors">All Products</Link></li>
-                <li><Link to="/new-arrivals" className="hover:text-primary transition-colors">New Arrivals</Link></li>
-                <li><Link to="/quality-guide" className="hover:text-primary transition-colors">Quality Guide</Link></li>
+                <li><Link to="/products" className="hover:text-primary transition-colors">{t('footer.allProducts')}</Link></li>
+                <li><Link to="/new-arrivals" className="hover:text-primary transition-colors">{t('nav.newArrivals')}</Link></li>
+                <li><Link to="/quality-guide" className="hover:text-primary transition-colors">{t('nav.qualityGuide')}</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-xs font-black uppercase tracking-widest mb-6">Support</h4>
+              <h4 className="text-xs font-black uppercase tracking-widest mb-6">{t('footer.support')}</h4>
               <ul className="space-y-4 text-sm text-text-muted">
-                <li><Link to="/account" className="hover:text-primary transition-colors">My Account</Link></li>
-                <li><Link to="/shipping" className="hover:text-primary transition-colors">Shipping Policy</Link></li>
-                <li><Link to="/contact" className="hover:text-primary transition-colors">Contact Us</Link></li>
+                <li><Link to="/account" className="hover:text-primary transition-colors">{t('footer.myAccount')}</Link></li>
+                <li><Link to="/shipping" className="hover:text-primary transition-colors">{t('footer.shippingPolicy')}</Link></li>
+                <li><Link to="/contact" className="hover:text-primary transition-colors">{t('footer.contactUs')}</Link></li>
               </ul>
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-text-muted">© 2026 StoreFront Wholesale. All rights reserved.</p>
+            <p className="text-xs text-text-muted">{t('footer.rights')}</p>
             <div className="flex gap-6 text-xs font-bold text-text-muted">
-              <Link to="/privacy" className="hover:text-primary">Privacy</Link>
-              <Link to="/terms" className="hover:text-primary">Terms</Link>
+              <Link to="/privacy" className="hover:text-primary">{t('footer.privacy')}</Link>
+              <Link to="/terms" className="hover:text-primary">{t('footer.terms')}</Link>
             </div>
           </div>
         </div>
