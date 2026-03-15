@@ -65,10 +65,22 @@ export function useToast() {
     throw new Error('useToast must be used within ToastProvider');
   }
 
-  return {
+  const showError = useCallback((message: string) => {
+    showToast({ type: 'error', message });
+  }, []);
+
+  const showSuccess = useCallback((message: string) => {
+    showToast({ type: 'success', message });
+  }, []);
+
+  const showInfo = useCallback((message: string) => {
+    showToast({ type: 'info', message });
+  }, []);
+
+  return useMemo(() => ({
     pushToast: context.pushToast,
-    showError: (message: string) => showToast({ type: 'error', message }),
-    showSuccess: (message: string) => showToast({ type: 'success', message }),
-    showInfo: (message: string) => showToast({ type: 'info', message }),
-  };
+    showError,
+    showSuccess,
+    showInfo,
+  }), [context.pushToast, showError, showSuccess, showInfo]);
 }
