@@ -80,9 +80,14 @@ export function ProductDetailPage() {
   }, [id]);
 
   const canViewPrice = isAuthenticated || !product?.isPriceLocked;
+  const canOrder = product?.canOrder !== false;
   const imageUrl = product?.primaryImageUrl || product?.imageUrl || DUMMY_IMAGE;
 
   const onAddToCart = () => {
+    if (!canOrder) {
+      return;
+    }
+
     addItem(product, 1);
     navigate('/cart');
   };
@@ -194,14 +199,15 @@ export function ProductDetailPage() {
                 onClick={onAddToCart}
                 className={cn(
                   'w-full h-14 flex items-center justify-center gap-3 font-black uppercase tracking-widest transition-all',
-                  product?.canOrder
+                  canOrder
                     ? 'btn-primary'
                     : 'btn-outline opacity-50 cursor-not-allowed',
                 )}
-                aria-disabled={!product?.canOrder}
+                disabled={!canOrder}
+                aria-disabled={!canOrder}
               >
                 <ShoppingCart className="w-5 h-5" />
-                {product?.canOrder ? 'Add to Cart' : 'Ordering unavailable'}
+                {canOrder ? 'Add to Cart' : 'Ordering unavailable'}
               </button>
             ) : (
               <Link

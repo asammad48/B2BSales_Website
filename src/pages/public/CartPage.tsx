@@ -8,6 +8,8 @@ export function CartPage() {
   const { items, updateQuantity, removeItem, clearCart } = useCart();
 
   const total = items.reduce((acc, item) => acc + Number(item.product?.price || 0) * item.quantity, 0);
+  const cartCurrency = items[0]?.product?.currencyCode ?? currency;
+  const hasMixedCurrencies = items.some((item) => (item.product?.currencyCode ?? cartCurrency) !== cartCurrency);
 
   if (items.length === 0) {
     return (
@@ -79,7 +81,10 @@ export function CartPage() {
         <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-text-muted">Total</p>
-            <p className="text-2xl font-black text-primary">{currency}{total.toFixed(2)}</p>
+            <p className="text-2xl font-black text-primary">
+              {hasMixedCurrencies ? 'Mixed' : cartCurrency}
+              {total.toFixed(2)}
+            </p>
           </div>
           <div className="flex gap-3">
             <Link to="/products" className="btn-outline">

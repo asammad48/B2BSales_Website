@@ -17,6 +17,7 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
   const location = useLocation();
   const navigate = useNavigate();
   const canViewPrice = isAuthenticated || !product?.isPriceLocked;
+  const canOrder = product?.canOrder !== false;
 
   const loginState = {
     from: {
@@ -30,6 +31,10 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
   const detailPath = `/products/${product?.id}`;
 
   const onAddToCart = () => {
+    if (!canOrder) {
+      return;
+    }
+
     addItem(product, 1);
     navigate('/cart');
   };
@@ -85,14 +90,14 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
                 <button
                   type="button"
                   onClick={onAddToCart}
-                  disabled={!product?.canOrder}
+                  disabled={!canOrder}
                   className={cn(
                     'w-10 h-10 rounded-xl flex items-center justify-center transition-all',
-                    product?.canOrder
+                    canOrder
                       ? 'bg-primary text-white shadow-lg shadow-primary/20 hover:scale-110'
                       : 'bg-surface border border-border text-text-muted cursor-not-allowed opacity-50',
                   )}
-                  title={product?.canOrder ? 'Add to cart' : 'Ordering unavailable'}
+                  title={canOrder ? 'Add to cart' : 'Ordering unavailable'}
                 >
                   <ShoppingCart className="w-5 h-5" />
                 </button>
@@ -168,14 +173,14 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
               <button
                 type="button"
                 onClick={onAddToCart}
-                disabled={!product?.canOrder}
+                disabled={!canOrder}
                 className={cn(
                   'w-10 h-10 rounded-xl flex items-center justify-center transition-all',
-                  product?.canOrder
+                  canOrder
                     ? 'bg-primary text-white shadow-lg shadow-primary/20 hover:scale-110'
                     : 'bg-surface border border-border text-text-muted cursor-not-allowed opacity-50',
                 )}
-                title={product?.canOrder ? 'Add to cart' : 'Ordering unavailable'}
+                title={canOrder ? 'Add to cart' : 'Ordering unavailable'}
               >
                 <ShoppingCart className="w-5 h-5" />
               </button>
