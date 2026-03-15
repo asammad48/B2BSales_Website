@@ -9,6 +9,7 @@ import { AuthProvider } from './state/AuthContext';
 import { CurrencyProvider } from './state/CurrencyContext';
 import { LanguageProvider } from './state/LanguageContext';
 import { CartProvider } from './state/CartContext';
+import { ToastProvider } from './components/common/ToastProvider';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -17,9 +18,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <LanguageProvider>
           <CurrencyProvider>
             <AuthProvider>
-              <CartProvider>
-                <App />
-              </CartProvider>
+              <ToastProvider>
+                <CartProvider>
+                  <App />
+                </CartProvider>
+              </ToastProvider>
             </AuthProvider>
           </CurrencyProvider>
         </LanguageProvider>

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { env } from '@/env';
+import { showErrorToast } from '@/lib/toast';
 
 export const http = axios.create({
   baseURL: env.apiBaseUrl,
@@ -16,3 +17,22 @@ http.interceptors.request.use((config) => {
   }
   return config;
 });
+
+http.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const skipGlobalToast = error?.config?.skipGlobalErrorToast;
+    if (!skipGlobalToast) {
+      const message =
+        error?.response?.data?.message ||
+        error?.response?.data?.title ||
+        error?.response?.data?.error ||
+        error?.message ||
+        'Something went wrong. Please try again.';
+
+      showErrorToast(message);
+    }
+
+    return Promise.reject(error);
+  },
+);
