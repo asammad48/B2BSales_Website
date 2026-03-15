@@ -2,6 +2,8 @@ import { apiClient } from '@/api/client';
 import type {
   ClientOrderListItemDtoPageResponse,
   ClientOrderListItemDtoPageResponseApiResponse,
+  ClientOrderSummaryDto,
+  ClientOrderSummaryDtoApiResponse,
   PlaceClientOrderRequestDto,
   PlaceClientOrderResponseDto,
   PlaceClientOrderResponseDtoApiResponse,
@@ -37,5 +39,10 @@ export const clientOrderRepository = {
   async placeClientOrder(request: PlaceClientOrderRequestDto): Promise<PlaceClientOrderResponseDto> {
     const response = await apiClient.client(request);
     return unwrapResponse<PlaceClientOrderResponseDto>(response as PlaceClientOrderResponseDtoApiResponse);
+  },
+
+  async getClientOrderSummary(clientId: string): Promise<ClientOrderSummaryDto> {
+    const response = await apiClient.summary(clientId);
+    return unwrapResponse<ClientOrderSummaryDto>(response as ClientOrderSummaryDtoApiResponse);
   },
 };
