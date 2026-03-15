@@ -2,7 +2,7 @@ import { createContext, useContext, useMemo, useState, useEffect } from 'react';
 import { authRepository } from '@/repositories/authRepository';
 import type { LoginRequestDto } from '@/api/generated/apiClient';
 
-type User = { id: string; email: string; name: string };
+type User = { id: string; email: string; name: string; tenantId?: string; shopId?: string };
 type AuthState = {
     isAuthenticated: boolean;
     setAuthenticated: (value: boolean) => void;
@@ -22,7 +22,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if (isAuthenticated) {
             authRepository.me()
-                .then((u) => setUser({ id: u.id || '', email: u.email || '', name: u.fullName || '' }))
+                .then((u) => setUser({ id: u.id || '', email: u.email || '', name: u.fullName || '', tenantId: u.tenantId, shopId: u.shopId }))
                 .catch(() => {
                     localStorage.removeItem('buyer_access_token');
                     setAuthenticated(false);
@@ -40,7 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         localStorage.setItem('buyer_access_token', response.token);
-        setUser({ id: response.userId || '', email: response.email || '', name: response.fullName || '' });
+        setUser({ id: response.userId || '', email: response.email || '', name: response.fullName || '', tenantId: response.tenantId });
         setAuthenticated(true);
     };
 
