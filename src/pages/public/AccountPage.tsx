@@ -5,32 +5,61 @@ import { User, Package, Settings, LogOut, ChevronRight, ShieldCheck, ArrowLeft, 
 import { clientOrderRepository } from '@/repositories/clientOrderRepository';
 import { PaginationBar } from '@/components/common/PaginationBar';
 import { useToast } from '@/components/common/ToastProvider';
+import { useNavigate } from 'react-router-dom';
+import type { ClientOrderSummaryDto } from '@/api/generated/apiClient';
 
 const PAGE_SIZE = 10;
 
 export function AccountPage() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [activeView, setActiveView] = useState<'menu' | 'orders' | 'profile'>('menu');
   const [pageNumber, setPageNumber] = useState(1);
   const [ordersData, setOrdersData] = useState<any>({ items: [], totalCount: 0, pageSize: PAGE_SIZE });
   const [isOrdersLoading, setIsOrdersLoading] = useState(false);
+  const [orderSummary, setOrderSummary] = useState<ClientOrderSummaryDto | null>(null);
+  const [isSummaryLoading, setIsSummaryLoading] = useState(false);
   const { showError } = useToast();
+  const clientId = user?.clientId;
 
   useEffect(() => {
-    if (activeView !== 'orders' || !user?.id) {
+    if (!clientId) {
+      setOrderSummary(null);
+      return;
+    }
+
+    setIsSummaryLoading(true);
+    clientOrderRepository
+      .getClientOrderSummary(clientId)
+      .then((summary) => setOrderSummary(summary))
+      .catch((error: any) => {
+        setOrderSummary(null);
+        showError(error?.message || 'Unable to load order summary.');
+      })
+      .finally(() => setIsSummaryLoading(false));
+  }, [clientId, showError]);
+
+  useEffect(() => {
+    if (activeView !== 'orders') {
+      return;
+    }
+
+    if (!clientId) {
+      showError('Your session is missing client context. Please sign in again.');
+      navigate('/login', { replace: true, state: { from: { pathname: '/account' } } });
       return;
     }
 
     setIsOrdersLoading(true);
 
     clientOrderRepository
-      .getClientOrders(user.id, { pageNumber, pageSize: PAGE_SIZE, sortBy: 'createdAt', sortDirection: 'desc' })
+      .getClientOrders(clientId, { pageNumber, pageSize: PAGE_SIZE, sortBy: 'createdAt', sortDirection: 'desc' })
       .then((result) => setOrdersData(result))
       .catch((error: any) => {
         showError(error?.message || 'Unable to load your order history.');
       })
       .finally(() => setIsOrdersLoading(false));
-  }, [activeView, user?.id, pageNumber, showError]);
+  }, [activeView, clientId, pageNumber, showError, navigate]);
 
   const getStatusClass = (statusLabel?: string) => {
     const normalized = statusLabel?.toLowerCase() || '';
@@ -43,6 +72,15 @@ export function AccountPage() {
   const menuItems = [
     { id: 'orders', icon: <Package className="w-5 h-5" />, label: 'Order History', desc: 'View and track your wholesale orders' },
     { id: 'profile', icon: <Settings className="w-5 h-5" />, label: 'Business Profile', desc: 'Update your company information' },
+  ];
+
+  const summaryCards = [
+    { label: 'Total Orders', value: orderSummary?.totalOrders ?? 0, valueClassName: 'text-2xl font-black' },
+    { label: 'Completed Orders', value: orderSummary?.completedOrders ?? 0, valueClassName: 'text-2xl font-black text-green-600' },
+    { label: 'Pending Orders', value: orderSummary?.pendingOrders ?? 0, valueClassName: 'text-2xl font-black text-accent' },
+    { label: 'Ready for Pickup', value: orderSummary?.readyForPickupOrders ?? 0, valueClassName: 'text-2xl font-black text-blue-600' },
+    { label: 'Cancelled Orders', value: orderSummary?.cancelledOrders ?? 0, valueClassName: 'text-2xl font-black text-red-500' },
+    { label: 'Unable to Fulfill', value: orderSummary?.unableToFulfillOrders ?? 0, valueClassName: 'text-2xl font-black text-red-700' },
   ];
 
   if (activeView === 'orders') {
@@ -250,18 +288,14 @@ export function AccountPage() {
         <div className="space-y-6">
           <h2 className="text-xl font-bold px-1">Quick Stats</h2>
           <div className="glass-card p-6 space-y-6">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-text-muted mb-1">Total Orders</p>
-              <p className="text-2xl font-black">128</p>
-            </div>
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-text-muted mb-1">Active Shipments</p>
-              <p className="text-2xl font-black text-primary">3</p>
-            </div>
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-text-muted mb-1">Loyalty Tier</p>
-              <p className="text-sm font-bold text-accent">Platinum Partner</p>
-            </div>
+            {isSummaryLoading
+              ? [1, 2, 3, 4, 5, 6].map((item) => <div key={item} className="h-12 animate-pulse bg-surface/50 rounded-xl" />)
+              : summaryCards.map((card) => (
+                  <div key={card.label}>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-text-muted mb-1">{card.label}</p>
+                    <p className={card.valueClassName}>{card.value}</p>
+                  </div>
+                ))}
           </div>
         </div>
       </div>
