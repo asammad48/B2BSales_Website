@@ -122,10 +122,10 @@ export function ProductListingPage() {
       <div className="glass-card p-4 space-y-4">
         <SearchBar value={search} onChange={setSearch} placeholder="Search by name, SKU, brand, or model..." />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <CustomDropdown value={categoryId} onChange={updateFilter(setCategoryId)} options={toOptions(filters.categories)} label="Category" />
-          <CustomDropdown value={brandId} onChange={updateFilter(setBrandId)} options={toOptions(filters.brands)} label="Brand" />
-          <CustomDropdown value={modelId} onChange={updateFilter(setModelId)} options={toOptions(filters.models)} label="Model" />
-          <CustomDropdown value={partTypeId} onChange={updateFilter(setPartTypeId)} options={toOptions(filters.partTypes)} label="Part Type" />
+          <CustomDropdown value={categoryId} onChange={updateFilter(setCategoryId)} options={toOptions(filters.categories)} label="Category" className="w-full" />
+          <CustomDropdown value={brandId} onChange={updateFilter(setBrandId)} options={toOptions(filters.brands)} label="Brand" className="w-full" />
+          <CustomDropdown value={modelId} onChange={updateFilter(setModelId)} options={toOptions(filters.models)} label="Model" className="w-full" />
+          <CustomDropdown value={partTypeId} onChange={updateFilter(setPartTypeId)} options={toOptions(filters.partTypes)} label="Part Type" className="w-full" />
         </div>
       </div>
 

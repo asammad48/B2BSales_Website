@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/state/AuthContext';
 import { useLanguage } from '@/state/LanguageContext';
 import { useCurrency } from '@/state/CurrencyContext';
+import { useCart } from '@/state/CartContext';
 import { CustomDropdown } from '@/components/common/CustomDropdown';
 
 export function PublicLayout() {
@@ -13,6 +14,7 @@ export function PublicLayout() {
   const { isAuthenticated, logout } = useAuth();
   const { language, setLanguage } = useLanguage();
   const { currency, setCurrency } = useCurrency();
+  const { itemCount } = useCart();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
 
@@ -88,6 +90,15 @@ export function PublicLayout() {
               ]}
               className="hidden sm:block"
             />
+
+            <Link to="/cart" className="relative w-10 h-10 bg-surface border border-border rounded-xl flex items-center justify-center text-text-muted hover:text-primary transition-colors" aria-label="Cart">
+              <ShoppingCart className="w-5 h-5" />
+              {itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-primary text-white text-[10px] font-black flex items-center justify-center">
+                  {itemCount}
+                </span>
+              )}
+            </Link>
 
             {isAuthenticated ? (
               <div className="relative" ref={userMenuRef}>

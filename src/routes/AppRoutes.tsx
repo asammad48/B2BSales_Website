@@ -6,6 +6,7 @@ import { ProductDetailPage } from '@/pages/public/ProductDetailPage';
 import { LoginPage } from '@/pages/public/LoginPage';
 import { AccountPage } from '@/pages/public/AccountPage';
 import { CheckoutPage } from '@/pages/public/CheckoutPage';
+import { CartPage } from '@/pages/public/CartPage';
 import { ShippingPolicyPage } from '@/pages/public/ShippingPolicyPage';
 import { PrivacyPolicyPage } from '@/pages/public/PrivacyPolicyPage';
 import { TermsOfServicePage } from '@/pages/public/TermsOfServicePage';
@@ -23,6 +24,7 @@ export function AppRoutes() {
         <Route path="/products/:id" element={<ProductDetailPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/account" element={<AccountPage />} />
+        <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/shipping" element={<ShippingPolicyPage />} />
         <Route path="/privacy" element={<PrivacyPolicyPage />} />

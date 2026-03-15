@@ -8,6 +8,7 @@ import { ThemeProvider } from './theme/ThemeProvider';
 import { AuthProvider } from './state/AuthContext';
 import { CurrencyProvider } from './state/CurrencyContext';
 import { LanguageProvider } from './state/LanguageContext';
+import { CartProvider } from './state/CartContext';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -16,7 +17,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <LanguageProvider>
           <CurrencyProvider>
             <AuthProvider>
-              <App />
+              <CartProvider>
+                <App />
+              </CartProvider>
             </AuthProvider>
           </CurrencyProvider>
         </LanguageProvider>
