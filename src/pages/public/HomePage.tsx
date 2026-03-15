@@ -1,8 +1,20 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, ShieldCheck, Truck, Zap, Star } from 'lucide-react';
+import { ProductCard } from '@/components/product/ProductCard';
+import { publicCatalogRepository } from '@/repositories/publicCatalogRepository';
 
 export function HomePage() {
+  const [newArrivals, setNewArrivals] = useState<any[]>([]);
+
+  useEffect(() => {
+    publicCatalogRepository
+      .getNewArrivalProducts({ pageNumber: 1, pageSize: 4, sortBy: 'createdAt', sortDirection: 'desc' })
+      .then((response) => setNewArrivals(response.items || []))
+      .catch(() => setNewArrivals([]));
+  }, []);
+
   return (
     <div className="space-y-24 pb-12">
       {/* Hero Section */}
@@ -57,25 +69,15 @@ export function HomePage() {
           </Link>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {[
-            { name: 'iPhone 15 Pro Max OLED', brand: 'Apple', price: '$289.99', img: 'https://picsum.photos/seed/iphone15/400/400' },
-            { name: 'Galaxy S24 Ultra AMOLED', brand: 'Samsung', price: '$314.50', img: 'https://picsum.photos/seed/s24/400/400' },
-            { name: 'Pixel 8 Pro Display', brand: 'Google', price: '$195.00', img: 'https://picsum.photos/seed/pixel8/400/400' },
-            { name: 'Xiaomi 14 Pro Panel', brand: 'Xiaomi', price: '$145.00', img: 'https://picsum.photos/seed/xiaomi14/400/400' },
-          ].map((item, i) => (
-            <Link to="/new-arrivals" key={i} className="group glass-card p-4 space-y-4">
-              <div className="aspect-square rounded-xl overflow-hidden bg-bg">
-                <img src={item.img} alt={item.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" referrerPolicy="no-referrer" />
-              </div>
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-text-muted mb-1">{item.brand}</p>
-                <h4 className="font-bold text-sm line-clamp-1">{item.name}</h4>
-                <p className="text-primary font-black mt-2">{item.price}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
+        {newArrivals.length > 0 ? (
+          <div className="grid-layout">
+            {newArrivals.map((item) => (
+              <ProductCard key={item.id} product={item} />
+            ))}
+          </div>
+        ) : (
+          <div className="glass-card p-8 text-center text-text-muted">No new arrivals available right now.</div>
+        )}
       </section>
 
       {/* Features Section */}

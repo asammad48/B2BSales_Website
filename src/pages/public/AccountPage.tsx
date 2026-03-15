@@ -1,11 +1,44 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/state/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Package, Settings, LogOut, ChevronRight, ShieldCheck, ArrowLeft, CreditCard, Building2, MapPin, Bell } from 'lucide-react';
+import { clientOrderRepository } from '@/repositories/clientOrderRepository';
+import { PaginationBar } from '@/components/common/PaginationBar';
+
+const PAGE_SIZE = 10;
 
 export function AccountPage() {
   const { user, logout } = useAuth();
   const [activeView, setActiveView] = useState<'menu' | 'orders' | 'profile'>('menu');
+  const [pageNumber, setPageNumber] = useState(1);
+  const [ordersData, setOrdersData] = useState<any>({ items: [], totalCount: 0, pageSize: PAGE_SIZE });
+  const [isOrdersLoading, setIsOrdersLoading] = useState(false);
+  const [ordersError, setOrdersError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (activeView !== 'orders' || !user?.id) {
+      return;
+    }
+
+    setIsOrdersLoading(true);
+    setOrdersError(null);
+
+    clientOrderRepository
+      .getClientOrders(user.id, { pageNumber, pageSize: PAGE_SIZE, sortBy: 'createdAt', sortDirection: 'desc' })
+      .then((result) => setOrdersData(result))
+      .catch((error: any) => {
+        setOrdersError(error?.message || 'Unable to load your order history.');
+      })
+      .finally(() => setIsOrdersLoading(false));
+  }, [activeView, user?.id, pageNumber]);
+
+  const getStatusClass = (statusLabel?: string) => {
+    const normalized = statusLabel?.toLowerCase() || '';
+    if (normalized.includes('completed')) return 'bg-green-50 text-green-600 border-green-100';
+    if (normalized.includes('ready') || normalized.includes('pickup')) return 'bg-blue-50 text-blue-600 border-blue-100';
+    if (normalized.includes('cancel') || normalized.includes('unable')) return 'bg-red-50 text-red-600 border-red-100';
+    return 'bg-accent/5 text-accent border-accent/10';
+  };
 
   const menuItems = [
     { id: 'orders', icon: <Package className="w-5 h-5" />, label: 'Order History', desc: 'View and track your wholesale orders' },
@@ -28,44 +61,55 @@ export function AccountPage() {
           <p className="text-text-muted">Track and manage your recent wholesale transactions.</p>
         </header>
 
+        {ordersError && <p className="text-sm text-red-600 font-bold">{ordersError}</p>}
+
         <div className="space-y-4">
-          {[
-            { id: 'ORD-8821', date: 'Mar 12, 2026', status: 'Processing', total: '$1,240.00', items: 12 },
-            { id: 'ORD-8794', date: 'Mar 05, 2026', status: 'Shipped', total: '$850.00', items: 8 },
-            { id: 'ORD-8750', date: 'Feb 28, 2026', status: 'Delivered', total: '$2,100.00', items: 24 },
-          ].map((order) => (
-            <div key={order.id} className="glass-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center text-primary">
-                  <Package className="w-6 h-6" />
+          {isOrdersLoading ? (
+            [1, 2, 3].map((item) => <div key={item} className="glass-card h-24 animate-pulse bg-surface/50" />)
+          ) : (
+            (ordersData?.items ?? []).map((order: any) => (
+              <div key={order.orderId} className="glass-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center text-primary">
+                    <Package className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">{order.orderNumber || 'N/A'}</h3>
+                    <p className="text-xs text-text-muted">
+                      {order.shopName || 'Unknown shop'} • {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown date'}
+                    </p>
+                    {order.notes && <p className="text-xs text-text-muted mt-1">{order.notes}</p>}
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-lg">{order.id}</h3>
-                  <p className="text-xs text-text-muted">{order.date} • {order.items} Items</p>
+
+                <div className="flex items-center gap-8">
+                  <div className="text-right">
+                    <p className="text-xs font-black uppercase tracking-widest text-text-muted mb-1">Status</p>
+                    <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full border ${getStatusClass(order.statusLabel || order.status)}`}>
+                      {order.statusLabel || order.status || 'Pending'}
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs font-black uppercase tracking-widest text-text-muted mb-1">Total</p>
+                    <p className="font-bold">{order.currencyCode || '$'}{Number(order.totalAmount || 0).toFixed(2)}</p>
+                  </div>
                 </div>
               </div>
-              
-              <div className="flex items-center gap-8">
-                <div className="text-right">
-                  <p className="text-xs font-black uppercase tracking-widest text-text-muted mb-1">Status</p>
-                  <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full border ${
-                    order.status === 'Delivered' ? 'bg-green-50 text-green-600 border-green-100' :
-                    order.status === 'Shipped' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                    'bg-accent/5 text-accent border-accent/10'
-                  }`}>
-                    {order.status}
-                  </span>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs font-black uppercase tracking-widest text-text-muted mb-1">Total</p>
-                  <p className="font-bold">{order.total}</p>
-                </div>
-                <button className="p-2 hover:bg-bg rounded-lg transition-colors">
-                  <ChevronRight className="w-5 h-5 text-text-muted" />
-                </button>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
+
+          {!isOrdersLoading && (ordersData?.items ?? []).length === 0 && (
+            <div className="glass-card p-8 text-center text-text-muted">No orders found yet.</div>
+          )}
+        </div>
+
+        <div className="pt-4 border-t border-border">
+          <PaginationBar
+            pageNumber={pageNumber}
+            pageSize={ordersData?.pageSize ?? PAGE_SIZE}
+            totalCount={ordersData?.totalCount ?? 0}
+            onChange={setPageNumber}
+          />
         </div>
       </div>
     );

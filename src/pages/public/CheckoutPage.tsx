@@ -1,9 +1,11 @@
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/state/AuthContext';
 import { useCurrency } from '@/state/CurrencyContext';
 import { useCart } from '@/state/CartContext';
 import { clientOrderRepository } from '@/repositories/clientOrderRepository';
+import { publicShopRepository } from '@/repositories/publicShopRepository';
+import type { PublicShopLookupItemDto } from '@/api/generated/apiClient';
 
 type CheckoutItem = {
   product: any;
@@ -11,7 +13,7 @@ type CheckoutItem = {
 };
 
 export function CheckoutPage() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const { currency } = useCurrency();
   const { items: cartItems, clearCart } = useCart();
   const location = useLocation();
@@ -21,6 +23,34 @@ export function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [shops, setShops] = useState<PublicShopLookupItemDto[]>([]);
+  const [isShopsLoading, setIsShopsLoading] = useState(false);
+  const [shopsError, setShopsError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isAuthenticated || !user?.tenantId) {
+      return;
+    }
+
+    setIsShopsLoading(true);
+    setShopsError(null);
+
+    publicShopRepository
+      .getPublicTenantShops(user.tenantId)
+      .then((shopList) => {
+        const activeShops = shopList.filter((shop) => shop.isActive !== false);
+        setShops(activeShops);
+
+        const mainShop = activeShops.find((shop) => shop.isMain);
+        if (mainShop?.id) {
+          setShopId(mainShop.id);
+        }
+      })
+      .catch((error: any) => {
+        setShopsError(error?.message || 'Unable to load pickup shops.');
+      })
+      .finally(() => setIsShopsLoading(false));
+  }, [isAuthenticated, user?.tenantId]);
 
   const total = useMemo(
     () => items.reduce((acc, item) => acc + Number(item.product?.price || 0) * item.quantity, 0),
@@ -46,6 +76,11 @@ export function CheckoutPage() {
 
     if (items.length === 0) {
       setSubmitError('Please add at least one product to cart before placing your order.');
+      return;
+    }
+
+    if (shops.length > 0 && !shopId) {
+      setSubmitError('Please select a pickup shop before placing your order.');
       return;
     }
 
@@ -108,8 +143,23 @@ export function CheckoutPage() {
 
           <section className="glass-card p-6 grid grid-cols-1 gap-5">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Pickup Shop Id (optional)</label>
-              <input value={shopId} onChange={(e) => setShopId(e.target.value)} className="input-field" placeholder="Enter pickup shop id" />
+              <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Pickup shop</label>
+              <select
+                value={shopId}
+                onChange={(e) => setShopId(e.target.value)}
+                className="input-field"
+                disabled={isShopsLoading || shops.length === 0}
+              >
+                <option value="">{isShopsLoading ? 'Loading shops...' : shops.length === 0 ? 'No shops available' : 'Select a shop'}</option>
+                {shops.map((shop) => (
+                  <option key={shop.id} value={shop.id}>
+                    {shop.name}
+                    {shop.isMain ? ' (Main)' : ''}
+                    {shop.address ? ` - ${shop.address}` : ''}
+                  </option>
+                ))}
+              </select>
+              {shopsError && <p className="text-xs text-red-600">{shopsError}</p>}
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Notes (optional)</label>

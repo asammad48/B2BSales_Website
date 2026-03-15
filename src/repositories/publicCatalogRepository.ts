@@ -2,6 +2,8 @@ import { apiClient } from '@/api/client';
 import type {
   PublicCatalogFiltersResponseDto,
   PublicCatalogFiltersResponseDtoApiResponse,
+  PublicNewArrivalProductItemDtoPageResponse,
+  PublicNewArrivalProductItemDtoPageResponseApiResponse,
   PublicProductListItemDtoPageResponse,
   PublicProductListItemDtoPageResponseApiResponse,
 } from '@/api/generated/apiClient';
@@ -24,6 +26,14 @@ export type GetPublicProductsParams = {
   brandId?: string;
   modelId?: string;
   partTypeId?: string;
+  sortBy?: string;
+  sortDirection?: string;
+};
+
+export type GetNewArrivalProductsParams = {
+  pageNumber?: number;
+  pageSize?: number;
+  search?: string;
   sortBy?: string;
   sortDirection?: string;
 };
@@ -57,5 +67,17 @@ export const publicCatalogRepository = {
     );
 
     return unwrapResponse<PublicProductListItemDtoPageResponse>(response as PublicProductListItemDtoPageResponseApiResponse);
+  },
+
+  async getNewArrivalProducts(params?: GetNewArrivalProductsParams): Promise<PublicNewArrivalProductItemDtoPageResponse> {
+    const response = await apiClient.newArrivals(
+      params?.pageNumber,
+      params?.pageSize,
+      normalizeOptional(params?.search),
+      params?.sortBy,
+      params?.sortDirection,
+    );
+
+    return unwrapResponse<PublicNewArrivalProductItemDtoPageResponse>(response as PublicNewArrivalProductItemDtoPageResponseApiResponse);
   },
 };

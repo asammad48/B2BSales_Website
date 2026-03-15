@@ -1,64 +1,24 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, ArrowRight, Zap, ShieldCheck } from 'lucide-react';
 import { ProductCard } from '@/components/product/ProductCard';
+import { PaginationBar } from '@/components/common/PaginationBar';
+import { publicCatalogRepository } from '@/repositories/publicCatalogRepository';
+
+const PAGE_SIZE = 12;
 
 export function NewArrivalsPage() {
-  // Mock data as requested (not linking an API)
-  const mockNewArrivals = [
-    {
-      id: 'mock-1',
-      name: 'iPhone 15 Pro Max OLED Screen Assembly',
-      brandName: 'Apple',
-      modelName: 'iPhone 15 Pro Max',
-      qualityType: 'SERVICE_PACK',
-      price: '289.99',
-      currencyCode: '$',
-      imageUrl: 'https://picsum.photos/seed/iphone15/800/800',
-      shortDescription: 'Original Service Pack display with pre-installed proximity sensor and ear speaker.',
-      canOrder: false, // Guest view
-      isPriceLocked: true
-    },
-    {
-      id: 'mock-2',
-      name: 'Samsung S24 Ultra Dynamic AMOLED 2X',
-      brandName: 'Samsung',
-      modelName: 'Galaxy S24 Ultra',
-      qualityType: 'SERVICE_PACK',
-      price: '314.50',
-      currencyCode: '$',
-      imageUrl: 'https://picsum.photos/seed/s24/800/800',
-      shortDescription: 'Factory original display assembly with frame and battery pre-installed.',
-      canOrder: false,
-      isPriceLocked: true
-    },
-    {
-      id: 'mock-3',
-      name: 'Google Pixel 8 Pro Display & Touch',
-      brandName: 'Google',
-      modelName: 'Pixel 8 Pro',
-      qualityType: 'PREMIUM',
-      price: '195.00',
-      currencyCode: '$',
-      imageUrl: 'https://picsum.photos/seed/pixel8/800/800',
-      shortDescription: 'High-grade premium refurbished display with original IC for perfect touch response.',
-      canOrder: false,
-      isPriceLocked: true
-    },
-    {
-      id: 'mock-4',
-      name: 'Xiaomi 14 Pro Curved AMOLED Panel',
-      brandName: 'Xiaomi',
-      modelName: '14 Pro',
-      qualityType: 'HQ',
-      price: '145.00',
-      currencyCode: '$',
-      imageUrl: 'https://picsum.photos/seed/xiaomi14/800/800',
-      shortDescription: 'High-quality replacement panel with 120Hz support and peak brightness matching original.',
-      canOrder: false,
-      isPriceLocked: true
-    }
-  ];
+  const [pageNumber, setPageNumber] = useState(1);
+  const [data, setData] = useState<any>({ items: [], totalCount: 0, pageSize: PAGE_SIZE });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+    publicCatalogRepository
+      .getNewArrivalProducts({ pageNumber, pageSize: PAGE_SIZE, sortBy: 'createdAt', sortDirection: 'desc' })
+      .then((response) => setData(response))
+      .finally(() => setIsLoading(false));
+  }, [pageNumber]);
 
   return (
     <div className="space-y-16">
@@ -115,7 +75,7 @@ export function NewArrivalsPage() {
         </div>
 
         <div className="grid-layout">
-          {mockNewArrivals.map((product, index) => (
+          {(data?.items || []).map((product: any, index: number) => (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 20 }}
@@ -125,6 +85,19 @@ export function NewArrivalsPage() {
               <ProductCard product={product} />
             </motion.div>
           ))}
+        </div>
+
+        {!isLoading && (data?.items || []).length === 0 && (
+          <div className="glass-card p-8 text-center text-text-muted">No newly arrived products found.</div>
+        )}
+
+        <div className="pt-4 border-t border-border">
+          <PaginationBar
+            pageNumber={pageNumber}
+            pageSize={data?.pageSize ?? PAGE_SIZE}
+            totalCount={data?.totalCount ?? 0}
+            onChange={setPageNumber}
+          />
         </div>
       </section>
 
