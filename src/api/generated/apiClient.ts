@@ -260,77 +260,6 @@ export interface IApiClient {
      */
     adjust2(productId: string, body?: AdjustProductPricingRequestDto | undefined): Promise<ProductPricingAdjustmentResultDtoApiResponse>;
     /**
-     * @return OK
-     */
-    shops(tenantId: string): Promise<PublicShopLookupItemDtoIEnumerableApiResponse>;
-    /**
-     * @return OK
-     */
-    theme(): Promise<ThemeResponseDtoApiResponse>;
-    /**
-     * @param pageNumber (optional) 
-     * @param pageSize (optional) 
-     * @param search (optional) 
-     * @param sortBy (optional) 
-     * @param sortDirection (optional) 
-     * @return OK
-     */
-    products2(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<ProductListItemResponseDtoPageResponseApiResponse>;
-    /**
-     * @return OK
-     */
-    products3(id: string): Promise<ProductDetailResponseDtoApiResponse>;
-    /**
-     * @return OK
-     */
-    filters(): Promise<PublicCatalogFiltersResponseDtoApiResponse>;
-    /**
-     * @return OK
-     */
-    lookups(): Promise<PublicCatalogLookupsResponseDtoApiResponse>;
-    /**
-     * @param search (optional) 
-     * @param categoryId (optional) 
-     * @param brandId (optional) 
-     * @param modelId (optional) 
-     * @param partTypeId (optional) 
-     * @param shopId (optional) 
-     * @param pageNumber (optional) 
-     * @param pageSize (optional) 
-     * @param sortBy (optional) 
-     * @param sortDirection (optional) 
-     * @return OK
-     */
-    products4(search?: string | undefined, categoryId?: string | undefined, brandId?: string | undefined, modelId?: string | undefined, partTypeId?: string | undefined, shopId?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<PublicProductListItemDtoPageResponseApiResponse>;
-    /**
-     * @param search (optional) 
-     * @param categoryId (optional) 
-     * @param brandId (optional) 
-     * @param modelId (optional) 
-     * @param partTypeId (optional) 
-     * @param shopId (optional) 
-     * @param pageNumber (optional) 
-     * @param pageSize (optional) 
-     * @param sortBy (optional) 
-     * @param sortDirection (optional) 
-     * @return OK
-     */
-    newArrivals(search?: string | undefined, categoryId?: string | undefined, brandId?: string | undefined, modelId?: string | undefined, partTypeId?: string | undefined, shopId?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse>;
-    /**
-     * @param search (optional) 
-     * @param pageNumber (optional) 
-     * @param pageSize (optional) 
-     * @param sortBy (optional) 
-     * @param sortDirection (optional) 
-     * @return OK
-     */
-    featured(shopId: string, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse>;
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    contact(body?: CreateContactInquiryRequestDto | undefined): Promise<CreateContactInquiryResponseDtoApiResponse>;
-    /**
      * @param rangeType (optional) 
      * @param startDate (optional) 
      * @param endDate (optional) 
@@ -2931,681 +2860,6 @@ export class ApiClient implements IApiClient {
     }
 
     /**
-     * @return OK
-     */
-    shops(tenantId: string, cancelToken?: CancelToken): Promise<PublicShopLookupItemDtoIEnumerableApiResponse> {
-        let url_ = this.baseUrl + "/api/public/tenants/{tenantId}/shops";
-        if (tenantId === undefined || tenantId === null)
-            throw new Error("The parameter 'tenantId' must be defined.");
-        url_ = url_.replace("{tenantId}", encodeURIComponent("" + tenantId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: AxiosRequestConfig = {
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "text/plain"
-            },
-            cancelToken
-        };
-
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processShops(_response);
-        });
-    }
-
-    protected processShops(response: AxiosResponse): Promise<PublicShopLookupItemDtoIEnumerableApiResponse> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (const k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = JSON.parse(resultData200);
-            return Promise.resolve<PublicShopLookupItemDtoIEnumerableApiResponse>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<PublicShopLookupItemDtoIEnumerableApiResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    theme( cancelToken?: CancelToken): Promise<ThemeResponseDtoApiResponse> {
-        let url_ = this.baseUrl + "/api/public/storefront/theme";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: AxiosRequestConfig = {
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "text/plain"
-            },
-            cancelToken
-        };
-
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processTheme(_response);
-        });
-    }
-
-    protected processTheme(response: AxiosResponse): Promise<ThemeResponseDtoApiResponse> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (const k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = JSON.parse(resultData200);
-            return Promise.resolve<ThemeResponseDtoApiResponse>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<ThemeResponseDtoApiResponse>(null as any);
-    }
-
-    /**
-     * @param pageNumber (optional) 
-     * @param pageSize (optional) 
-     * @param search (optional) 
-     * @param sortBy (optional) 
-     * @param sortDirection (optional) 
-     * @return OK
-     */
-    products2(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<ProductListItemResponseDtoPageResponseApiResponse> {
-        let url_ = this.baseUrl + "/api/public/storefront/products?";
-        if (pageNumber === null)
-            throw new Error("The parameter 'pageNumber' cannot be null.");
-        else if (pageNumber !== undefined)
-            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
-        if (pageSize === null)
-            throw new Error("The parameter 'pageSize' cannot be null.");
-        else if (pageSize !== undefined)
-            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
-        if (search === null)
-            throw new Error("The parameter 'search' cannot be null.");
-        else if (search !== undefined)
-            url_ += "Search=" + encodeURIComponent("" + search) + "&";
-        if (sortBy === null)
-            throw new Error("The parameter 'sortBy' cannot be null.");
-        else if (sortBy !== undefined)
-            url_ += "SortBy=" + encodeURIComponent("" + sortBy) + "&";
-        if (sortDirection === null)
-            throw new Error("The parameter 'sortDirection' cannot be null.");
-        else if (sortDirection !== undefined)
-            url_ += "SortDirection=" + encodeURIComponent("" + sortDirection) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: AxiosRequestConfig = {
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "text/plain"
-            },
-            cancelToken
-        };
-
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processProducts2(_response);
-        });
-    }
-
-    protected processProducts2(response: AxiosResponse): Promise<ProductListItemResponseDtoPageResponseApiResponse> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (const k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = JSON.parse(resultData200);
-            return Promise.resolve<ProductListItemResponseDtoPageResponseApiResponse>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<ProductListItemResponseDtoPageResponseApiResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    products3(id: string, cancelToken?: CancelToken): Promise<ProductDetailResponseDtoApiResponse> {
-        let url_ = this.baseUrl + "/api/public/storefront/products/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: AxiosRequestConfig = {
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "text/plain"
-            },
-            cancelToken
-        };
-
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processProducts3(_response);
-        });
-    }
-
-    protected processProducts3(response: AxiosResponse): Promise<ProductDetailResponseDtoApiResponse> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (const k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = JSON.parse(resultData200);
-            return Promise.resolve<ProductDetailResponseDtoApiResponse>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<ProductDetailResponseDtoApiResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    filters( cancelToken?: CancelToken): Promise<PublicCatalogFiltersResponseDtoApiResponse> {
-        let url_ = this.baseUrl + "/api/public/catalog/filters";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: AxiosRequestConfig = {
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "text/plain"
-            },
-            cancelToken
-        };
-
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processFilters(_response);
-        });
-    }
-
-    protected processFilters(response: AxiosResponse): Promise<PublicCatalogFiltersResponseDtoApiResponse> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (const k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = JSON.parse(resultData200);
-            return Promise.resolve<PublicCatalogFiltersResponseDtoApiResponse>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<PublicCatalogFiltersResponseDtoApiResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    lookups( cancelToken?: CancelToken): Promise<PublicCatalogLookupsResponseDtoApiResponse> {
-        let url_ = this.baseUrl + "/api/public/catalog/lookups";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: AxiosRequestConfig = {
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "text/plain"
-            },
-            cancelToken
-        };
-
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processLookups(_response);
-        });
-    }
-
-    protected processLookups(response: AxiosResponse): Promise<PublicCatalogLookupsResponseDtoApiResponse> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (const k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = JSON.parse(resultData200);
-            return Promise.resolve<PublicCatalogLookupsResponseDtoApiResponse>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<PublicCatalogLookupsResponseDtoApiResponse>(null as any);
-    }
-
-    /**
-     * @param search (optional) 
-     * @param categoryId (optional) 
-     * @param brandId (optional) 
-     * @param modelId (optional) 
-     * @param partTypeId (optional) 
-     * @param shopId (optional) 
-     * @param pageNumber (optional) 
-     * @param pageSize (optional) 
-     * @param sortBy (optional) 
-     * @param sortDirection (optional) 
-     * @return OK
-     */
-    products4(search?: string | undefined, categoryId?: string | undefined, brandId?: string | undefined, modelId?: string | undefined, partTypeId?: string | undefined, shopId?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<PublicProductListItemDtoPageResponseApiResponse> {
-        let url_ = this.baseUrl + "/api/public/catalog/products?";
-        if (search === null)
-            throw new Error("The parameter 'search' cannot be null.");
-        else if (search !== undefined)
-            url_ += "Search=" + encodeURIComponent("" + search) + "&";
-        if (categoryId === null)
-            throw new Error("The parameter 'categoryId' cannot be null.");
-        else if (categoryId !== undefined)
-            url_ += "CategoryId=" + encodeURIComponent("" + categoryId) + "&";
-        if (brandId === null)
-            throw new Error("The parameter 'brandId' cannot be null.");
-        else if (brandId !== undefined)
-            url_ += "BrandId=" + encodeURIComponent("" + brandId) + "&";
-        if (modelId === null)
-            throw new Error("The parameter 'modelId' cannot be null.");
-        else if (modelId !== undefined)
-            url_ += "ModelId=" + encodeURIComponent("" + modelId) + "&";
-        if (partTypeId === null)
-            throw new Error("The parameter 'partTypeId' cannot be null.");
-        else if (partTypeId !== undefined)
-            url_ += "PartTypeId=" + encodeURIComponent("" + partTypeId) + "&";
-        if (shopId === null)
-            throw new Error("The parameter 'shopId' cannot be null.");
-        else if (shopId !== undefined)
-            url_ += "ShopId=" + encodeURIComponent("" + shopId) + "&";
-        if (pageNumber === null)
-            throw new Error("The parameter 'pageNumber' cannot be null.");
-        else if (pageNumber !== undefined)
-            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
-        if (pageSize === null)
-            throw new Error("The parameter 'pageSize' cannot be null.");
-        else if (pageSize !== undefined)
-            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
-        if (sortBy === null)
-            throw new Error("The parameter 'sortBy' cannot be null.");
-        else if (sortBy !== undefined)
-            url_ += "SortBy=" + encodeURIComponent("" + sortBy) + "&";
-        if (sortDirection === null)
-            throw new Error("The parameter 'sortDirection' cannot be null.");
-        else if (sortDirection !== undefined)
-            url_ += "SortDirection=" + encodeURIComponent("" + sortDirection) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: AxiosRequestConfig = {
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "text/plain"
-            },
-            cancelToken
-        };
-
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processProducts4(_response);
-        });
-    }
-
-    protected processProducts4(response: AxiosResponse): Promise<PublicProductListItemDtoPageResponseApiResponse> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (const k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = JSON.parse(resultData200);
-            return Promise.resolve<PublicProductListItemDtoPageResponseApiResponse>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<PublicProductListItemDtoPageResponseApiResponse>(null as any);
-    }
-
-    /**
-     * @param search (optional) 
-     * @param categoryId (optional) 
-     * @param brandId (optional) 
-     * @param modelId (optional) 
-     * @param partTypeId (optional) 
-     * @param shopId (optional) 
-     * @param pageNumber (optional) 
-     * @param pageSize (optional) 
-     * @param sortBy (optional) 
-     * @param sortDirection (optional) 
-     * @return OK
-     */
-    newArrivals(search?: string | undefined, categoryId?: string | undefined, brandId?: string | undefined, modelId?: string | undefined, partTypeId?: string | undefined, shopId?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse> {
-        let url_ = this.baseUrl + "/api/public/products/new-arrivals?";
-        if (search === null)
-            throw new Error("The parameter 'search' cannot be null.");
-        else if (search !== undefined)
-            url_ += "Search=" + encodeURIComponent("" + search) + "&";
-        if (categoryId === null)
-            throw new Error("The parameter 'categoryId' cannot be null.");
-        else if (categoryId !== undefined)
-            url_ += "CategoryId=" + encodeURIComponent("" + categoryId) + "&";
-        if (brandId === null)
-            throw new Error("The parameter 'brandId' cannot be null.");
-        else if (brandId !== undefined)
-            url_ += "BrandId=" + encodeURIComponent("" + brandId) + "&";
-        if (modelId === null)
-            throw new Error("The parameter 'modelId' cannot be null.");
-        else if (modelId !== undefined)
-            url_ += "ModelId=" + encodeURIComponent("" + modelId) + "&";
-        if (partTypeId === null)
-            throw new Error("The parameter 'partTypeId' cannot be null.");
-        else if (partTypeId !== undefined)
-            url_ += "PartTypeId=" + encodeURIComponent("" + partTypeId) + "&";
-        if (shopId === null)
-            throw new Error("The parameter 'shopId' cannot be null.");
-        else if (shopId !== undefined)
-            url_ += "ShopId=" + encodeURIComponent("" + shopId) + "&";
-        if (pageNumber === null)
-            throw new Error("The parameter 'pageNumber' cannot be null.");
-        else if (pageNumber !== undefined)
-            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
-        if (pageSize === null)
-            throw new Error("The parameter 'pageSize' cannot be null.");
-        else if (pageSize !== undefined)
-            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
-        if (sortBy === null)
-            throw new Error("The parameter 'sortBy' cannot be null.");
-        else if (sortBy !== undefined)
-            url_ += "SortBy=" + encodeURIComponent("" + sortBy) + "&";
-        if (sortDirection === null)
-            throw new Error("The parameter 'sortDirection' cannot be null.");
-        else if (sortDirection !== undefined)
-            url_ += "SortDirection=" + encodeURIComponent("" + sortDirection) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: AxiosRequestConfig = {
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "text/plain"
-            },
-            cancelToken
-        };
-
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processNewArrivals(_response);
-        });
-    }
-
-    protected processNewArrivals(response: AxiosResponse): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (const k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = JSON.parse(resultData200);
-            return Promise.resolve<PublicNewArrivalProductItemDtoPageResponseApiResponse>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<PublicNewArrivalProductItemDtoPageResponseApiResponse>(null as any);
-    }
-
-    /**
-     * @param search (optional) 
-     * @param pageNumber (optional) 
-     * @param pageSize (optional) 
-     * @param sortBy (optional) 
-     * @param sortDirection (optional) 
-     * @return OK
-     */
-    featured(shopId: string, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse> {
-        let url_ = this.baseUrl + "/api/public/products/featured?";
-        if (shopId === undefined || shopId === null)
-            throw new Error("The parameter 'shopId' must be defined and cannot be null.");
-        else
-            url_ += "ShopId=" + encodeURIComponent("" + shopId) + "&";
-        if (search === null)
-            throw new Error("The parameter 'search' cannot be null.");
-        else if (search !== undefined)
-            url_ += "Search=" + encodeURIComponent("" + search) + "&";
-        if (pageNumber === null)
-            throw new Error("The parameter 'pageNumber' cannot be null.");
-        else if (pageNumber !== undefined)
-            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
-        if (pageSize === null)
-            throw new Error("The parameter 'pageSize' cannot be null.");
-        else if (pageSize !== undefined)
-            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
-        if (sortBy === null)
-            throw new Error("The parameter 'sortBy' cannot be null.");
-        else if (sortBy !== undefined)
-            url_ += "SortBy=" + encodeURIComponent("" + sortBy) + "&";
-        if (sortDirection === null)
-            throw new Error("The parameter 'sortDirection' cannot be null.");
-        else if (sortDirection !== undefined)
-            url_ += "SortDirection=" + encodeURIComponent("" + sortDirection) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: AxiosRequestConfig = {
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "text/plain"
-            },
-            cancelToken
-        };
-
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processFeatured(_response);
-        });
-    }
-
-    protected processFeatured(response: AxiosResponse): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (const k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = JSON.parse(resultData200);
-            return Promise.resolve<PublicNewArrivalProductItemDtoPageResponseApiResponse>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<PublicNewArrivalProductItemDtoPageResponseApiResponse>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    contact(body?: CreateContactInquiryRequestDto | undefined, cancelToken?: CancelToken): Promise<CreateContactInquiryResponseDtoApiResponse> {
-        let url_ = this.baseUrl + "/api/public/contact";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: AxiosRequestConfig = {
-            data: content_,
-            method: "POST",
-            url: url_,
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "text/plain"
-            },
-            cancelToken
-        };
-
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processContact(_response);
-        });
-    }
-
-    protected processContact(response: AxiosResponse): Promise<CreateContactInquiryResponseDtoApiResponse> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (const k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = JSON.parse(resultData200);
-            return Promise.resolve<CreateContactInquiryResponseDtoApiResponse>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<CreateContactInquiryResponseDtoApiResponse>(null as any);
-    }
-
-    /**
      * @param rangeType (optional) 
      * @param startDate (optional) 
      * @param endDate (optional) 
@@ -4553,6 +3807,803 @@ export class ApiClient implements IApiClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<UserListItemResponseDtoApiResponse>(null as any);
+    }
+}
+
+export interface IApiClient {
+    /**
+     * @return OK
+     */
+    getByTenantId(tenantId: string): Promise<PublicShopLookupItemDtoIEnumerableApiResponse>;
+}
+
+export class ApiClient implements IApiClient {
+    protected instance: AxiosInstance;
+    protected baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
+
+        this.instance = instance || axios.create();
+
+        this.baseUrl = baseUrl ?? "";
+
+    }
+
+    /**
+     * @return OK
+     */
+    getByTenantId(tenantId: string, cancelToken?: CancelToken): Promise<PublicShopLookupItemDtoIEnumerableApiResponse> {
+        let url_ = this.baseUrl + "/api/public/tenants/{tenantId}/shops";
+        if (tenantId === undefined || tenantId === null)
+            throw new Error("The parameter 'tenantId' must be defined.");
+        url_ = url_.replace("{tenantId}", encodeURIComponent("" + tenantId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processGetByTenantId(_response);
+        });
+    }
+
+    protected processGetByTenantId(response: AxiosResponse): Promise<PublicShopLookupItemDtoIEnumerableApiResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<PublicShopLookupItemDtoIEnumerableApiResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<PublicShopLookupItemDtoIEnumerableApiResponse>(null as any);
+    }
+}
+
+export interface IApiClient {
+    /**
+     * @return OK
+     */
+    getTheme(): Promise<ThemeResponseDtoApiResponse>;
+    /**
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param search (optional) 
+     * @param sortBy (optional) 
+     * @param sortDirection (optional) 
+     * @return OK
+     */
+    getProducts(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<ProductListItemResponseDtoPageResponseApiResponse>;
+    /**
+     * @return OK
+     */
+    getProduct(id: string): Promise<ProductDetailResponseDtoApiResponse>;
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createContactInquiry(body?: CreateContactInquiryRequestDto | undefined): Promise<CreateContactInquiryResponseDtoApiResponse>;
+}
+
+export class ApiClient implements IApiClient {
+    protected instance: AxiosInstance;
+    protected baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
+
+        this.instance = instance || axios.create();
+
+        this.baseUrl = baseUrl ?? "";
+
+    }
+
+    /**
+     * @return OK
+     */
+    getTheme( cancelToken?: CancelToken): Promise<ThemeResponseDtoApiResponse> {
+        let url_ = this.baseUrl + "/api/public/storefront/theme";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processGetTheme(_response);
+        });
+    }
+
+    protected processGetTheme(response: AxiosResponse): Promise<ThemeResponseDtoApiResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<ThemeResponseDtoApiResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<ThemeResponseDtoApiResponse>(null as any);
+    }
+
+    /**
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param search (optional) 
+     * @param sortBy (optional) 
+     * @param sortDirection (optional) 
+     * @return OK
+     */
+    getProducts(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<ProductListItemResponseDtoPageResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/public/storefront/products?";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (search === null)
+            throw new Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
+        if (sortBy === null)
+            throw new Error("The parameter 'sortBy' cannot be null.");
+        else if (sortBy !== undefined)
+            url_ += "SortBy=" + encodeURIComponent("" + sortBy) + "&";
+        if (sortDirection === null)
+            throw new Error("The parameter 'sortDirection' cannot be null.");
+        else if (sortDirection !== undefined)
+            url_ += "SortDirection=" + encodeURIComponent("" + sortDirection) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processGetProducts(_response);
+        });
+    }
+
+    protected processGetProducts(response: AxiosResponse): Promise<ProductListItemResponseDtoPageResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<ProductListItemResponseDtoPageResponseApiResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<ProductListItemResponseDtoPageResponseApiResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getProduct(id: string, cancelToken?: CancelToken): Promise<ProductDetailResponseDtoApiResponse> {
+        let url_ = this.baseUrl + "/api/public/storefront/products/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processGetProduct(_response);
+        });
+    }
+
+    protected processGetProduct(response: AxiosResponse): Promise<ProductDetailResponseDtoApiResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<ProductDetailResponseDtoApiResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<ProductDetailResponseDtoApiResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createContactInquiry(body?: CreateContactInquiryRequestDto | undefined, cancelToken?: CancelToken): Promise<CreateContactInquiryResponseDtoApiResponse> {
+        let url_ = this.baseUrl + "/api/public/contact";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: AxiosRequestConfig = {
+            data: content_,
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processCreateContactInquiry(_response);
+        });
+    }
+
+    protected processCreateContactInquiry(response: AxiosResponse): Promise<CreateContactInquiryResponseDtoApiResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<CreateContactInquiryResponseDtoApiResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<CreateContactInquiryResponseDtoApiResponse>(null as any);
+    }
+}
+
+export interface IApiClient {
+    /**
+     * @return OK
+     */
+    getFilters(): Promise<PublicCatalogFiltersResponseDtoApiResponse>;
+    /**
+     * @return OK
+     */
+    getLookups(): Promise<PublicCatalogLookupsResponseDtoApiResponse>;
+    /**
+     * @param search (optional) 
+     * @param categoryId (optional) 
+     * @param brandId (optional) 
+     * @param modelId (optional) 
+     * @param partTypeId (optional) 
+     * @param shopId (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sortBy (optional) 
+     * @param sortDirection (optional) 
+     * @return OK
+     */
+    getProducts(search?: string | undefined, categoryId?: string | undefined, brandId?: string | undefined, modelId?: string | undefined, partTypeId?: string | undefined, shopId?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<PublicProductListItemDtoPageResponseApiResponse>;
+    /**
+     * @param search (optional) 
+     * @param categoryId (optional) 
+     * @param brandId (optional) 
+     * @param modelId (optional) 
+     * @param partTypeId (optional) 
+     * @param shopId (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sortBy (optional) 
+     * @param sortDirection (optional) 
+     * @return OK
+     */
+    getNewArrivals(search?: string | undefined, categoryId?: string | undefined, brandId?: string | undefined, modelId?: string | undefined, partTypeId?: string | undefined, shopId?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse>;
+    /**
+     * @param search (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sortBy (optional) 
+     * @param sortDirection (optional) 
+     * @return OK
+     */
+    getFeaturedProducts(shopId: string, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse>;
+}
+
+export class ApiClient implements IApiClient {
+    protected instance: AxiosInstance;
+    protected baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
+
+        this.instance = instance || axios.create();
+
+        this.baseUrl = baseUrl ?? "";
+
+    }
+
+    /**
+     * @return OK
+     */
+    getFilters( cancelToken?: CancelToken): Promise<PublicCatalogFiltersResponseDtoApiResponse> {
+        let url_ = this.baseUrl + "/api/public/catalog/filters";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processGetFilters(_response);
+        });
+    }
+
+    protected processGetFilters(response: AxiosResponse): Promise<PublicCatalogFiltersResponseDtoApiResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<PublicCatalogFiltersResponseDtoApiResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<PublicCatalogFiltersResponseDtoApiResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getLookups( cancelToken?: CancelToken): Promise<PublicCatalogLookupsResponseDtoApiResponse> {
+        let url_ = this.baseUrl + "/api/public/catalog/lookups";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processGetLookups(_response);
+        });
+    }
+
+    protected processGetLookups(response: AxiosResponse): Promise<PublicCatalogLookupsResponseDtoApiResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<PublicCatalogLookupsResponseDtoApiResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<PublicCatalogLookupsResponseDtoApiResponse>(null as any);
+    }
+
+    /**
+     * @param search (optional) 
+     * @param categoryId (optional) 
+     * @param brandId (optional) 
+     * @param modelId (optional) 
+     * @param partTypeId (optional) 
+     * @param shopId (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sortBy (optional) 
+     * @param sortDirection (optional) 
+     * @return OK
+     */
+    getProducts(search?: string | undefined, categoryId?: string | undefined, brandId?: string | undefined, modelId?: string | undefined, partTypeId?: string | undefined, shopId?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<PublicProductListItemDtoPageResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/public/catalog/products?";
+        if (search === null)
+            throw new Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
+        if (categoryId === null)
+            throw new Error("The parameter 'categoryId' cannot be null.");
+        else if (categoryId !== undefined)
+            url_ += "CategoryId=" + encodeURIComponent("" + categoryId) + "&";
+        if (brandId === null)
+            throw new Error("The parameter 'brandId' cannot be null.");
+        else if (brandId !== undefined)
+            url_ += "BrandId=" + encodeURIComponent("" + brandId) + "&";
+        if (modelId === null)
+            throw new Error("The parameter 'modelId' cannot be null.");
+        else if (modelId !== undefined)
+            url_ += "ModelId=" + encodeURIComponent("" + modelId) + "&";
+        if (partTypeId === null)
+            throw new Error("The parameter 'partTypeId' cannot be null.");
+        else if (partTypeId !== undefined)
+            url_ += "PartTypeId=" + encodeURIComponent("" + partTypeId) + "&";
+        if (shopId === null)
+            throw new Error("The parameter 'shopId' cannot be null.");
+        else if (shopId !== undefined)
+            url_ += "ShopId=" + encodeURIComponent("" + shopId) + "&";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (sortBy === null)
+            throw new Error("The parameter 'sortBy' cannot be null.");
+        else if (sortBy !== undefined)
+            url_ += "SortBy=" + encodeURIComponent("" + sortBy) + "&";
+        if (sortDirection === null)
+            throw new Error("The parameter 'sortDirection' cannot be null.");
+        else if (sortDirection !== undefined)
+            url_ += "SortDirection=" + encodeURIComponent("" + sortDirection) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processGetProducts(_response);
+        });
+    }
+
+    protected processGetProducts(response: AxiosResponse): Promise<PublicProductListItemDtoPageResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<PublicProductListItemDtoPageResponseApiResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<PublicProductListItemDtoPageResponseApiResponse>(null as any);
+    }
+
+    /**
+     * @param search (optional) 
+     * @param categoryId (optional) 
+     * @param brandId (optional) 
+     * @param modelId (optional) 
+     * @param partTypeId (optional) 
+     * @param shopId (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sortBy (optional) 
+     * @param sortDirection (optional) 
+     * @return OK
+     */
+    getNewArrivals(search?: string | undefined, categoryId?: string | undefined, brandId?: string | undefined, modelId?: string | undefined, partTypeId?: string | undefined, shopId?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/public/products/new-arrivals?";
+        if (search === null)
+            throw new Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
+        if (categoryId === null)
+            throw new Error("The parameter 'categoryId' cannot be null.");
+        else if (categoryId !== undefined)
+            url_ += "CategoryId=" + encodeURIComponent("" + categoryId) + "&";
+        if (brandId === null)
+            throw new Error("The parameter 'brandId' cannot be null.");
+        else if (brandId !== undefined)
+            url_ += "BrandId=" + encodeURIComponent("" + brandId) + "&";
+        if (modelId === null)
+            throw new Error("The parameter 'modelId' cannot be null.");
+        else if (modelId !== undefined)
+            url_ += "ModelId=" + encodeURIComponent("" + modelId) + "&";
+        if (partTypeId === null)
+            throw new Error("The parameter 'partTypeId' cannot be null.");
+        else if (partTypeId !== undefined)
+            url_ += "PartTypeId=" + encodeURIComponent("" + partTypeId) + "&";
+        if (shopId === null)
+            throw new Error("The parameter 'shopId' cannot be null.");
+        else if (shopId !== undefined)
+            url_ += "ShopId=" + encodeURIComponent("" + shopId) + "&";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (sortBy === null)
+            throw new Error("The parameter 'sortBy' cannot be null.");
+        else if (sortBy !== undefined)
+            url_ += "SortBy=" + encodeURIComponent("" + sortBy) + "&";
+        if (sortDirection === null)
+            throw new Error("The parameter 'sortDirection' cannot be null.");
+        else if (sortDirection !== undefined)
+            url_ += "SortDirection=" + encodeURIComponent("" + sortDirection) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processGetNewArrivals(_response);
+        });
+    }
+
+    protected processGetNewArrivals(response: AxiosResponse): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<PublicNewArrivalProductItemDtoPageResponseApiResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<PublicNewArrivalProductItemDtoPageResponseApiResponse>(null as any);
+    }
+
+    /**
+     * @param search (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sortBy (optional) 
+     * @param sortDirection (optional) 
+     * @return OK
+     */
+    getFeaturedProducts(shopId: string, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/public/products/featured?";
+        if (shopId === undefined || shopId === null)
+            throw new Error("The parameter 'shopId' must be defined and cannot be null.");
+        else
+            url_ += "ShopId=" + encodeURIComponent("" + shopId) + "&";
+        if (search === null)
+            throw new Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (sortBy === null)
+            throw new Error("The parameter 'sortBy' cannot be null.");
+        else if (sortBy !== undefined)
+            url_ += "SortBy=" + encodeURIComponent("" + sortBy) + "&";
+        if (sortDirection === null)
+            throw new Error("The parameter 'sortDirection' cannot be null.");
+        else if (sortDirection !== undefined)
+            url_ += "SortDirection=" + encodeURIComponent("" + sortDirection) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processGetFeaturedProducts(_response);
+        });
+    }
+
+    protected processGetFeaturedProducts(response: AxiosResponse): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<PublicNewArrivalProductItemDtoPageResponseApiResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<PublicNewArrivalProductItemDtoPageResponseApiResponse>(null as any);
     }
 }
 
