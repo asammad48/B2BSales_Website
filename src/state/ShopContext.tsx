@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { PublicShopLookupItemDto } from '@/api/generated/apiClient';
 import { env } from '@/env';
 import { publicShopRepository } from '@/repositories/publicShopRepository';
+import { useAuth } from '@/state/AuthContext';
 
 type ShopState = {
   shops: PublicShopLookupItemDto[];
@@ -15,6 +16,7 @@ type ShopState = {
 const ShopContext = createContext<ShopState | null>(null);
 
 export function ShopProvider({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
   const [shops, setShops] = useState<PublicShopLookupItemDto[]>([]);
   const [selectedShopId, setSelectedShopId] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -23,7 +25,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     let isMounted = true;
     setIsLoading(true);
 
-    const tenantId = env.tenantId?.trim();
+    const tenantId = env.tenantId?.trim() || user?.tenantId?.trim() || '';
     if (!tenantId) {
       setShops([]);
       setSelectedShopId('');
@@ -50,7 +52,8 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
           setSelectedShopId('');
         }
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error('Unable to load shops', error);
         if (!isMounted) {
           return;
         }
@@ -67,7 +70,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [user?.tenantId]);
 
   const value = useMemo(
     () => ({
