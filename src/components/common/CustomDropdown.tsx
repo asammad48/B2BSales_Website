@@ -15,9 +15,10 @@ interface CustomDropdownProps {
   options: Option[];
   label?: string;
   className?: string;
+  disabled?: boolean;
 }
 
-export function CustomDropdown({ value, onChange, options, label, className }: CustomDropdownProps) {
+export function CustomDropdown({ value, onChange, options, label, className, disabled = false }: CustomDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -37,8 +38,9 @@ export function CustomDropdown({ value, onChange, options, label, className }: C
     <div className={cn('relative', className)} ref={dropdownRef}>
       {label && <p className="text-[10px] font-black uppercase tracking-widest text-text-muted mb-2 ml-1">{label}</p>}
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center gap-2 px-3 py-2 bg-surface border border-border rounded-xl hover:border-primary transition-all min-w-[120px] justify-between group"
+        onClick={() => { if (!disabled) setIsOpen(!isOpen); }}
+        className={cn('w-full flex items-center gap-2 px-3 py-2 bg-surface border border-border rounded-xl transition-all min-w-[120px] justify-between group', disabled ? 'opacity-60 cursor-not-allowed' : 'hover:border-primary')}
+        disabled={disabled}
       >
         <div className="flex items-center gap-2 overflow-hidden">
           {selectedOption?.icon}

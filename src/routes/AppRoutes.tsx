@@ -13,6 +13,7 @@ import { TermsOfServicePage } from '@/pages/public/TermsOfServicePage';
 import { ContactUsPage } from '@/pages/public/ContactUsPage';
 import { QualityGuidePage } from '@/pages/public/QualityGuidePage';
 import { NewArrivalsPage } from '@/pages/public/NewArrivalsPage';
+import { FeaturedProductsPage } from '@/pages/public/FeaturedProductsPage';
 import { NotFoundPage } from '@/pages/shared/NotFoundPage';
 
 export function AppRoutes() {
@@ -32,6 +33,7 @@ export function AppRoutes() {
         <Route path="/contact" element={<ContactUsPage />} />
         <Route path="/quality-guide" element={<QualityGuidePage />} />
         <Route path="/new-arrivals" element={<NewArrivalsPage />} />
+        <Route path="/featured-products" element={<FeaturedProductsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

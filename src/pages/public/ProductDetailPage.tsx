@@ -6,9 +6,9 @@ import { motion } from 'framer-motion';
 import { ChevronLeft, ShoppingCart, ShieldCheck, Truck, RotateCcw, Info, Star, SlidersHorizontal, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/state/AuthContext';
-import { useCurrency } from '@/state/CurrencyContext';
 import { useCart } from '@/state/CartContext';
 import { ProductCard } from '@/components/product/ProductCard';
+import { useShop } from '@/state/ShopContext';
 import { qualityTypeLabels, getEnumLabel } from '@/utils/enumLabels';
 
 const DUMMY_IMAGE =
@@ -17,16 +17,20 @@ const DUMMY_IMAGE =
 export function ProductDetailPage() {
   const { id = '' } = useParams();
   const { isAuthenticated } = useAuth();
-  const { currency } = useCurrency();
   const { addItem } = useCart();
   const location = useLocation();
   const navigate = useNavigate();
+  const { selectedShopId, isReady: isShopReady } = useShop();
   const [product, setProduct] = useState<any>(location.state?.product || null);
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('description');
 
   useEffect(() => {
+    if (!isShopReady) {
+      return;
+    }
+
     window.scrollTo(0, 0);
     setIsLoading(true);
 
@@ -40,6 +44,7 @@ export function ProductDetailPage() {
             pageNumber: 1,
             pageSize: 20,
             search: detail?.sku || detail?.name,
+            shopId: selectedShopId || undefined,
           });
           catalogSnapshot = (lookupResult?.items || []).find((item: any) => item.id === id);
         } catch {
@@ -51,7 +56,7 @@ export function ProductDetailPage() {
           ...(catalogSnapshot || {}),
           primaryImageUrl: catalogSnapshot?.primaryImageUrl || detail?.primaryImageUrl,
           price: catalogSnapshot?.price ?? detail?.defaultSellingPrice,
-          currencyCode: catalogSnapshot?.currencyCode || currency,
+          currencyCode: catalogSnapshot?.currencyCode || 'USD',
           isInStock: catalogSnapshot?.isInStock ?? ((catalogSnapshot?.stockQuantity ?? 0) > 0),
           stockQuantity: catalogSnapshot?.stockQuantity ?? 0,
           canOrder: catalogSnapshot?.canOrder ?? detail?.canOrder,
@@ -64,6 +69,7 @@ export function ProductDetailPage() {
           pageNumber: 1,
           pageSize: 4,
           search: detail?.categoryName,
+          shopId: selectedShopId || undefined,
           sortBy: 'name',
           sortDirection: 'asc',
         });
@@ -77,7 +83,7 @@ export function ProductDetailPage() {
     };
 
     fetchProduct();
-  }, [id]);
+  }, [id, isShopReady, selectedShopId]);
 
   const canViewPrice = isAuthenticated || !product?.isPriceLocked;
   const canOrder = product?.canOrder !== false;
@@ -176,7 +182,7 @@ export function ProductDetailPage() {
             <div className="flex items-baseline gap-3 mb-2">
               {canViewPrice ? (
                 <span className="text-4xl font-black text-primary">
-                  {product?.currencyCode ?? currency}
+                  {product?.currencyCode ?? 'USD'}
                   {Number(product?.price ?? 0).toFixed(2)}
                 </span>
               ) : (
@@ -220,7 +226,7 @@ export function ProductDetailPage() {
               </Link>
             )}
             <p className="text-[10px] text-center text-text-muted font-bold uppercase tracking-widest">
-              Free Express Shipping on orders over {currency}500
+              Free Express Shipping on orders over USD500
             </p>
           </div>
 

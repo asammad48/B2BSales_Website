@@ -2,7 +2,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShoppingCart, ArrowRight, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useCurrency } from '@/state/CurrencyContext';
 import { useAuth } from '@/state/AuthContext';
 import { useCart } from '@/state/CartContext';
 import { useLanguage } from '@/state/LanguageContext';
@@ -12,7 +11,6 @@ const DUMMY_IMAGE =
   'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640" viewBox="0 0 640 640"><rect width="640" height="640" fill="%23f3f4f6"/><g fill="none" stroke="%23c7ccd7" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><path d="M202 244h40l38 184h174l34-136H260"/><circle cx="302" cy="484" r="18" fill="%23c7ccd7"/><circle cx="438" cy="484" r="18" fill="%23c7ccd7"/></g></svg>';
 
 export function ProductCard({ product, variant = 'grid' }: { product: any; variant?: 'grid' | 'list' }) {
-  const { currency } = useCurrency();
   const { t } = useLanguage();
   const { isAuthenticated } = useAuth();
   const { addItem } = useCart();
@@ -74,7 +72,7 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
             <div className="flex flex-col items-end">
               {canViewPrice ? (
                 <span className="text-xl font-black text-primary">
-                  {product?.currencyCode ?? currency}
+                  {product?.currencyCode ?? 'USD'}
                   {Number(product?.price ?? 0).toFixed(2)}
                 </span>
               ) : (
@@ -157,7 +155,7 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
           <div className="flex flex-col">
             {canViewPrice ? (
               <span className="text-xl font-black text-primary">
-                {product?.currencyCode ?? currency}
+                {product?.currencyCode ?? 'USD'}
                 {Number(product?.price ?? 0).toFixed(2)}
               </span>
             ) : (
