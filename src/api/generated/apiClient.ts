@@ -303,28 +303,14 @@ export interface IApiClient {
      */
     products4(search?: string | undefined, categoryId?: string | undefined, brandId?: string | undefined, modelId?: string | undefined, partTypeId?: string | undefined, shopId?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<PublicProductListItemDtoPageResponseApiResponse>;
     /**
-     * @param search (optional) 
-     * @param categoryId (optional) 
-     * @param brandId (optional) 
-     * @param modelId (optional) 
-     * @param partTypeId (optional) 
-     * @param shopId (optional) 
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
+     * @param search (optional) 
      * @param sortBy (optional) 
      * @param sortDirection (optional) 
      * @return OK
      */
-    newArrivals(search?: string | undefined, categoryId?: string | undefined, brandId?: string | undefined, modelId?: string | undefined, partTypeId?: string | undefined, shopId?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse>;
-    /**
-     * @param search (optional) 
-     * @param pageNumber (optional) 
-     * @param pageSize (optional) 
-     * @param sortBy (optional) 
-     * @param sortDirection (optional) 
-     * @return OK
-     */
-    featured(shopId: string, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse>;
+    newArrivals(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse>;
     /**
      * @param body (optional) 
      * @return OK
@@ -3369,44 +3355,15 @@ export class ApiClient implements IApiClient {
     }
 
     /**
-     * @param search (optional) 
-     * @param categoryId (optional) 
-     * @param brandId (optional) 
-     * @param modelId (optional) 
-     * @param partTypeId (optional) 
-     * @param shopId (optional) 
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
+     * @param search (optional) 
      * @param sortBy (optional) 
      * @param sortDirection (optional) 
      * @return OK
      */
-    newArrivals(search?: string | undefined, categoryId?: string | undefined, brandId?: string | undefined, modelId?: string | undefined, partTypeId?: string | undefined, shopId?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse> {
+    newArrivals(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse> {
         let url_ = this.baseUrl + "/api/public/products/new-arrivals?";
-        if (search === null)
-            throw new Error("The parameter 'search' cannot be null.");
-        else if (search !== undefined)
-            url_ += "Search=" + encodeURIComponent("" + search) + "&";
-        if (categoryId === null)
-            throw new Error("The parameter 'categoryId' cannot be null.");
-        else if (categoryId !== undefined)
-            url_ += "CategoryId=" + encodeURIComponent("" + categoryId) + "&";
-        if (brandId === null)
-            throw new Error("The parameter 'brandId' cannot be null.");
-        else if (brandId !== undefined)
-            url_ += "BrandId=" + encodeURIComponent("" + brandId) + "&";
-        if (modelId === null)
-            throw new Error("The parameter 'modelId' cannot be null.");
-        else if (modelId !== undefined)
-            url_ += "ModelId=" + encodeURIComponent("" + modelId) + "&";
-        if (partTypeId === null)
-            throw new Error("The parameter 'partTypeId' cannot be null.");
-        else if (partTypeId !== undefined)
-            url_ += "PartTypeId=" + encodeURIComponent("" + partTypeId) + "&";
-        if (shopId === null)
-            throw new Error("The parameter 'shopId' cannot be null.");
-        else if (shopId !== undefined)
-            url_ += "ShopId=" + encodeURIComponent("" + shopId) + "&";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)
@@ -3415,6 +3372,10 @@ export class ApiClient implements IApiClient {
             throw new Error("The parameter 'pageSize' cannot be null.");
         else if (pageSize !== undefined)
             url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (search === null)
+            throw new Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
         if (sortBy === null)
             throw new Error("The parameter 'sortBy' cannot be null.");
         else if (sortBy !== undefined)
@@ -3446,86 +3407,6 @@ export class ApiClient implements IApiClient {
     }
 
     protected processNewArrivals(response: AxiosResponse): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (const k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = JSON.parse(resultData200);
-            return Promise.resolve<PublicNewArrivalProductItemDtoPageResponseApiResponse>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<PublicNewArrivalProductItemDtoPageResponseApiResponse>(null as any);
-    }
-
-    /**
-     * @param search (optional) 
-     * @param pageNumber (optional) 
-     * @param pageSize (optional) 
-     * @param sortBy (optional) 
-     * @param sortDirection (optional) 
-     * @return OK
-     */
-    featured(shopId: string, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, cancelToken?: CancelToken): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse> {
-        let url_ = this.baseUrl + "/api/public/products/featured?";
-        if (shopId === undefined || shopId === null)
-            throw new Error("The parameter 'shopId' must be defined and cannot be null.");
-        else
-            url_ += "ShopId=" + encodeURIComponent("" + shopId) + "&";
-        if (search === null)
-            throw new Error("The parameter 'search' cannot be null.");
-        else if (search !== undefined)
-            url_ += "Search=" + encodeURIComponent("" + search) + "&";
-        if (pageNumber === null)
-            throw new Error("The parameter 'pageNumber' cannot be null.");
-        else if (pageNumber !== undefined)
-            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
-        if (pageSize === null)
-            throw new Error("The parameter 'pageSize' cannot be null.");
-        else if (pageSize !== undefined)
-            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
-        if (sortBy === null)
-            throw new Error("The parameter 'sortBy' cannot be null.");
-        else if (sortBy !== undefined)
-            url_ += "SortBy=" + encodeURIComponent("" + sortBy) + "&";
-        if (sortDirection === null)
-            throw new Error("The parameter 'sortDirection' cannot be null.");
-        else if (sortDirection !== undefined)
-            url_ += "SortDirection=" + encodeURIComponent("" + sortDirection) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: AxiosRequestConfig = {
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "text/plain"
-            },
-            cancelToken
-        };
-
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processFeatured(_response);
-        });
-    }
-
-    protected processFeatured(response: AxiosResponse): Promise<PublicNewArrivalProductItemDtoPageResponseApiResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
