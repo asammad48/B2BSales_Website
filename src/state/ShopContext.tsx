@@ -23,8 +23,18 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     let isMounted = true;
     setIsLoading(true);
 
+    const tenantId = env.tenantId?.trim();
+    if (!tenantId) {
+      setShops([]);
+      setSelectedShopId('');
+      setIsLoading(false);
+      return () => {
+        isMounted = false;
+      };
+    }
+
     publicShopRepository
-      .getPublicTenantShops(env.tenantId)
+      .getPublicTenantShops(tenantId)
       .then((shopList) => {
         if (!isMounted) {
           return;

@@ -78,7 +78,6 @@ export function PublicLayout() {
               value={selectedShopId}
               onChange={setSelectedShopId}
               options={shopOptions.length > 0 ? shopOptions : [{ value: '', label: isShopsLoading ? 'Loading shops...' : 'No shops available', icon: <Store className="w-3 h-3" /> }]}
-              label="Shop"
               disabled={isShopsLoading || isSelectionLocked || shopOptions.length === 0}
               className="hidden sm:block min-w-[180px]"
             />
