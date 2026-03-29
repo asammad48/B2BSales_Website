@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { publicStoreRepository } from '@/repositories/publicStoreRepository';
 import { publicCatalogRepository } from '@/repositories/publicCatalogRepository';
@@ -10,9 +10,28 @@ import { useCart } from '@/state/CartContext';
 import { ProductCard } from '@/components/product/ProductCard';
 import { useShop } from '@/state/ShopContext';
 import { qualityTypeLabels, getEnumLabel } from '@/utils/enumLabels';
+import { env } from '@/env';
 
 const DUMMY_IMAGE =
   'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640" viewBox="0 0 640 640"><rect width="640" height="640" fill="%23f3f4f6"/><g fill="none" stroke="%23c7ccd7" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><path d="M202 244h40l38 184h174l34-136H260"/><circle cx="302" cy="484" r="18" fill="%23c7ccd7"/><circle cx="438" cy="484" r="18" fill="%23c7ccd7"/></g></svg>';
+
+const resolveImageUrl = (path?: string) => {
+  if (!path) {
+    return undefined;
+  }
+
+  if (/^(https?:)?\/\//i.test(path) || path.startsWith('data:')) {
+    return path;
+  }
+
+  const normalizedBaseUrl = env.apiBaseUrl.replace(/\/+$/, '');
+  if (!normalizedBaseUrl) {
+    return path;
+  }
+
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${normalizedBaseUrl}${normalizedPath}`;
+};
 
 export function ProductDetailPage() {
   const { id = '' } = useParams();
@@ -25,6 +44,24 @@ export function ProductDetailPage() {
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('description');
+  const imageUrls = useMemo<string[]>(() => {
+    const detailImageUrls = (product?.images || [])
+      .map((image: any) => resolveImageUrl(image?.filePath))
+      .filter((url: string | undefined): url is string => Boolean(url));
+
+    const fallbackImageUrl = resolveImageUrl(product?.primaryImageUrl || product?.imageUrl);
+
+    if (fallbackImageUrl) {
+      detailImageUrls.unshift(fallbackImageUrl);
+    }
+
+    const uniqueImageUrls = Array.from(new Set<string>(detailImageUrls));
+
+    return uniqueImageUrls.length > 0 ? uniqueImageUrls : [DUMMY_IMAGE];
+  }, [product]);
+
+  const [activeImageUrl, setActiveImageUrl] = useState(DUMMY_IMAGE);
+
 
   useEffect(() => {
     if (!isShopReady) {
@@ -85,9 +122,12 @@ export function ProductDetailPage() {
     fetchProduct();
   }, [id, isShopReady, selectedShopId]);
 
+  useEffect(() => {
+    setActiveImageUrl(imageUrls[0] || DUMMY_IMAGE);
+  }, [imageUrls]);
+
   const canViewPrice = isAuthenticated || !product?.isPriceLocked;
   const canOrder = product?.canOrder !== false;
-  const imageUrl = product?.primaryImageUrl || product?.imageUrl || DUMMY_IMAGE;
 
   const onAddToCart = () => {
     if (!canOrder) {
@@ -142,17 +182,40 @@ export function ProductDetailPage() {
         >
           <div className="aspect-square glass-card overflow-hidden flex items-center justify-center bg-background">
             <img
-              src={imageUrl}
+              src={activeImageUrl}
               alt={product?.name || 'Product image'}
               className="w-full h-full object-contain p-8"
               referrerPolicy="no-referrer"
             />
           </div>
-          <div className="grid grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="aspect-square glass-card cursor-pointer hover:border-primary transition-colors bg-surface/50" />
-            ))}
-          </div>
+          {imageUrls.length > 1 ? (
+            <div className="flex gap-3 overflow-x-auto pb-2">
+              {imageUrls.map((url, index) => {
+                const isActive = url === activeImageUrl;
+
+                return (
+                  <button
+                    key={`${url}-${index}`}
+                    type="button"
+                    onClick={() => setActiveImageUrl(url)}
+                    className={cn(
+                      'relative shrink-0 w-20 h-20 glass-card overflow-hidden border transition-colors',
+                      isActive ? 'border-primary' : 'border-transparent hover:border-primary/50',
+                    )}
+                    aria-label={`View product image ${index + 1}`}
+                    aria-pressed={isActive}
+                  >
+                    <img
+                      src={url}
+                      alt={`${product?.name || 'Product'} thumbnail ${index + 1}`}
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
         </motion.div>
 
         <motion.div
