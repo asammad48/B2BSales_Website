@@ -26,11 +26,26 @@ export type GetPublicProductsParams = {
   brandId?: string;
   modelId?: string;
   partTypeId?: string;
+  shopId?: string;
   sortBy?: string;
   sortDirection?: string;
 };
 
 export type GetNewArrivalProductsParams = {
+  pageNumber?: number;
+  pageSize?: number;
+  search?: string;
+  categoryId?: string;
+  brandId?: string;
+  modelId?: string;
+  partTypeId?: string;
+  shopId?: string;
+  sortBy?: string;
+  sortDirection?: string;
+};
+
+export type GetFeaturedProductsParams = {
+  shopId: string;
   pageNumber?: number;
   pageSize?: number;
   search?: string;
@@ -54,12 +69,13 @@ export const publicCatalogRepository = {
   },
 
   async getPublicProducts(params: GetPublicProductsParams): Promise<PublicProductListItemDtoPageResponse> {
-    const response = await apiClient.products3(
+    const response = await apiClient.products4(
       normalizeOptional(params.search),
       normalizeOptional(params.categoryId),
       normalizeOptional(params.brandId),
       normalizeOptional(params.modelId),
       normalizeOptional(params.partTypeId),
+      normalizeOptional(params.shopId),
       params.pageNumber,
       params.pageSize,
       params.sortBy,
@@ -71,11 +87,29 @@ export const publicCatalogRepository = {
 
   async getNewArrivalProducts(params?: GetNewArrivalProductsParams): Promise<PublicNewArrivalProductItemDtoPageResponse> {
     const response = await apiClient.newArrivals(
+      normalizeOptional(params?.search),
+      normalizeOptional(params?.categoryId),
+      normalizeOptional(params?.brandId),
+      normalizeOptional(params?.modelId),
+      normalizeOptional(params?.partTypeId),
+      normalizeOptional(params?.shopId),
       params?.pageNumber,
       params?.pageSize,
-      normalizeOptional(params?.search),
       params?.sortBy,
       params?.sortDirection,
+    );
+
+    return unwrapResponse<PublicNewArrivalProductItemDtoPageResponse>(response as PublicNewArrivalProductItemDtoPageResponseApiResponse);
+  },
+
+  async getFeaturedProducts(params: GetFeaturedProductsParams): Promise<PublicNewArrivalProductItemDtoPageResponse> {
+    const response = await apiClient.featured(
+      params.shopId,
+      normalizeOptional(params.search),
+      params.pageNumber,
+      params.pageSize,
+      params.sortBy,
+      params.sortDirection,
     );
 
     return unwrapResponse<PublicNewArrivalProductItemDtoPageResponse>(response as PublicNewArrivalProductItemDtoPageResponseApiResponse);

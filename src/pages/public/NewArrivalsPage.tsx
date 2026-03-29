@@ -4,21 +4,27 @@ import { Sparkles, ArrowRight, Zap, ShieldCheck } from 'lucide-react';
 import { ProductCard } from '@/components/product/ProductCard';
 import { PaginationBar } from '@/components/common/PaginationBar';
 import { publicCatalogRepository } from '@/repositories/publicCatalogRepository';
+import { useShop } from '@/state/ShopContext';
 
 const PAGE_SIZE = 12;
 
 export function NewArrivalsPage() {
+  const { selectedShopId, isReady: isShopReady } = useShop();
   const [pageNumber, setPageNumber] = useState(1);
   const [data, setData] = useState<any>({ items: [], totalCount: 0, pageSize: PAGE_SIZE });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (!isShopReady) {
+      return;
+    }
+
     setIsLoading(true);
     publicCatalogRepository
-      .getNewArrivalProducts({ pageNumber, pageSize: PAGE_SIZE, sortBy: 'createdAt', sortDirection: 'desc' })
+      .getNewArrivalProducts({ pageNumber, pageSize: PAGE_SIZE, shopId: selectedShopId || undefined, sortBy: 'createdAt', sortDirection: 'desc' })
       .then((response) => setData(response))
       .finally(() => setIsLoading(false));
-  }, [pageNumber]);
+  }, [pageNumber, isShopReady, selectedShopId]);
 
   return (
     <div className="space-y-16">

@@ -1,14 +1,12 @@
 import { Link } from 'react-router-dom';
 import { Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react';
-import { useCurrency } from '@/state/CurrencyContext';
 import { useCart } from '@/state/CartContext';
 
 export function CartPage() {
-  const { currency } = useCurrency();
   const { items, updateQuantity, removeItem, clearCart } = useCart();
 
   const total = items.reduce((acc, item) => acc + Number(item.product?.price || 0) * item.quantity, 0);
-  const cartCurrency = items[0]?.product?.currencyCode ?? currency;
+  const cartCurrency = items[0]?.product?.currencyCode ?? 'USD';
   const hasMixedCurrencies = items.some((item) => (item.product?.currencyCode ?? cartCurrency) !== cartCurrency);
 
   if (items.length === 0) {
@@ -68,7 +66,7 @@ export function CartPage() {
 
             <div className="flex items-center gap-3">
               <p className="font-black text-primary">
-                {item.product?.currencyCode ?? currency}
+                {item.product?.currencyCode ?? 'USD'}
                 {(Number(item.product?.price || 0) * item.quantity).toFixed(2)}
               </p>
               <button onClick={() => removeItem(item.product?.id)} className="w-9 h-9 rounded-lg border border-border flex items-center justify-center text-text-muted hover:text-red-600 transition-colors" aria-label="Remove item">

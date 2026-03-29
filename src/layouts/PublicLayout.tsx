@@ -1,20 +1,20 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import { ShoppingCart, User, Search, Menu, Globe, Coins } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, Globe, Store } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/state/AuthContext';
 import { useLanguage } from '@/state/LanguageContext';
-import { useCurrency } from '@/state/CurrencyContext';
 import { useCart } from '@/state/CartContext';
 import { CustomDropdown } from '@/components/common/CustomDropdown';
+import { useShop } from '@/state/ShopContext';
 
 export function PublicLayout() {
   const location = useLocation();
   const { isAuthenticated, logout } = useAuth();
   const { language, setLanguage, t } = useLanguage();
-  const { currency, setCurrency } = useCurrency();
   const { itemCount } = useCart();
+  const { shops, selectedShopId, setSelectedShopId, isLoading: isShopsLoading, isSelectionLocked } = useShop();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
 
@@ -32,8 +32,15 @@ export function PublicLayout() {
   const navItems = [
     { label: t('nav.products'), path: '/products' },
     { label: t('nav.newArrivals'), path: '/new-arrivals' },
+    { label: 'Featured', path: '/featured-products' },
     { label: t('nav.qualityGuide'), path: '/quality-guide' },
   ];
+
+  const shopOptions = shops.map((shop) => ({
+    value: shop.id || '',
+    label: shop.name || 'Unknown shop',
+    icon: <Store className="w-3 h-3" />,
+  }));
 
   return (
     <div className="shell">
@@ -53,8 +60,8 @@ export function PublicLayout() {
                   key={item.path}
                   to={item.path}
                   className={cn(
-                    "text-xs font-black uppercase tracking-widest transition-colors hover:text-primary",
-                    location.pathname === item.path ? "text-primary" : "text-text-muted"
+                    'text-xs font-black uppercase tracking-widest transition-colors hover:text-primary',
+                    location.pathname === item.path ? 'text-primary' : 'text-text-muted',
                   )}
                 >
                   {item.label}
@@ -65,10 +72,18 @@ export function PublicLayout() {
               ))}
             </nav>
           </div>
-          
+
           <div className="flex items-center gap-4">
-            {/* Language Switcher */}
-            <CustomDropdown 
+            <CustomDropdown
+              value={selectedShopId}
+              onChange={setSelectedShopId}
+              options={shopOptions.length > 0 ? shopOptions : [{ value: '', label: isShopsLoading ? 'Loading shops...' : 'No shops available', icon: <Store className="w-3 h-3" /> }]}
+              label="Shop"
+              disabled={isShopsLoading || isSelectionLocked || shopOptions.length === 0}
+              className="hidden sm:block min-w-[180px]"
+            />
+
+            <CustomDropdown
               value={language}
               onChange={(value) => {
                 if (value === 'en' || value === 'de' || value === 'fr') {
@@ -79,18 +94,6 @@ export function PublicLayout() {
                 { value: 'en', label: 'EN', icon: <Globe className="w-3 h-3" /> },
                 { value: 'de', label: 'DE', icon: <Globe className="w-3 h-3" /> },
                 { value: 'fr', label: 'FR', icon: <Globe className="w-3 h-3" /> },
-              ]}
-              className="hidden sm:block"
-            />
-
-            {/* Currency Switcher */}
-            <CustomDropdown 
-              value={currency}
-              onChange={setCurrency}
-              options={[
-                { value: 'USD', label: 'USD', icon: <Coins className="w-3 h-3" /> },
-                { value: 'EUR', label: 'EUR', icon: <Coins className="w-3 h-3" /> },
-                { value: 'GBP', label: 'GBP', icon: <Coins className="w-3 h-3" /> },
               ]}
               className="hidden sm:block"
             />
@@ -172,6 +175,7 @@ export function PublicLayout() {
               <ul className="space-y-4 text-sm text-text-muted">
                 <li><Link to="/products" className="hover:text-primary transition-colors">{t('footer.allProducts')}</Link></li>
                 <li><Link to="/new-arrivals" className="hover:text-primary transition-colors">{t('nav.newArrivals')}</Link></li>
+                <li><Link to="/featured-products" className="hover:text-primary transition-colors">Featured Products</Link></li>
                 <li><Link to="/quality-guide" className="hover:text-primary transition-colors">{t('nav.qualityGuide')}</Link></li>
               </ul>
             </div>

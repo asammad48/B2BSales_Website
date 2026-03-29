@@ -1,13 +1,10 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useMemo, useState } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
-import { env } from '@/env';
 import { useAuth } from '@/state/AuthContext';
-import { useCurrency } from '@/state/CurrencyContext';
 import { useCart } from '@/state/CartContext';
 import { clientOrderRepository } from '@/repositories/clientOrderRepository';
-import { publicShopRepository } from '@/repositories/publicShopRepository';
-import type { PublicShopLookupItemDto } from '@/api/generated/apiClient';
 import { useToast } from '@/components/common/ToastProvider';
+import { useShop } from '@/state/ShopContext';
 
 type CheckoutItem = {
   product: any;
@@ -16,48 +13,21 @@ type CheckoutItem = {
 
 export function CheckoutPage() {
   const { isAuthenticated } = useAuth();
-  const { currency } = useCurrency();
   const { items: cartItems, clearCart } = useCart();
+  const { shops, selectedShopId, setSelectedShopId, isLoading: isShopsLoading, isSelectionLocked } = useShop();
   const location = useLocation();
   const [items] = useState<CheckoutItem[]>(location.state?.items || cartItems);
-  const [shopId, setShopId] = useState('');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [shops, setShops] = useState<PublicShopLookupItemDto[]>([]);
-  const [isShopsLoading, setIsShopsLoading] = useState(false);
   const { showError, showSuccess } = useToast();
-
-  useEffect(() => {
-    if (!isAuthenticated || !env.tenantId) {
-      return;
-    }
-
-    setIsShopsLoading(true);
-
-    publicShopRepository
-      .getPublicTenantShops(env.tenantId)
-      .then((shopList) => {
-        const activeShops = shopList.filter((shop) => shop.isActive !== false);
-        setShops(activeShops);
-
-        const mainShop = activeShops.find((shop) => shop.isMain);
-        if (mainShop?.id) {
-          setShopId(mainShop.id);
-        }
-      })
-      .catch((error: any) => {
-        showError(error?.message || 'Unable to load pickup shops.');
-      })
-      .finally(() => setIsShopsLoading(false));
-  }, [isAuthenticated, showError]);
 
   const total = useMemo(
     () => items.reduce((acc, item) => acc + Number(item.product?.price || 0) * item.quantity, 0),
     [items],
   );
 
-  const totalCurrency = items[0]?.product?.currencyCode ?? currency;
+  const totalCurrency = items[0]?.product?.currencyCode ?? 'USD';
   const hasMixedCurrencies = items.some((item) => (item.product?.currencyCode ?? totalCurrency) !== totalCurrency);
 
   if (!isAuthenticated) {
@@ -73,7 +43,7 @@ export function CheckoutPage() {
       return;
     }
 
-    if (shops.length > 0 && !shopId) {
+    if (shops.length > 0 && !selectedShopId) {
       setSubmitError('Please select a pickup shop before placing your order.');
       return;
     }
@@ -81,14 +51,13 @@ export function CheckoutPage() {
     setIsSubmitting(true);
     try {
       const response = await clientOrderRepository.placeClientOrder({
-        shopId: shopId || undefined,
+        shopId: selectedShopId || undefined,
         notes: notes || undefined,
         items: items.map((item) => ({ productId: item.product?.id, quantity: item.quantity })),
       });
 
       showSuccess(response.message || `Order ${response.orderNumber || ''} submitted successfully.`);
       clearCart();
-      setShopId('');
       setNotes('');
     } catch (error: any) {
       showError(error?.message || 'Order submission failed. Please try again.');
@@ -124,7 +93,7 @@ export function CheckoutPage() {
                   </p>
                 </div>
                 <p className="font-black text-primary">
-                  {item.product?.currencyCode ?? currency}
+                  {item.product?.currencyCode ?? 'USD'}
                   {(Number(item.product?.price || 0) * item.quantity).toFixed(2)}
                 </p>
               </div>
@@ -142,16 +111,15 @@ export function CheckoutPage() {
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Pickup shop</label>
               <select
-                value={shopId}
-                onChange={(e) => setShopId(e.target.value)}
+                value={selectedShopId}
+                onChange={(e) => setSelectedShopId(e.target.value)}
                 className="input-field"
-                disabled={isShopsLoading || shops.length === 0}
+                disabled={isShopsLoading || isSelectionLocked || shops.length === 0}
               >
                 <option value="">{isShopsLoading ? 'Loading shops...' : shops.length === 0 ? 'No shops available' : 'Select a shop'}</option>
                 {shops.map((shop) => (
                   <option key={shop.id} value={shop.id}>
                     {shop.name}
-                    {shop.isMain ? ' (Main)' : ''}
                     {shop.address ? ` - ${shop.address}` : ''}
                   </option>
                 ))}

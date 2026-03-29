@@ -48,7 +48,7 @@ export const clientOrderRepository = {
     params?: { pageNumber?: number; pageSize?: number; search?: string; sortBy?: string; sortDirection?: string },
   ): Promise<ClientOrderListItemDtoPageResponse> {
     return withInFlightDedup(buildOrdersRequestKey(clientId, params), async () => {
-      const response = await apiClient.orders(
+      const response = await apiClient.clientOrders(
         clientId,
         params?.pageNumber,
         params?.pageSize,

@@ -9,11 +9,13 @@ import { CustomDropdown } from '@/components/common/CustomDropdown';
 import { cn } from '@/lib/utils';
 import { publicCatalogRepository } from '@/repositories/publicCatalogRepository';
 import type { PublicLookupItemDto } from '@/api/generated/apiClient';
+import { useShop } from '@/state/ShopContext';
 
 const PAGE_SIZE = 20;
 
 export function ProductListingPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { selectedShopId, isReady: isShopReady } = useShop();
 
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [debouncedSearch, setDebouncedSearch] = useState(searchParams.get('search') || '');
@@ -42,6 +44,10 @@ export function ProductListingPage() {
   }, [search]);
 
   useEffect(() => {
+    if (!isShopReady) {
+      return;
+    }
+
     setIsLoading(true);
     publicCatalogRepository
       .getPublicProducts({
@@ -52,12 +58,13 @@ export function ProductListingPage() {
         brandId,
         modelId,
         partTypeId,
+        shopId: selectedShopId || undefined,
         sortBy,
         sortDirection,
       })
       .then((result) => setData(result))
       .finally(() => setIsLoading(false));
-  }, [pageNumber, debouncedSearch, categoryId, brandId, modelId, partTypeId, sortBy, sortDirection]);
+  }, [pageNumber, debouncedSearch, categoryId, brandId, modelId, partTypeId, sortBy, sortDirection, isShopReady, selectedShopId]);
 
   useEffect(() => {
     const next = new URLSearchParams();
