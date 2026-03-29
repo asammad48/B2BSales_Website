@@ -1,8 +1,43 @@
-import React from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, MessageSquare, Send, Clock } from 'lucide-react';
+import { Mail, Phone, MapPin, MessageSquare, Send, Clock, Loader2 } from 'lucide-react';
+import { publicContactRepository } from '@/repositories/publicContactRepository';
+import { useToast } from '@/components/common/ToastProvider';
+
+const initialFormState = {
+  name: '',
+  email: '',
+  mobileNo: '',
+  subject: 'Technical Support',
+  message: '',
+};
 
 export function ContactUsPage() {
+  const [formData, setFormData] = useState(initialFormState);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { showError, showSuccess } = useToast();
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    setIsSubmitting(true);
+    try {
+      const response = await publicContactRepository.createContactInquiry(formData);
+      showSuccess(response.message || 'Your inquiry has been submitted successfully.');
+      setFormData(initialFormState);
+    } catch (error) {
+      const fallbackMessage = 'Unable to submit your inquiry right now. Please try again shortly.';
+      showError(error instanceof Error ? error.message : fallbackMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto space-y-16">
       <header className="text-center space-y-4">
@@ -21,33 +56,31 @@ export function ContactUsPage() {
           {[
             {
               icon: <Mail className="w-5 h-5" />,
-              label: "Email Us",
-              value: "support@mobileparts.com",
-              sub: "Response within 2 hours"
+              label: 'Email Us',
+              value: 'support@mobileparts.com',
+              sub: 'Response within 2 hours',
             },
             {
               icon: <Phone className="w-5 h-5" />,
-              label: "Call Us",
-              value: "+1 (800) 123-4567",
-              sub: "Mon-Fri, 9am - 6pm CET"
+              label: 'Call Us',
+              value: '+1 (800) 123-4567',
+              sub: 'Mon-Fri, 9am - 6pm CET',
             },
             {
               icon: <MapPin className="w-5 h-5" />,
-              label: "Visit Us",
-              value: "Tech Plaza 42, Berlin",
-              sub: "Germany, 10117"
-            }
+              label: 'Visit Us',
+              value: 'Tech Plaza 42, Berlin',
+              sub: 'Germany, 10117',
+            },
           ].map((item, index) => (
-            <motion.div 
+            <motion.div
               key={index}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1 }}
               className="glass-card p-6 flex items-start gap-4"
             >
-              <div className="p-3 bg-surface border border-border rounded-xl text-primary">
-                {item.icon}
-              </div>
+              <div className="p-3 bg-surface border border-border rounded-xl text-primary">{item.icon}</div>
               <div>
                 <p className="text-[10px] font-black uppercase tracking-widest text-text-muted mb-1">{item.label}</p>
                 <p className="font-bold text-lg">{item.value}</p>
@@ -79,26 +112,60 @@ export function ContactUsPage() {
         </div>
 
         <div className="lg:col-span-2">
-          <motion.form 
+          <motion.form
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="glass-card p-8 md:p-12 space-y-8"
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={handleSubmit}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Full Name</label>
-                <input type="text" placeholder="John Doe" className="w-full h-12 bg-bg border border-border rounded-xl px-4 text-sm focus:border-primary outline-none transition-colors" />
+                <input
+                  name="name"
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder="John Doe"
+                  className="w-full h-12 bg-bg border border-border rounded-xl px-4 text-sm focus:border-primary outline-none transition-colors"
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Email Address</label>
-                <input type="email" placeholder="john@example.com" className="w-full h-12 bg-bg border border-border rounded-xl px-4 text-sm focus:border-primary outline-none transition-colors" />
+                <input
+                  name="email"
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="john@example.com"
+                  className="w-full h-12 bg-bg border border-border rounded-xl px-4 text-sm focus:border-primary outline-none transition-colors"
+                />
               </div>
             </div>
-            
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Phone Number</label>
+              <input
+                name="mobileNo"
+                type="tel"
+                required
+                value={formData.mobileNo}
+                onChange={handleInputChange}
+                placeholder="+1 555 123 4567"
+                className="w-full h-12 bg-bg border border-border rounded-xl px-4 text-sm focus:border-primary outline-none transition-colors"
+              />
+            </div>
+
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Subject</label>
-              <select className="w-full h-12 bg-bg border border-border rounded-xl px-4 text-sm focus:border-primary outline-none transition-colors appearance-none">
+              <select
+                name="subject"
+                value={formData.subject}
+                onChange={handleInputChange}
+                className="w-full h-12 bg-bg border border-border rounded-xl px-4 text-sm focus:border-primary outline-none transition-colors appearance-none"
+              >
                 <option>Technical Support</option>
                 <option>Order Inquiry</option>
                 <option>Bulk Pricing</option>
@@ -108,12 +175,33 @@ export function ContactUsPage() {
 
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Message</label>
-              <textarea rows={6} placeholder="How can we help you?" className="w-full bg-bg border border-border rounded-xl p-4 text-sm focus:border-primary outline-none transition-colors resize-none"></textarea>
+              <textarea
+                name="message"
+                rows={6}
+                required
+                value={formData.message}
+                onChange={handleInputChange}
+                placeholder="How can we help you?"
+                className="w-full bg-bg border border-border rounded-xl p-4 text-sm focus:border-primary outline-none transition-colors resize-none"
+              />
             </div>
 
-            <button className="w-full h-14 bg-primary text-white rounded-xl font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-primary/20">
-              <Send className="w-4 h-4" />
-              Send Message
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full h-14 bg-primary text-white rounded-xl font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4" />
+                  Send Message
+                </>
+              )}
             </button>
           </motion.form>
         </div>
