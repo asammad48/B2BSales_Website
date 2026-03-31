@@ -72,8 +72,8 @@ export function HomePage() {
       <section className="space-y-8">
         <div className="flex items-end justify-between">
           <div className="space-y-2">
-            <h2 className="text-3xl font-black uppercase tracking-tight">Featured Products</h2>
-            <p className="text-text-muted">Hand-picked products with top demand and performance.</p>
+            <h2 className="text-3xl font-black uppercase tracking-tight">{t('home.featuredSection.title')}</h2>
+            <p className="text-text-muted">{t('home.featuredSection.subtitle')}</p>
           </div>
           <Link to="/featured-products" className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-2 group">
             {t('home.viewAll')} <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -87,7 +87,7 @@ export function HomePage() {
             ))}
           </div>
         ) : (
-          <div className="glass-card p-8 text-center text-text-muted">No featured products available right now.</div>
+          <div className="glass-card p-8 text-center text-text-muted">{t('home.featuredSection.empty')}</div>
         )}
       </section>
 

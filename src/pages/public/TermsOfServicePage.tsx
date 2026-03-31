@@ -1,28 +1,30 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Scale, Gavel, FileCheck, AlertCircle } from 'lucide-react';
+import { useLanguage } from '@/state/LanguageContext';
 
 export function TermsOfServicePage() {
+  const { t } = useLanguage();
   const terms = [
     {
-      title: "Acceptance of Terms",
-      content: "By accessing or using our website, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site."
+      title: t('terms.sections.acceptance.title'),
+      content: t('terms.sections.acceptance.content')
     },
     {
-      title: "Use License",
-      content: "Permission is granted to temporarily download one copy of the materials on our website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title."
+      title: t('terms.sections.license.title'),
+      content: t('terms.sections.license.content')
     },
     {
-      title: "Disclaimer",
-      content: "The materials on our website are provided on an 'as is' basis. We make no warranties, expressed or implied, and hereby disclaim and negate all other warranties including, without limitation, implied warranties or conditions of merchantability."
+      title: t('terms.sections.disclaimer.title'),
+      content: t('terms.sections.disclaimer.content')
     },
     {
-      title: "Limitations",
-      content: "In no event shall we or our suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on our website."
+      title: t('terms.sections.limitations.title'),
+      content: t('terms.sections.limitations.content')
     },
     {
-      title: "Governing Law",
-      content: "These terms and conditions are governed by and construed in accordance with the laws of the jurisdiction in which our company is headquartered, and you irrevocably submit to the exclusive jurisdiction of the courts in that location."
+      title: t('terms.sections.governing.title'),
+      content: t('terms.sections.governing.content')
     }
   ];
 
@@ -31,11 +33,11 @@ export function TermsOfServicePage() {
       <header className="space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-secondary/10 border border-secondary/20 rounded-full">
           <Scale className="w-4 h-4 text-secondary" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-secondary">Legal Framework</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-secondary">{t('terms.badge')}</span>
         </div>
-        <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">Terms of Service</h1>
+        <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">{t('terms.title')}</h1>
         <p className="text-text-muted text-lg max-w-2xl">
-          Please read these terms carefully before using our platform. They define the legal relationship between you and our company.
+          {t('terms.subtitle')}
         </p>
       </header>
 
@@ -66,9 +68,9 @@ export function TermsOfServicePage() {
           <AlertCircle className="w-6 h-6" />
         </div>
         <div className="space-y-2">
-          <h3 className="font-bold uppercase tracking-tight">Important Notice</h3>
+          <h3 className="font-bold uppercase tracking-tight">{t('terms.notice.title')}</h3>
           <p className="text-sm text-text-muted leading-relaxed">
-            We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will try to provide at least 30 days' notice prior to any new terms taking effect.
+            {t('terms.notice.content')}
           </p>
         </div>
       </div>

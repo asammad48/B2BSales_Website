@@ -1,28 +1,30 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Lock, Eye, FileText } from 'lucide-react';
+import { useLanguage } from '@/state/LanguageContext';
 
 export function PrivacyPolicyPage() {
+  const { t } = useLanguage();
   const sections = [
     {
-      title: "Data Collection",
-      content: "We collect information that you provide directly to us, such as when you create an account, place an order, or contact our support team. This may include your name, email address, shipping address, and payment information."
+      title: t('privacyPolicy.sections.dataCollection.title'),
+      content: t('privacyPolicy.sections.dataCollection.content')
     },
     {
-      title: "How We Use Your Information",
-      content: "Your data is used to process transactions, provide customer support, and improve our services. We may also use your information to send you updates about your orders or promotional offers if you have opted in."
+      title: t('privacyPolicy.sections.dataUsage.title'),
+      content: t('privacyPolicy.sections.dataUsage.content')
     },
     {
-      title: "Data Security",
-      content: "We implement industry-standard security measures to protect your personal information from unauthorized access, disclosure, or alteration. All sensitive data is encrypted during transmission and storage."
+      title: t('privacyPolicy.sections.security.title'),
+      content: t('privacyPolicy.sections.security.content')
     },
     {
-      title: "Third-Party Sharing",
-      content: "We do not sell your personal information to third parties. We only share data with trusted partners who assist us in operating our website, conducting our business, or servicing you, provided they agree to keep this information confidential."
+      title: t('privacyPolicy.sections.sharing.title'),
+      content: t('privacyPolicy.sections.sharing.content')
     },
     {
-      title: "Your Rights",
-      content: "You have the right to access, correct, or delete your personal information at any time. You can manage your data through your account settings or by contacting our privacy officer."
+      title: t('privacyPolicy.sections.rights.title'),
+      content: t('privacyPolicy.sections.rights.content')
     }
   ];
 
@@ -31,11 +33,11 @@ export function PrivacyPolicyPage() {
       <header className="space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-accent/10 border border-accent/20 rounded-full">
           <Shield className="w-4 h-4 text-accent" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-accent">Security</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-accent">{t('privacyPolicy.badge')}</span>
         </div>
-        <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">Privacy Policy</h1>
+        <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">{t('privacyPolicy.title')}</h1>
         <p className="text-text-muted text-lg max-w-2xl">
-          Your privacy is our priority. We are committed to protecting your personal data and being transparent about how we use it.
+          {t('privacyPolicy.subtitle')}
         </p>
       </header>
 
@@ -61,11 +63,11 @@ export function PrivacyPolicyPage() {
 
       <footer className="glass-card p-8 bg-surface/50 text-center space-y-4">
         <p className="text-sm text-text-muted">
-          Last updated: March 13, 2026. If you have any questions regarding this policy, please contact our privacy team.
+          {t('privacyPolicy.lastUpdated')}
         </p>
         <div className="flex justify-center gap-4">
-          <button className="btn-outline px-6 py-2 text-[10px] font-black uppercase tracking-widest">Download PDF</button>
-          <button className="btn-primary px-6 py-2 text-[10px] font-black uppercase tracking-widest">Contact Support</button>
+          <button className="btn-outline px-6 py-2 text-[10px] font-black uppercase tracking-widest">{t('privacyPolicy.actions.downloadPdf')}</button>
+          <button className="btn-primary px-6 py-2 text-[10px] font-black uppercase tracking-widest">{t('privacyPolicy.actions.contactSupport')}</button>
         </div>
       </footer>
     </div>

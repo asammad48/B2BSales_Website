@@ -4,6 +4,7 @@ import { Mail, Lock, ArrowRight, ShieldCheck, Loader2 } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/state/AuthContext';
 import { useToast } from '@/components/common/ToastProvider';
+import { useLanguage } from '@/state/LanguageContext';
 
 export function LoginPage() {
   const { login } = useAuth();
@@ -13,6 +14,7 @@ export function LoginPage() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { showError } = useToast();
+  const { t } = useLanguage();
 
   const fromState = (location.state as any)?.from;
   const resolvedFrom = fromState
@@ -27,7 +29,7 @@ export function LoginPage() {
       await login({ email, password });
       navigate(from, { replace: true });
     } catch {
-      showError('Invalid email or password. Please try again.');
+      showError(t('login.errors.invalidCredentials'));
     } finally {
       setIsLoading(false);
     }
@@ -44,14 +46,14 @@ export function LoginPage() {
           <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-white mx-auto mb-6 shadow-xl shadow-primary/20">
             <ShieldCheck className="w-10 h-10" />
           </div>
-          <h1 className="text-3xl font-black tracking-tight mb-2">Partner Portal</h1>
-          <p className="text-text-muted">Sign in to access wholesale pricing and inventory.</p>
+          <h1 className="text-3xl font-black tracking-tight mb-2">{t('login.title')}</h1>
+          <p className="text-text-muted">{t('login.subtitle')}</p>
         </div>
 
         <div className="glass-card p-8">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-text-muted ml-1">Email Address</label>
+              <label className="text-xs font-bold uppercase tracking-widest text-text-muted ml-1">{t('login.form.emailLabel')}</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                 <input 
@@ -60,15 +62,15 @@ export function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="input-field pl-10" 
-                  placeholder="name@company.com" 
+                  placeholder={t('login.form.emailPlaceholder')} 
                 />
               </div>
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center justify-between ml-1">
-                <label className="text-xs font-bold uppercase tracking-widest text-text-muted">Password</label>
-                <Link to="/" className="text-[10px] font-bold text-primary hover:underline">Forgot Password?</Link>
+                <label className="text-xs font-bold uppercase tracking-widest text-text-muted">{t('login.form.passwordLabel')}</label>
+                <Link to="/" className="text-[10px] font-bold text-primary hover:underline">{t('login.form.forgotPassword')}</Link>
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
@@ -78,7 +80,7 @@ export function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="input-field pl-10" 
-                  placeholder="••••••••" 
+                  placeholder={t('login.form.passwordPlaceholder')} 
                 />
               </div>
             </div>
@@ -92,7 +94,7 @@ export function LoginPage() {
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <>
-                  Sign In
+                  {t('login.actions.signIn')}
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </>
               )}
@@ -101,18 +103,18 @@ export function LoginPage() {
 
           <div className="mt-8 pt-6 border-t border-border text-center">
             <p className="text-sm text-text-muted">
-              Don't have a business account?{' '}
-              <Link to="/" className="font-bold text-primary hover:underline">Apply Now</Link>
+              {t('login.cta.noAccount')}{' '}
+              <Link to="/" className="font-bold text-primary hover:underline">{t('login.cta.applyNow')}</Link>
             </p>
           </div>
         </div>
 
         <div className="mt-8 flex items-center justify-center gap-6 text-[10px] font-bold uppercase tracking-widest text-text-muted">
-          <Link to="/" className="hover:text-primary transition-colors">Support</Link>
+          <Link to="/" className="hover:text-primary transition-colors">{t('login.footer.support')}</Link>
           <span className="w-1 h-1 bg-border rounded-full" />
-          <Link to="/" className="hover:text-primary transition-colors">Privacy</Link>
+          <Link to="/" className="hover:text-primary transition-colors">{t('login.footer.privacy')}</Link>
           <span className="w-1 h-1 bg-border rounded-full" />
-          <Link to="/" className="hover:text-primary transition-colors">Terms</Link>
+          <Link to="/" className="hover:text-primary transition-colors">{t('login.footer.terms')}</Link>
         </div>
       </motion.div>
     </div>

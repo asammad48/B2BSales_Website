@@ -1,32 +1,34 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Award, Zap, Microscope, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { useLanguage } from '@/state/LanguageContext';
 
 export function QualityGuidePage() {
+  const { t } = useLanguage();
   const grades = [
     {
-      title: "Service Pack / Original",
+      title: t('qualityGuide.grades.original.title'),
       icon: <Award className="w-6 h-6 text-primary" />,
       color: "border-primary",
-      description: "Direct from the manufacturer's official supply chain. These are the exact same components used in the original device assembly.",
-      pros: ["100% Original specifications", "Highest reliability", "Full manufacturer warranty support"],
-      cons: ["Highest price point", "Limited availability for older models"]
+      description: t('qualityGuide.grades.original.description'),
+      pros: [t('qualityGuide.grades.original.pros.1'), t('qualityGuide.grades.original.pros.2'), t('qualityGuide.grades.original.pros.3')],
+      cons: [t('qualityGuide.grades.original.cons.1'), t('qualityGuide.grades.original.cons.2')]
     },
     {
-      title: "Premium / Refurbished",
+      title: t('qualityGuide.grades.refurbished.title'),
       icon: <CheckCircle2 className="w-6 h-6 text-accent" />,
       color: "border-accent",
-      description: "Original components that have been professionally restored to like-new condition using high-grade materials.",
-      pros: ["Original performance", "Eco-friendly choice", "Better value than Service Pack"],
-      cons: ["May show microscopic signs of previous use", "Varying supply levels"]
+      description: t('qualityGuide.grades.refurbished.description'),
+      pros: [t('qualityGuide.grades.refurbished.pros.1'), t('qualityGuide.grades.refurbished.pros.2'), t('qualityGuide.grades.refurbished.pros.3')],
+      cons: [t('qualityGuide.grades.refurbished.cons.1'), t('qualityGuide.grades.refurbished.cons.2')]
     },
     {
-      title: "High Quality (HQ) / AAA",
+      title: t('qualityGuide.grades.hq.title'),
       icon: <Zap className="w-6 h-6 text-secondary" />,
       color: "border-secondary",
-      description: "Third-party components engineered to match original specifications as closely as possible. Rigorously tested for compatibility.",
-      pros: ["Excellent price-to-performance ratio", "High availability", "Strict quality control"],
-      cons: ["Minor differences in color or brightness", "Slightly higher power consumption"]
+      description: t('qualityGuide.grades.hq.description'),
+      pros: [t('qualityGuide.grades.hq.pros.1'), t('qualityGuide.grades.hq.pros.2'), t('qualityGuide.grades.hq.pros.3')],
+      cons: [t('qualityGuide.grades.hq.cons.1'), t('qualityGuide.grades.hq.cons.2')]
     }
   ];
 
@@ -35,11 +37,11 @@ export function QualityGuidePage() {
       <header className="text-center space-y-6">
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full">
           <Microscope className="w-4 h-4 text-primary" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-primary">Quality Standards</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-primary">{t('qualityGuide.badge')}</span>
         </div>
-        <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter">Quality Guide</h1>
+        <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter">{t('qualityGuide.title')}</h1>
         <p className="text-text-muted text-xl max-w-3xl mx-auto">
-          Transparency is at the core of our business. We categorize every component using strict industry standards so you know exactly what you're buying.
+          {t('qualityGuide.subtitle')}
         </p>
       </header>
 
@@ -61,7 +63,7 @@ export function QualityGuidePage() {
             </div>
             
             <div className="lg:col-span-1 space-y-4">
-              <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Advantages</h3>
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">{t('qualityGuide.advantages')}</h3>
               <ul className="space-y-3">
                 {grade.pros.map((pro, i) => (
                   <li key={i} className="flex items-start gap-3 text-sm">
@@ -73,7 +75,7 @@ export function QualityGuidePage() {
             </div>
 
             <div className="lg:col-span-1 space-y-4">
-              <h3 className="text-[10px] font-black uppercase tracking-widest text-accent">Considerations</h3>
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-accent">{t('qualityGuide.considerations')}</h3>
               <ul className="space-y-3">
                 {grade.cons.map((con, i) => (
                   <li key={i} className="flex items-start gap-3 text-sm">
@@ -89,15 +91,15 @@ export function QualityGuidePage() {
 
       <section className="p-12 bg-surface border border-border rounded-[3rem] space-y-8">
         <div className="text-center space-y-2">
-          <h2 className="text-3xl font-black uppercase tracking-tight">Our Testing Protocol</h2>
-          <p className="text-text-muted">Every single part undergoes a 12-point inspection before shipping.</p>
+          <h2 className="text-3xl font-black uppercase tracking-tight">{t('qualityGuide.testing.title')}</h2>
+          <p className="text-text-muted">{t('qualityGuide.testing.subtitle')}</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {[
-            "Visual Inspection", "Touch Sensitivity", "Color Accuracy", "Frame Fitment",
-            "Power Consumption", "Heat Dissipation", "Connector Integrity", "Pixel Integrity",
-            "Backlight Uniformity", "Flex Cable Stress", "IC Compatibility", "Final Burn-in"
+            t('qualityGuide.testing.items.1'), t('qualityGuide.testing.items.2'), t('qualityGuide.testing.items.3'), t('qualityGuide.testing.items.4'),
+            t('qualityGuide.testing.items.5'), t('qualityGuide.testing.items.6'), t('qualityGuide.testing.items.7'), t('qualityGuide.testing.items.8'),
+            t('qualityGuide.testing.items.9'), t('qualityGuide.testing.items.10'), t('qualityGuide.testing.items.11'), t('qualityGuide.testing.items.12')
           ].map((test, i) => (
             <div key={i} className="flex items-center gap-3">
               <div className="w-2 h-2 bg-primary rounded-full" />
