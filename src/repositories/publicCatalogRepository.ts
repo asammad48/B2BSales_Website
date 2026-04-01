@@ -53,6 +53,19 @@ export type GetFeaturedProductsParams = {
   sortDirection?: string;
 };
 
+type CatalogProductsMethod = (
+  search?: string,
+  categoryId?: string,
+  brandId?: string,
+  modelId?: string,
+  partTypeId?: string,
+  shopId?: string,
+  pageNumber?: number,
+  pageSize?: number,
+  sortBy?: string,
+  sortDirection?: string,
+) => Promise<PublicProductListItemDtoPageResponseApiResponse>;
+
 function normalizeOptional(value?: string): string | undefined {
   if (!value) {
     return undefined;
@@ -81,7 +94,17 @@ export const publicCatalogRepository = {
   },
 
   async getPublicProducts(params: GetPublicProductsParams): Promise<PublicProductListItemDtoPageResponse> {
-    const response = await apiClient.products4(
+    const client = apiClient as typeof apiClient & {
+      productsGET3?: CatalogProductsMethod;
+      products4?: CatalogProductsMethod;
+    };
+    const getCatalogProducts = client.productsGET3 ?? client.products4;
+
+    if (!getCatalogProducts) {
+      throw new Error('Catalog products endpoint is not available in apiClient');
+    }
+
+    const response = await getCatalogProducts(
       normalizeOptional(params.search),
       normalizeOptionalList(params.categoryIds),
       normalizeOptionalList(params.brandIds),
