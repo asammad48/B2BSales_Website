@@ -104,21 +104,28 @@ export function ProductListingPage() {
     const hasMore = (items?.length ?? 0) > 6;
 
     return (
-      <div className="space-y-3 rounded-2xl border border-border bg-background/80 p-4">
+      <div
+        className="space-y-3 rounded-2xl border border-border bg-background/80 p-4"
+        onMouseLeave={() => {
+          if (expandedFilters[key]) {
+            setExpandedFilters((previous) => ({ ...previous, [key]: false }));
+          }
+        }}
+      >
         <h3 className="text-sm font-semibold text-text">{label}</h3>
-        <div className="space-y-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2">
           {visibleItems.map((item) => {
             const id = item.id || '';
             const isChecked = selectedValues.includes(id);
             return (
-              <label key={id} className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-surface">
+              <label key={id} className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-surface min-w-0">
                 <input
                   type="checkbox"
                   checked={isChecked}
                   onChange={() => onToggle(id)}
                   className="h-4 w-4 rounded border-border bg-white text-black accent-black focus:ring-1 focus:ring-black/40"
                 />
-                <span className="text-sm text-text">{item.name || t('listing.common.unknown')}</span>
+                <span className="text-sm text-text truncate">{item.name || t('listing.common.unknown')}</span>
               </label>
             );
           })}
