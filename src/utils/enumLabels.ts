@@ -22,14 +22,17 @@ export const pricingModeLabels: Record<PricingMode, string> = {
 
 export const qualityTypeLabels: Record<QualityType, string> = {
   Original: tEnum('enum.qualityType.original', 'Original'),
-  OEM: tEnum('enum.qualityType.oem', 'OEM'),
-  HighCopy: tEnum('enum.qualityType.highCopy', 'High Copy'),
-  Refurbished: tEnum('enum.qualityType.refurbished', 'Refurbished'),
+  Oem: tEnum('enum.qualityType.oem', 'OEM'),
+  Compatible: tEnum('enum.qualityType.compatible', 'Compatible'),
+  Deji: tEnum('enum.qualityType.deji', 'Deji'),
+  Desconocido: tEnum('enum.qualityType.desconocido', 'Unknown'),
+  OriginalDesmontaje: tEnum('enum.qualityType.originalDesmontaje', 'Original Dismantled'),
+  ServicePack: tEnum('enum.qualityType.servicePack', 'Service Pack'),
 };
 
 export const trackingTypeLabels: Record<TrackingType, string> = {
-  QuantityBased: tEnum('enum.trackingType.quantityBased', 'Quantity Based'),
-  Serialized: tEnum('enum.trackingType.serialized', 'Serialized'),
+  PorCantidad: tEnum('enum.trackingType.quantityBased', 'Quantity Based'),
+  Serializado: tEnum('enum.trackingType.serialized', 'Serialized'),
 };
 
 /**
