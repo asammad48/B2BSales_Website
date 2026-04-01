@@ -22,10 +22,10 @@ export type GetPublicProductsParams = {
   pageNumber: number;
   pageSize: number;
   search?: string;
-  categoryId?: string;
-  brandId?: string;
-  modelId?: string;
-  partTypeId?: string;
+  categoryIds?: string[];
+  brandIds?: string[];
+  modelIds?: string[];
+  partTypeIds?: string[];
   shopId?: string;
   sortBy?: string;
   sortDirection?: string;
@@ -62,6 +62,18 @@ function normalizeOptional(value?: string): string | undefined {
   return trimmed.length > 0 ? trimmed : undefined;
 }
 
+function normalizeOptionalList(values?: string[]): string | undefined {
+  if (!values || values.length === 0) {
+    return undefined;
+  }
+
+  const cleaned = values
+    .map((value) => value.trim())
+    .filter((value) => value.length > 0);
+
+  return cleaned.length > 0 ? cleaned.join(',') : undefined;
+}
+
 export const publicCatalogRepository = {
   async getPublicCatalogFilters(): Promise<PublicCatalogFiltersResponseDto> {
     const response = await apiClient.filters();
@@ -71,10 +83,10 @@ export const publicCatalogRepository = {
   async getPublicProducts(params: GetPublicProductsParams): Promise<PublicProductListItemDtoPageResponse> {
     const response = await apiClient.products4(
       normalizeOptional(params.search),
-      normalizeOptional(params.categoryId),
-      normalizeOptional(params.brandId),
-      normalizeOptional(params.modelId),
-      normalizeOptional(params.partTypeId),
+      normalizeOptionalList(params.categoryIds),
+      normalizeOptionalList(params.brandIds),
+      normalizeOptionalList(params.modelIds),
+      normalizeOptionalList(params.partTypeIds),
       normalizeOptional(params.shopId),
       params.pageNumber,
       params.pageSize,
