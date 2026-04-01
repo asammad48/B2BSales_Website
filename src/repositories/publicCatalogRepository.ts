@@ -62,7 +62,7 @@ function normalizeOptional(value?: string): string | undefined {
   return trimmed.length > 0 ? trimmed : undefined;
 }
 
-function normalizeOptionalList(values?: string[]): string | undefined {
+function normalizeOptionalList(values?: string[]): string[] | undefined {
   if (!values || values.length === 0) {
     return undefined;
   }
@@ -71,7 +71,7 @@ function normalizeOptionalList(values?: string[]): string | undefined {
     .map((value) => value.trim())
     .filter((value) => value.length > 0);
 
-  return cleaned.length > 0 ? cleaned.join(',') : undefined;
+  return cleaned.length > 0 ? cleaned : undefined;
 }
 
 export const publicCatalogRepository = {
@@ -81,8 +81,12 @@ export const publicCatalogRepository = {
   },
 
   async getPublicProducts(params: GetPublicProductsParams): Promise<PublicProductListItemDtoPageResponse> {
-    const response = await apiClient.products4(
+    const response = await apiClient.productsGET3(
       normalizeOptional(params.search),
+      undefined,
+      undefined,
+      undefined,
+      undefined,
       normalizeOptionalList(params.categoryIds),
       normalizeOptionalList(params.brandIds),
       normalizeOptionalList(params.modelIds),
@@ -104,6 +108,10 @@ export const publicCatalogRepository = {
       normalizeOptional(params?.brandId),
       normalizeOptional(params?.modelId),
       normalizeOptional(params?.partTypeId),
+      undefined,
+      undefined,
+      undefined,
+      undefined,
       normalizeOptional(params?.shopId),
       params?.pageNumber,
       params?.pageSize,

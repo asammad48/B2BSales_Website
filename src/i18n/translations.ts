@@ -69,10 +69,10 @@ export const translations: Record<SupportedLanguage, TranslationTree> = {
       common: { all: 'All', unknown: 'Unknown' },
     },
     featured: {
-      badge: 'Top-Auswahl', heroTitleLine1: 'Empfohlene', heroTitleLine2: 'Produkte', heroSubtitle: 'Kuratiert nach Zuverlässigkeit, Nachfrage und konstanter Leistung.',
-      section: { title: 'Empfohlener Bestand', subtitle: 'Ausgewählter Hochleistungsbestand für Ihr Geschäft.' },
-      empty: 'Für dieses Geschäft wurden keine empfohlenen Produkte gefunden.',
-      why: { title: 'Warum empfohlen?', description: 'Empfohlene Artikel werden anhand von Qualitätshistorie, Bestandskontinuität und Marktnachfrage ausgewählt, damit Ihr Team sicher nachbestellen kann.', cta: 'Auswahlkriterien' },
+      badge: 'Premium Picks', heroTitleLine1: 'Featured', heroTitleLine2: 'Products', heroSubtitle: 'Curated for reliability, demand, and consistent performance.',
+      section: { title: 'Featured Inventory', subtitle: 'Selected high-performing stock for your business.' },
+      empty: 'No featured products found for this shop.',
+      why: { title: 'Why Featured?', description: 'Featured items are chosen based on quality history, stock continuity, and market demand so your team can reorder with confidence.', cta: 'Selection criteria' },
     },
     newArrivals: {
       alt: { heroImage: 'New Arrivals' },
