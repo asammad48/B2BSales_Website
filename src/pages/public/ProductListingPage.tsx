@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ProductCard } from '@/components/product/ProductCard';
 import { SearchBar } from '@/components/common/SearchBar';
 import { PaginationBar } from '@/components/common/PaginationBar';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Filter, LayoutGrid, List, ArrowUpDown } from 'lucide-react';
+import { Filter, LayoutGrid, List, ArrowUpDown, ChevronDown, ChevronUp } from 'lucide-react';
 import { CustomDropdown } from '@/components/common/CustomDropdown';
 import { cn } from '@/lib/utils';
 import { publicCatalogRepository } from '@/repositories/publicCatalogRepository';
@@ -24,10 +24,16 @@ export function ProductListingPage() {
   const [pageNumber, setPageNumber] = useState(Number(searchParams.get('page') || 1));
   const [sortBy, setSortBy] = useState(searchParams.get('sortBy') || 'name');
   const [sortDirection, setSortDirection] = useState(searchParams.get('sortDirection') || 'asc');
-  const [categoryId, setCategoryId] = useState(searchParams.get('categoryId') || '');
-  const [brandId, setBrandId] = useState(searchParams.get('brandId') || '');
-  const [modelId, setModelId] = useState(searchParams.get('modelId') || '');
-  const [partTypeId, setPartTypeId] = useState(searchParams.get('partTypeId') || '');
+  const [categoryIds, setCategoryIds] = useState<string[]>(() => (searchParams.get('categoryId') || '').split(',').filter(Boolean));
+  const [brandIds, setBrandIds] = useState<string[]>(() => (searchParams.get('brandId') || '').split(',').filter(Boolean));
+  const [modelIds, setModelIds] = useState<string[]>(() => (searchParams.get('modelId') || '').split(',').filter(Boolean));
+  const [partTypeIds, setPartTypeIds] = useState<string[]>(() => (searchParams.get('partTypeId') || '').split(',').filter(Boolean));
+  const [expandedFilters, setExpandedFilters] = useState<Record<'category' | 'brand' | 'model' | 'partType', boolean>>({
+    category: false,
+    brand: false,
+    model: false,
+    partType: false,
+  });
   const [filters, setFilters] = useState<{ categories?: PublicLookupItemDto[]; brands?: PublicLookupItemDto[]; models?: PublicLookupItemDto[]; partTypes?: PublicLookupItemDto[] }>({});
   const [data, setData] = useState<any>({ items: [], totalCount: 0, pageSize: PAGE_SIZE });
   const [isLoading, setIsLoading] = useState(true);
@@ -56,42 +62,79 @@ export function ProductListingPage() {
         pageNumber,
         pageSize: PAGE_SIZE,
         search: debouncedSearch,
-        categoryId,
-        brandId,
-        modelId,
-        partTypeId,
+        categoryIds,
+        brandIds,
+        modelIds,
+        partTypeIds,
         shopId: selectedShopId || undefined,
         sortBy,
         sortDirection,
       })
       .then((result) => setData(result))
       .finally(() => setIsLoading(false));
-  }, [pageNumber, debouncedSearch, categoryId, brandId, modelId, partTypeId, sortBy, sortDirection, isShopReady, selectedShopId]);
+  }, [pageNumber, debouncedSearch, categoryIds, brandIds, modelIds, partTypeIds, sortBy, sortDirection, isShopReady, selectedShopId]);
 
   useEffect(() => {
     const next = new URLSearchParams();
     if (debouncedSearch) next.set('search', debouncedSearch);
-    if (categoryId) next.set('categoryId', categoryId);
-    if (brandId) next.set('brandId', brandId);
-    if (modelId) next.set('modelId', modelId);
-    if (partTypeId) next.set('partTypeId', partTypeId);
+    if (categoryIds.length > 0) next.set('categoryId', categoryIds.join(','));
+    if (brandIds.length > 0) next.set('brandId', brandIds.join(','));
+    if (modelIds.length > 0) next.set('modelId', modelIds.join(','));
+    if (partTypeIds.length > 0) next.set('partTypeId', partTypeIds.join(','));
     if (pageNumber > 1) next.set('page', String(pageNumber));
     if (sortBy !== 'name') next.set('sortBy', sortBy);
     if (sortDirection !== 'asc') next.set('sortDirection', sortDirection);
     setSearchParams(next, { replace: true });
-  }, [debouncedSearch, categoryId, brandId, modelId, partTypeId, pageNumber, sortBy, sortDirection, setSearchParams]);
+  }, [debouncedSearch, categoryIds, brandIds, modelIds, partTypeIds, pageNumber, sortBy, sortDirection, setSearchParams]);
 
-  const toOptions = useMemo(
-    () => (items?: PublicLookupItemDto[]) => [
-      { value: '', label: t('listing.common.all') },
-      ...(items || []).map((item) => ({ value: item.id || '', label: item.name || t('listing.common.unknown') })),
-    ],
-    [t],
-  );
-
-  const updateFilter = (setter: (value: string) => void) => (value: string) => {
-    setter(value);
+  const toggleFilterValue = (setter: Dispatch<SetStateAction<string[]>>) => (value: string) => {
+    setter((previous) => (previous.includes(value) ? previous.filter((item) => item !== value) : [...previous, value]));
     setPageNumber(1);
+  };
+
+  const renderCheckboxGroup = (
+    key: 'category' | 'brand' | 'model' | 'partType',
+    label: string,
+    items: PublicLookupItemDto[] | undefined,
+    selectedValues: string[],
+    onToggle: (value: string) => void,
+  ) => {
+    const visibleCount = expandedFilters[key] ? items?.length ?? 0 : 6;
+    const visibleItems = (items || []).slice(0, visibleCount);
+    const hasMore = (items?.length ?? 0) > 6;
+
+    return (
+      <div className="space-y-3 rounded-2xl border border-border bg-background/80 p-4">
+        <h3 className="text-sm font-semibold text-text">{label}</h3>
+        <div className="space-y-2">
+          {visibleItems.map((item) => {
+            const id = item.id || '';
+            const isChecked = selectedValues.includes(id);
+            return (
+              <label key={id} className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-surface">
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={() => onToggle(id)}
+                  className="h-4 w-4 rounded border-border bg-white text-black accent-black focus:ring-1 focus:ring-black/40"
+                />
+                <span className="text-sm text-text">{item.name || t('listing.common.unknown')}</span>
+              </label>
+            );
+          })}
+        </div>
+        {hasMore && (
+          <button
+            type="button"
+            className="inline-flex items-center gap-1 text-xs font-medium text-text-muted transition-colors hover:text-text"
+            onClick={() => setExpandedFilters((previous) => ({ ...previous, [key]: !previous[key] }))}
+          >
+            {expandedFilters[key] ? 'Show less' : 'See more'}
+            {expandedFilters[key] ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+          </button>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -128,46 +171,51 @@ export function ProductListingPage() {
         </div>
       </div>
 
-      <div className="glass-card p-4 space-y-4 overflow-visible relative z-30">
-        <SearchBar value={search} onChange={setSearch} placeholder={t('listing.searchPlaceholder')} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <CustomDropdown value={categoryId} onChange={updateFilter(setCategoryId)} options={toOptions(filters.categories)} label={t('listing.filters.category')} className="w-full" />
-          <CustomDropdown value={brandId} onChange={updateFilter(setBrandId)} options={toOptions(filters.brands)} label={t('listing.filters.brand')} className="w-full" />
-          <CustomDropdown value={modelId} onChange={updateFilter(setModelId)} options={toOptions(filters.models)} label={t('listing.filters.model')} className="w-full" />
-          <CustomDropdown value={partTypeId} onChange={updateFilter(setPartTypeId)} options={toOptions(filters.partTypes)} label={t('listing.filters.partType')} className="w-full" />
-        </div>
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-[300px_minmax(0,1fr)] gap-6">
+        <aside className="glass-card p-4 space-y-4 h-fit lg:sticky lg:top-24">
+          {renderCheckboxGroup('category', t('listing.filters.category'), filters.categories, categoryIds, toggleFilterValue(setCategoryIds))}
+          {renderCheckboxGroup('brand', t('listing.filters.brand'), filters.brands, brandIds, toggleFilterValue(setBrandIds))}
+          {renderCheckboxGroup('model', t('listing.filters.model'), filters.models, modelIds, toggleFilterValue(setModelIds))}
+          {renderCheckboxGroup('partType', t('listing.filters.partType'), filters.partTypes, partTypeIds, toggleFilterValue(setPartTypeIds))}
+        </aside>
 
-      <div className="relative min-h-[400px] z-0">
-        <AnimatePresence mode="wait">
-          {isLoading ? (
-            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid-layout">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                <div key={i} className="glass-card h-[380px] animate-pulse bg-surface/50" />
-              ))}
-            </motion.div>
-          ) : (
-            <motion.div key="grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={cn(viewMode === 'grid' ? 'grid-layout' : 'flex flex-col gap-4')}>
-              {(data?.items ?? []).map((product: any) => (
-                <ProductCard key={product.id} product={product} variant={viewMode} />
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {!isLoading && (data?.items ?? []).length === 0 && (
-          <div className="text-center py-20">
-            <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Filter className="w-10 h-10 text-primary/20" />
-            </div>
-            <h3 className="text-xl font-bold mb-2">{t('listing.empty.title')}</h3>
-            <p className="text-text-muted">{t('listing.empty.description')}</p>
+        <div className="space-y-6">
+          <div className="glass-card p-4 overflow-visible relative z-30">
+            <SearchBar value={search} onChange={setSearch} placeholder={t('listing.searchPlaceholder')} />
           </div>
-        )}
-      </div>
 
-      <div className="pt-8 border-t border-border">
-        <PaginationBar pageNumber={pageNumber} pageSize={data?.pageSize ?? PAGE_SIZE} totalCount={data?.totalCount ?? 0} onChange={setPageNumber} />
+          <div className="relative min-h-[400px] z-0">
+            <AnimatePresence mode="wait">
+              {isLoading ? (
+                <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid-layout">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                    <div key={i} className="glass-card h-[380px] animate-pulse bg-surface/50" />
+                  ))}
+                </motion.div>
+              ) : (
+                <motion.div key="grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={cn(viewMode === 'grid' ? 'grid-layout' : 'flex flex-col gap-4')}>
+                  {(data?.items ?? []).map((product: any) => (
+                    <ProductCard key={product.id} product={product} variant={viewMode} />
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {!isLoading && (data?.items ?? []).length === 0 && (
+              <div className="text-center py-20">
+                <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Filter className="w-10 h-10 text-primary/20" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">{t('listing.empty.title')}</h3>
+                <p className="text-text-muted">{t('listing.empty.description')}</p>
+              </div>
+            )}
+          </div>
+
+          <div className="pt-8 border-t border-border">
+            <PaginationBar pageNumber={pageNumber} pageSize={data?.pageSize ?? PAGE_SIZE} totalCount={data?.totalCount ?? 0} onChange={setPageNumber} />
+          </div>
+        </div>
       </div>
     </div>
   );
