@@ -148,33 +148,6 @@ export function ProductListingPage() {
     <div className="space-y-4">
       <div className="grid grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] gap-4">
         <aside className="glass-card p-3 space-y-3 h-fit lg:sticky lg:top-24">
-          <div className="rounded-2xl border border-border bg-background/80 p-3 space-y-2">
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="flex bg-surface border border-border rounded-xl p-1">
-                <button onClick={() => setViewMode('grid')} className={cn('p-2 rounded-lg transition-all', viewMode === 'grid' ? 'bg-background shadow-sm text-primary' : 'text-text-muted hover:text-primary')}>
-                  <LayoutGrid className="w-4 h-4" />
-                </button>
-                <button onClick={() => setViewMode('list')} className={cn('p-2 rounded-lg transition-all', viewMode === 'list' ? 'bg-background shadow-sm text-primary' : 'text-text-muted hover:text-primary')}>
-                  <List className="w-4 h-4" />
-                </button>
-              </div>
-
-              <CustomDropdown
-                value={sortBy}
-                onChange={setSortBy}
-                options={[
-                  { value: 'name', label: t('listing.sort.name'), icon: <ArrowUpDown className="w-3 h-3" /> },
-                  { value: 'price', label: t('listing.sort.price'), icon: <ArrowUpDown className="w-3 h-3" /> },
-                  { value: 'stockQuantity', label: t('listing.sort.stock'), icon: <ArrowUpDown className="w-3 h-3" /> },
-                ]}
-              />
-            </div>
-
-            <button onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')} className="btn-outline h-10 w-full flex items-center justify-center gap-2">
-              {sortDirection === 'asc' ? t('listing.direction.asc') : t('listing.direction.desc')}
-            </button>
-          </div>
-
           {renderCheckboxGroup('category', t('listing.filters.category'), filters.categories, categoryIds, toggleFilterValue(setCategoryIds))}
           {renderCheckboxGroup('brand', t('listing.filters.brand'), filters.brands, brandIds, toggleFilterValue(setBrandIds))}
           {renderCheckboxGroup('model', t('listing.filters.model'), filters.models, modelIds, toggleFilterValue(setModelIds))}
@@ -183,7 +156,36 @@ export function ProductListingPage() {
 
         <div className="space-y-4">
           <div className="glass-card p-3 overflow-visible relative z-30">
-            <SearchBar value={search} onChange={setSearch} placeholder={t('listing.searchPlaceholder')} />
+            <div className="flex flex-col xl:flex-row xl:items-center gap-3">
+              <div className="flex-1 min-w-0">
+                <SearchBar value={search} onChange={setSearch} placeholder={t('listing.searchPlaceholder')} />
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex bg-surface border border-border rounded-xl p-1">
+                  <button onClick={() => setViewMode('grid')} className={cn('p-2 rounded-lg transition-all', viewMode === 'grid' ? 'bg-background shadow-sm text-primary' : 'text-text-muted hover:text-primary')}>
+                    <LayoutGrid className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => setViewMode('list')} className={cn('p-2 rounded-lg transition-all', viewMode === 'list' ? 'bg-background shadow-sm text-primary' : 'text-text-muted hover:text-primary')}>
+                    <List className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <CustomDropdown
+                  value={sortBy}
+                  onChange={setSortBy}
+                  options={[
+                    { value: 'name', label: t('listing.sort.name'), icon: <ArrowUpDown className="w-3 h-3" /> },
+                    { value: 'price', label: t('listing.sort.price'), icon: <ArrowUpDown className="w-3 h-3" /> },
+                    { value: 'stockQuantity', label: t('listing.sort.stock'), icon: <ArrowUpDown className="w-3 h-3" /> },
+                  ]}
+                />
+
+                <button onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')} className="btn-outline h-10 px-4 flex items-center gap-2">
+                  {sortDirection === 'asc' ? t('listing.direction.asc') : t('listing.direction.desc')}
+                </button>
+              </div>
+            </div>
           </div>
 
           <div className="relative min-h-[400px] z-0">
