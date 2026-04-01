@@ -10,10 +10,12 @@ import { cn } from '@/lib/utils';
 import { publicCatalogRepository } from '@/repositories/publicCatalogRepository';
 import type { PublicLookupItemDto } from '@/api/generated/apiClient';
 import { useShop } from '@/state/ShopContext';
+import { useLanguage } from '@/state/LanguageContext';
 
 const PAGE_SIZE = 20;
 
 export function ProductListingPage() {
+  const { t } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
   const { selectedShopId, isReady: isShopReady } = useShop();
 
@@ -81,10 +83,10 @@ export function ProductListingPage() {
 
   const toOptions = useMemo(
     () => (items?: PublicLookupItemDto[]) => [
-      { value: '', label: 'All' },
-      ...(items || []).map((item) => ({ value: item.id || '', label: item.name || 'Unknown' })),
+      { value: '', label: t('listing.common.all') },
+      ...(items || []).map((item) => ({ value: item.id || '', label: item.name || t('listing.common.unknown') })),
     ],
-    [],
+    [t],
   );
 
   const updateFilter = (setter: (value: string) => void) => (value: string) => {
@@ -96,8 +98,8 @@ export function ProductListingPage() {
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-black tracking-tight mb-2">Parts Catalog</h1>
-          <p className="text-text-muted text-sm">Browse our complete inventory of verified mobile components.</p>
+          <h1 className="text-3xl font-black tracking-tight mb-2">{t('listing.title')}</h1>
+          <p className="text-text-muted text-sm">{t('listing.subtitle')}</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -114,25 +116,25 @@ export function ProductListingPage() {
             value={sortBy}
             onChange={setSortBy}
             options={[
-              { value: 'name', label: 'Name', icon: <ArrowUpDown className="w-3 h-3" /> },
-              { value: 'price', label: 'Price', icon: <ArrowUpDown className="w-3 h-3" /> },
-              { value: 'stockQuantity', label: 'Stock', icon: <ArrowUpDown className="w-3 h-3" /> },
+              { value: 'name', label: t('listing.sort.name'), icon: <ArrowUpDown className="w-3 h-3" /> },
+              { value: 'price', label: t('listing.sort.price'), icon: <ArrowUpDown className="w-3 h-3" /> },
+              { value: 'stockQuantity', label: t('listing.sort.stock'), icon: <ArrowUpDown className="w-3 h-3" /> },
             ]}
           />
 
           <button onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')} className="btn-outline h-10 px-4 flex items-center gap-2">
-            {sortDirection === 'asc' ? 'Ascending' : 'Descending'}
+            {sortDirection === 'asc' ? t('listing.direction.asc') : t('listing.direction.desc')}
           </button>
         </div>
       </div>
 
       <div className="glass-card p-4 space-y-4 overflow-visible relative z-30">
-        <SearchBar value={search} onChange={setSearch} placeholder="Search by name, SKU, brand, or model..." />
+        <SearchBar value={search} onChange={setSearch} placeholder={t('listing.searchPlaceholder')} />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <CustomDropdown value={categoryId} onChange={updateFilter(setCategoryId)} options={toOptions(filters.categories)} label="Category" className="w-full" />
-          <CustomDropdown value={brandId} onChange={updateFilter(setBrandId)} options={toOptions(filters.brands)} label="Brand" className="w-full" />
-          <CustomDropdown value={modelId} onChange={updateFilter(setModelId)} options={toOptions(filters.models)} label="Model" className="w-full" />
-          <CustomDropdown value={partTypeId} onChange={updateFilter(setPartTypeId)} options={toOptions(filters.partTypes)} label="Part Type" className="w-full" />
+          <CustomDropdown value={categoryId} onChange={updateFilter(setCategoryId)} options={toOptions(filters.categories)} label={t('listing.filters.category')} className="w-full" />
+          <CustomDropdown value={brandId} onChange={updateFilter(setBrandId)} options={toOptions(filters.brands)} label={t('listing.filters.brand')} className="w-full" />
+          <CustomDropdown value={modelId} onChange={updateFilter(setModelId)} options={toOptions(filters.models)} label={t('listing.filters.model')} className="w-full" />
+          <CustomDropdown value={partTypeId} onChange={updateFilter(setPartTypeId)} options={toOptions(filters.partTypes)} label={t('listing.filters.partType')} className="w-full" />
         </div>
       </div>
 
@@ -158,8 +160,8 @@ export function ProductListingPage() {
             <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6">
               <Filter className="w-10 h-10 text-primary/20" />
             </div>
-            <h3 className="text-xl font-bold mb-2">No products found</h3>
-            <p className="text-text-muted">Try adjusting your search or filters to find what you're looking for.</p>
+            <h3 className="text-xl font-bold mb-2">{t('listing.empty.title')}</h3>
+            <p className="text-text-muted">{t('listing.empty.description')}</p>
           </div>
         )}
       </div>

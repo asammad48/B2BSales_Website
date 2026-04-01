@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react';
 import { useCart } from '@/state/CartContext';
+import { useLanguage } from '@/state/LanguageContext';
 
 export function CartPage() {
   const { items, updateQuantity, removeItem, clearCart } = useCart();
+  const { t } = useLanguage();
 
   const total = items.reduce((acc, item) => acc + Number(item.product?.price || 0) * item.quantity, 0);
   const cartCurrency = items[0]?.product?.currencyCode ?? 'USD';
@@ -13,10 +15,10 @@ export function CartPage() {
     return (
       <div className="max-w-3xl mx-auto glass-card p-12 text-center space-y-4">
         <ShoppingCart className="w-10 h-10 text-text-muted mx-auto" />
-        <h1 className="text-2xl font-black">Your cart is empty</h1>
-        <p className="text-text-muted">Add products from the catalog to place your order.</p>
+        <h1 className="text-2xl font-black">{t('cart.empty.title')}</h1>
+        <p className="text-text-muted">{t('cart.empty.description')}</p>
         <Link to="/products" className="btn-primary inline-flex">
-          Browse Products
+          {t('cart.empty.browseProducts')}
         </Link>
       </div>
     );
@@ -26,12 +28,12 @@ export function CartPage() {
     <div className="max-w-5xl mx-auto space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight">Shopping Cart</h1>
-          <p className="text-text-muted">Review items and continue to checkout.</p>
+          <h1 className="text-3xl font-black tracking-tight">{t('cart.title')}</h1>
+          <p className="text-text-muted">{t('cart.subtitle')}</p>
         </div>
         <button onClick={clearCart} className="btn-outline inline-flex items-center gap-2">
           <Trash2 className="w-4 h-4" />
-          Clear cart
+          {t('cart.actions.clearCart')}
         </button>
       </div>
 
@@ -50,7 +52,7 @@ export function CartPage() {
               </div>
               <div>
                 <p className="font-bold">{item.product?.name}</p>
-                <p className="text-xs text-text-muted">{item.product?.sku || 'No SKU'} • {item.product?.isInStock ? 'In stock' : 'Out of stock'}</p>
+                <p className="text-xs text-text-muted">{item.product?.sku || t('cart.item.noSku')} • {item.product?.isInStock ? t('cart.item.inStock') : t('cart.item.outOfStock')}</p>
               </div>
             </div>
 
@@ -69,7 +71,7 @@ export function CartPage() {
                 {item.product?.currencyCode ?? 'USD'}
                 {(Number(item.product?.price || 0) * item.quantity).toFixed(2)}
               </p>
-              <button onClick={() => removeItem(item.product?.id)} className="w-9 h-9 rounded-lg border border-border flex items-center justify-center text-text-muted hover:text-red-600 transition-colors" aria-label="Remove item">
+              <button onClick={() => removeItem(item.product?.id)} className="w-9 h-9 rounded-lg border border-border flex items-center justify-center text-text-muted hover:text-red-600 transition-colors" aria-label={t('cart.item.remove')}>
                 <Trash2 className="w-4 h-4" />
               </button>
             </div>
@@ -78,18 +80,18 @@ export function CartPage() {
 
         <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-text-muted">Total</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-text-muted">{t('cart.summary.total')}</p>
             <p className="text-2xl font-black text-primary">
-              {hasMixedCurrencies ? 'Mixed' : cartCurrency}
+              {hasMixedCurrencies ? t('cart.summary.mixed') : cartCurrency}
               {total.toFixed(2)}
             </p>
           </div>
           <div className="flex gap-3">
             <Link to="/products" className="btn-outline">
-              Continue shopping
+              {t('cart.actions.continueShopping')}
             </Link>
             <Link to="/checkout" className="btn-primary">
-              Proceed to checkout
+              {t('cart.actions.proceedToCheckout')}
             </Link>
           </div>
         </div>

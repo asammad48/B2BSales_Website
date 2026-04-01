@@ -5,6 +5,7 @@ import { useCart } from '@/state/CartContext';
 import { clientOrderRepository } from '@/repositories/clientOrderRepository';
 import { useToast } from '@/components/common/ToastProvider';
 import { useShop } from '@/state/ShopContext';
+import { useLanguage } from '@/state/LanguageContext';
 
 type CheckoutItem = {
   product: any;
@@ -21,6 +22,7 @@ export function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const { showError, showSuccess } = useToast();
+  const { t } = useLanguage();
 
   const total = useMemo(
     () => items.reduce((acc, item) => acc + Number(item.product?.price || 0) * item.quantity, 0),
@@ -39,12 +41,12 @@ export function CheckoutPage() {
     setSubmitError(null);
 
     if (items.length === 0) {
-      setSubmitError('Please add at least one product to cart before placing your order.');
+      setSubmitError(t('checkout.validation.emptyCart'));
       return;
     }
 
     if (shops.length > 0 && !selectedShopId) {
-      setSubmitError('Please select a pickup shop before placing your order.');
+      setSubmitError(t('checkout.validation.selectPickupShop'));
       return;
     }
 
@@ -56,11 +58,11 @@ export function CheckoutPage() {
         items: items.map((item) => ({ productId: item.product?.id, quantity: item.quantity })),
       });
 
-      showSuccess(response.message || `Order ${response.orderNumber || ''} submitted successfully.`);
+      showSuccess(response.message || t('checkout.success.submitted', { orderNumber: response.orderNumber || '' }));
       clearCart();
       setNotes('');
     } catch (error: any) {
-      showError(error?.message || 'Order submission failed. Please try again.');
+      showError(error?.message || t('checkout.errors.submitFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -69,27 +71,27 @@ export function CheckoutPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <header>
-        <h1 className="text-3xl font-black tracking-tight mb-2">Checkout</h1>
-        <p className="text-text-muted">Review your cart and place your client order.</p>
+        <h1 className="text-3xl font-black tracking-tight mb-2">{t('checkout.title')}</h1>
+        <p className="text-text-muted">{t('checkout.subtitle')}</p>
       </header>
 
       {items.length === 0 ? (
         <div className="glass-card p-10 text-center space-y-4">
-          <p className="text-text-muted">Your cart is empty.</p>
+          <p className="text-text-muted">{t('checkout.emptyCart')}</p>
           <Link to="/products" className="btn-primary inline-flex">
-            Browse Products
+            {t('checkout.browseProducts')}
           </Link>
         </div>
       ) : (
         <form onSubmit={onSubmit} className="space-y-6">
           <section className="glass-card p-6 space-y-4">
-            <h2 className="text-lg font-bold">Order summary</h2>
+            <h2 className="text-lg font-bold">{t('checkout.summary.title')}</h2>
             {items.map((item) => (
               <div key={item.product?.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
                 <div>
                   <p className="font-bold">{item.product?.name}</p>
                   <p className="text-xs text-text-muted">
-                    {item.product?.sku || 'No SKU'} • Qty {item.quantity}
+                    {item.product?.sku || t('checkout.summary.noSku')} • {t('checkout.summary.qty', { count: item.quantity })}
                   </p>
                 </div>
                 <p className="font-black text-primary">
@@ -99,9 +101,9 @@ export function CheckoutPage() {
               </div>
             ))}
             <div className="text-right">
-              <p className="text-xs font-bold uppercase tracking-widest text-text-muted">Total</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-text-muted">{t('checkout.summary.total')}</p>
               <p className="text-2xl font-black text-primary">
-                {hasMixedCurrencies ? 'Mixed' : totalCurrency}
+                {hasMixedCurrencies ? t('checkout.summary.mixed') : totalCurrency}
                 {total.toFixed(2)}
               </p>
             </div>
@@ -109,14 +111,14 @@ export function CheckoutPage() {
 
           <section className="glass-card p-6 grid grid-cols-1 gap-5">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Pickup shop</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">{t('checkout.form.pickupShopLabel')}</label>
               <select
                 value={selectedShopId}
                 onChange={(e) => setSelectedShopId(e.target.value)}
                 className="input-field"
                 disabled={isShopsLoading || isSelectionLocked || shops.length === 0}
               >
-                <option value="">{isShopsLoading ? 'Loading shops...' : shops.length === 0 ? 'No shops available' : 'Select a shop'}</option>
+                <option value="">{isShopsLoading ? t('checkout.form.shop.loading') : shops.length === 0 ? t('checkout.form.shop.noneAvailable') : t('checkout.form.shop.select')}</option>
                 {shops.map((shop) => (
                   <option key={shop.id} value={shop.id}>
                     {shop.name}
@@ -126,8 +128,8 @@ export function CheckoutPage() {
               </select>
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Notes (optional)</label>
-              <textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="input-field h-auto py-3" rows={4} placeholder="Add delivery notes or instructions" />
+              <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">{t('checkout.form.notesLabel')}</label>
+              <textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="input-field h-auto py-3" rows={4} placeholder={t('checkout.form.notesPlaceholder')} />
             </div>
           </section>
 
@@ -135,10 +137,10 @@ export function CheckoutPage() {
 
           <div className="flex justify-end gap-3">
             <Link to="/cart" className="btn-outline">
-              Back to cart
+              {t('checkout.actions.backToCart')}
             </Link>
             <button type="submit" className="btn-primary" disabled={isSubmitting}>
-              {isSubmitting ? 'Placing order...' : 'Place order'}
+              {isSubmitting ? t('checkout.actions.placingOrder') : t('checkout.actions.placeOrder')}
             </button>
           </div>
         </form>

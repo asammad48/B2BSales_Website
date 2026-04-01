@@ -3,16 +3,19 @@ import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, MessageSquare, Send, Clock, Loader2 } from 'lucide-react';
 import { publicContactRepository } from '@/repositories/publicContactRepository';
 import { useToast } from '@/components/common/ToastProvider';
+import { useLanguage } from '@/state/LanguageContext';
 
 const initialFormState = {
   name: '',
   email: '',
   mobileNo: '',
-  subject: 'Technical Support',
+  subject: '',
   message: '',
 };
 
 export function ContactUsPage() {
+  const { t } = useLanguage();
+  const subjectOptions = [t('contact.form.subjectTechnical'), t('contact.form.subjectOrder'), t('contact.form.subjectBulk'), t('contact.form.subjectOther')];
   const [formData, setFormData] = useState(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { showError, showSuccess } = useToast();
@@ -28,10 +31,10 @@ export function ContactUsPage() {
     setIsSubmitting(true);
     try {
       const response = await publicContactRepository.createContactInquiry(formData);
-      showSuccess(response.message || 'Your inquiry has been submitted successfully.');
+      showSuccess(response.message || t('contact.success.submitted'));
       setFormData(initialFormState);
     } catch (error) {
-      const fallbackMessage = 'Unable to submit your inquiry right now. Please try again shortly.';
+      const fallbackMessage = t('contact.errors.submitFailed');
       showError(error instanceof Error ? error.message : fallbackMessage);
     } finally {
       setIsSubmitting(false);
@@ -43,11 +46,11 @@ export function ContactUsPage() {
       <header className="text-center space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full">
           <MessageSquare className="w-4 h-4 text-primary" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-primary">Support</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-primary">{t('contact.badge')}</span>
         </div>
-        <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter">Get in Touch</h1>
+        <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter">{t('contact.title')}</h1>
         <p className="text-text-muted text-xl max-w-2xl mx-auto">
-          Have questions about a component or need technical support? Our expert team is ready to assist you.
+          {t('contact.subtitle')}
         </p>
       </header>
 
@@ -56,19 +59,19 @@ export function ContactUsPage() {
           {[
             {
               icon: <Mail className="w-5 h-5" />,
-              label: 'Email Us',
+              label: t('contact.cards.email'),
               value: 'support@mobileparts.com',
-              sub: 'Response within 2 hours',
+              sub: t('contact.cards.emailSub'),
             },
             {
               icon: <Phone className="w-5 h-5" />,
-              label: 'Call Us',
+              label: t('contact.cards.call'),
               value: '+1 (800) 123-4567',
-              sub: 'Mon-Fri, 9am - 6pm CET',
+              sub: t('contact.cards.callSub'),
             },
             {
               icon: <MapPin className="w-5 h-5" />,
-              label: 'Visit Us',
+              label: t('contact.cards.visit'),
               value: 'Tech Plaza 42, Berlin',
               sub: 'Germany, 10117',
             },
@@ -92,20 +95,20 @@ export function ContactUsPage() {
           <div className="p-6 bg-primary/5 border border-primary/10 rounded-3xl space-y-4">
             <div className="flex items-center gap-2 text-primary">
               <Clock className="w-4 h-4" />
-              <span className="text-xs font-bold uppercase tracking-widest">Global Support Hours</span>
+                <span className="text-xs font-bold uppercase tracking-widest">{t('contact.hours.title')}</span>
             </div>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-text-muted">Monday - Friday</span>
-                <span className="font-bold">24 Hours</span>
+                <span className="text-text-muted">{t('contact.hours.weekdays.label')}</span>
+                <span className="font-bold">{t('contact.hours.weekdays.value')}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-text-muted">Saturday</span>
-                <span className="font-bold">10:00 - 16:00</span>
+                <span className="text-text-muted">{t('contact.hours.saturday.label')}</span>
+                <span className="font-bold">{t('contact.hours.saturday.value')}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-text-muted">Sunday</span>
-                <span className="font-bold text-accent">Closed</span>
+                <span className="text-text-muted">{t('contact.hours.sunday.label')}</span>
+                <span className="font-bold text-accent">{t('contact.hours.sunday.value')}</span>
               </div>
             </div>
           </div>
@@ -120,68 +123,68 @@ export function ContactUsPage() {
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Full Name</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">{t('contact.form.fullName')}</label>
                 <input
                   name="name"
                   type="text"
                   required
                   value={formData.name}
                   onChange={handleInputChange}
-                  placeholder="John Doe"
+                  placeholder={t('contact.form.fullNamePlaceholder')}
                   className="w-full h-12 bg-bg border border-border rounded-xl px-4 text-sm focus:border-primary outline-none transition-colors"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Email Address</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">{t('contact.form.email')}</label>
                 <input
                   name="email"
                   type="email"
                   required
                   value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="john@example.com"
+                  placeholder={t('contact.form.emailPlaceholder')}
                   className="w-full h-12 bg-bg border border-border rounded-xl px-4 text-sm focus:border-primary outline-none transition-colors"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Phone Number</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">{t('contact.form.phone')}</label>
               <input
                 name="mobileNo"
                 type="tel"
                 required
                 value={formData.mobileNo}
                 onChange={handleInputChange}
-                placeholder="+1 555 123 4567"
+                placeholder={t('contact.form.phonePlaceholder')}
                 className="w-full h-12 bg-bg border border-border rounded-xl px-4 text-sm focus:border-primary outline-none transition-colors"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Subject</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">{t('contact.form.subject')}</label>
               <select
                 name="subject"
                 value={formData.subject}
                 onChange={handleInputChange}
                 className="w-full h-12 bg-bg border border-border rounded-xl px-4 text-sm focus:border-primary outline-none transition-colors appearance-none"
               >
-                <option>Technical Support</option>
-                <option>Order Inquiry</option>
-                <option>Bulk Pricing</option>
-                <option>Other</option>
+                <option value="">{t('contact.form.subjectPlaceholder')}</option>
+                {subjectOptions.map((option) => (
+                  <option key={option}>{option}</option>
+                ))}
               </select>
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Message</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">{t('contact.form.message')}</label>
               <textarea
                 name="message"
                 rows={6}
                 required
                 value={formData.message}
                 onChange={handleInputChange}
-                placeholder="How can we help you?"
+                placeholder={t('contact.form.messagePlaceholder')}
                 className="w-full bg-bg border border-border rounded-xl p-4 text-sm focus:border-primary outline-none transition-colors resize-none"
               />
             </div>
@@ -194,12 +197,12 @@ export function ContactUsPage() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Sending...
+                  {t('contact.form.sending')}
                 </>
               ) : (
                 <>
                   <Send className="w-4 h-4" />
-                  Send Message
+                  {t('contact.form.send')}
                 </>
               )}
             </button>
