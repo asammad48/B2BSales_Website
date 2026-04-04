@@ -192,7 +192,7 @@ export function ProductListingPage() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] gap-4">
-        <aside className="h-fit lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] flex flex-col rounded-xl border border-border shadow-futuristic overflow-hidden">
+        <aside className="self-start lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] flex flex-col rounded-xl border border-border shadow-futuristic overflow-hidden">
           <div className="flex items-center justify-between px-4 py-3.5 bg-primary border-b border-primary/20 flex-shrink-0">
             <div className="flex items-center gap-2.5">
               <SlidersHorizontal className="w-4 h-4 text-accent" />
