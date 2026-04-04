@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom';
 import { ProductCard } from '@/components/product/ProductCard';
 import { SearchBar } from '@/components/common/SearchBar';
 import { PaginationBar } from '@/components/common/PaginationBar';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Filter, LayoutGrid, List, ArrowUpDown, ChevronDown, ChevronUp, Tag, Award, Smartphone, Wrench, SlidersHorizontal } from 'lucide-react';
 import { CustomDropdown } from '@/components/common/CustomDropdown';
 import { cn } from '@/lib/utils';
@@ -244,29 +243,24 @@ export function ProductListingPage() {
           </div>
 
           <div className="relative min-h-[400px] z-0">
-            <AnimatePresence mode="wait">
-              {isLoading ? (
-                <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid-layout">
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                    <div key={i} className="glass-card h-[380px] animate-pulse bg-surface/50" />
-                  ))}
-                </motion.div>
-              ) : (
-                <motion.div key="grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={cn(viewMode === 'grid' ? 'grid-layout' : 'flex flex-col gap-4')}>
-                  {(data?.items ?? []).map((product: any) => (
-                    <ProductCard key={product.id} product={product} variant={viewMode} />
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {!isLoading && (data?.items ?? []).length === 0 && (
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+                <div className="w-10 h-10 border-[3px] border-accent/20 border-t-accent rounded-full animate-spin" />
+                <p className="text-sm text-text-muted">Loading products…</p>
+              </div>
+            ) : (data?.items ?? []).length === 0 ? (
               <div className="text-center py-20">
                 <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Filter className="w-10 h-10 text-primary/20" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">{t('listing.empty.title')}</h3>
                 <p className="text-text-muted">{t('listing.empty.description')}</p>
+              </div>
+            ) : (
+              <div className={cn(viewMode === 'grid' ? 'grid-layout' : 'flex flex-col gap-4')}>
+                {(data?.items ?? []).map((product: any) => (
+                  <ProductCard key={product.id} product={product} variant={viewMode} />
+                ))}
               </div>
             )}
           </div>
