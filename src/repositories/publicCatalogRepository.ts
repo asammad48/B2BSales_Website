@@ -80,8 +80,8 @@ export const publicCatalogRepository = {
     return unwrapResponse<PublicCatalogFiltersResponseDto>(response as PublicCatalogFiltersResponseDtoApiResponse);
   },
 
-  async getPublicProducts(params: GetPublicProductsParams): Promise<PublicProductListItemDtoPageResponse> {
-    const response = await apiClient.productsGET3(
+  async products2(params: GetPublicProductsParams): Promise<PublicProductListItemDtoPageResponse> {
+    const response = await apiClient.products2(
       normalizeOptional(params.search),
       undefined,
       undefined,
@@ -99,6 +99,10 @@ export const publicCatalogRepository = {
     );
 
     return unwrapResponse<PublicProductListItemDtoPageResponse>(response as PublicProductListItemDtoPageResponseApiResponse);
+  },
+
+  async getPublicProducts(params: GetPublicProductsParams): Promise<PublicProductListItemDtoPageResponse> {
+    return this.products2(params);
   },
 
   async getNewArrivalProducts(params?: GetNewArrivalProductsParams): Promise<PublicNewArrivalProductItemDtoPageResponse> {
