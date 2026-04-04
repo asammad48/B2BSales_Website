@@ -84,7 +84,7 @@ export function ProductListingPage() {
     if (pageNumber > 1) next.set('page', String(pageNumber));
     if (sortBy !== 'name') next.set('sortBy', sortBy);
     if (sortDirection !== 'asc') next.set('sortDirection', sortDirection);
-    setSearchParams(next, { replace: true });
+    setSearchParams(next, { replace: true, preventScrollReset: true });
   }, [debouncedSearch, categoryIds, brandIds, modelIds, partTypeIds, pageNumber, sortBy, sortDirection, setSearchParams]);
 
   const toggleFilterValue = (setter: Dispatch<SetStateAction<string[]>>) => (value: string) => {
