@@ -1,10 +1,10 @@
-import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
+import React, { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ProductCard } from '@/components/product/ProductCard';
 import { SearchBar } from '@/components/common/SearchBar';
 import { PaginationBar } from '@/components/common/PaginationBar';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Filter, LayoutGrid, List, ArrowUpDown, ChevronDown, ChevronUp } from 'lucide-react';
+import { Filter, LayoutGrid, List, ArrowUpDown, ChevronDown, ChevronUp, Tag, Award, Smartphone, Wrench, SlidersHorizontal } from 'lucide-react';
 import { CustomDropdown } from '@/components/common/CustomDropdown';
 import { cn } from '@/lib/utils';
 import { publicCatalogRepository } from '@/repositories/publicCatalogRepository';
@@ -92,6 +92,13 @@ export function ProductListingPage() {
     setPageNumber(1);
   };
 
+  const filterIconMap: Record<'category' | 'brand' | 'model' | 'partType', React.ReactNode> = {
+    category: <Tag className="w-3.5 h-3.5" />,
+    brand: <Award className="w-3.5 h-3.5" />,
+    model: <Smartphone className="w-3.5 h-3.5" />,
+    partType: <Wrench className="w-3.5 h-3.5" />,
+  };
+
   const renderCheckboxGroup = (
     key: 'category' | 'brand' | 'model' | 'partType',
     label: string,
@@ -102,43 +109,81 @@ export function ProductListingPage() {
     const visibleCount = expandedFilters[key] ? items?.length ?? 0 : 6;
     const visibleItems = (items || []).slice(0, visibleCount);
     const hasMore = (items?.length ?? 0) > 6;
+    const selectedCount = selectedValues.length;
 
     return (
       <div
-        className="space-y-3 rounded-2xl border border-border bg-background/80 p-4"
+        className="rounded-xl border border-border bg-surface overflow-hidden"
         onMouseLeave={() => {
           if (expandedFilters[key]) {
             setExpandedFilters((previous) => ({ ...previous, [key]: false }));
           }
         }}
       >
-        <h3 className="text-sm font-semibold text-text">{label}</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2">
+        <div className="flex items-center justify-between px-4 py-3 bg-primary/5 border-b border-border">
+          <div className="flex items-center gap-2">
+            <span className="text-accent">{filterIconMap[key]}</span>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-text">{label}</h3>
+          </div>
+          {selectedCount > 0 && (
+            <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-accent text-white text-[10px] font-bold">
+              {selectedCount}
+            </span>
+          )}
+        </div>
+        <div className="p-3 space-y-1">
           {visibleItems.map((item) => {
             const id = item.id || '';
             const isChecked = selectedValues.includes(id);
             return (
-              <label key={id} className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-surface min-w-0">
-                <input
-                  type="checkbox"
-                  checked={isChecked}
-                  onChange={() => onToggle(id)}
-                  className="h-4 w-4 rounded border-border bg-white text-black accent-black focus:ring-1 focus:ring-black/40"
-                />
-                <span className="text-sm text-text truncate">{item.name || t('listing.common.unknown')}</span>
+              <label
+                key={id}
+                className={cn(
+                  'flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 transition-all duration-150 min-w-0 group',
+                  isChecked
+                    ? 'bg-accent/10 border border-accent/30'
+                    : 'hover:bg-primary/5 border border-transparent',
+                )}
+              >
+                <div className={cn(
+                  'flex-shrink-0 w-4 h-4 rounded border-2 flex items-center justify-center transition-all duration-150',
+                  isChecked
+                    ? 'bg-accent border-accent'
+                    : 'border-border group-hover:border-primary/40',
+                )}>
+                  {isChecked && (
+                    <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 10 10" fill="none">
+                      <path d="M1.5 5L4 7.5L8.5 2.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={() => onToggle(id)}
+                    className="sr-only"
+                  />
+                </div>
+                <span className={cn(
+                  'text-sm truncate transition-colors duration-150',
+                  isChecked ? 'text-text font-medium' : 'text-text-muted group-hover:text-text',
+                )}>
+                  {item.name || t('listing.common.unknown')}
+                </span>
               </label>
             );
           })}
         </div>
         {hasMore && (
-          <button
-            type="button"
-            className="inline-flex items-center gap-1 text-xs font-medium text-text-muted transition-colors hover:text-text"
-            onClick={() => setExpandedFilters((previous) => ({ ...previous, [key]: !previous[key] }))}
-          >
-            {expandedFilters[key] ? 'Show less' : 'See more'}
-            {expandedFilters[key] ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-          </button>
+          <div className="px-3 pb-3">
+            <button
+              type="button"
+              className="w-full inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-text-muted transition-all hover:text-accent py-1.5 rounded-lg hover:bg-accent/5 border border-dashed border-border hover:border-accent/30"
+              onClick={() => setExpandedFilters((previous) => ({ ...previous, [key]: !previous[key] }))}
+            >
+              {expandedFilters[key] ? 'Show less' : 'See more'}
+              {expandedFilters[key] ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+            </button>
+          </div>
         )}
       </div>
     );
@@ -147,11 +192,28 @@ export function ProductListingPage() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] gap-4">
-        <aside className="glass-card p-3 space-y-3 h-fit lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
-          {renderCheckboxGroup('category', t('listing.filters.category'), filters.categories, categoryIds, toggleFilterValue(setCategoryIds))}
-          {renderCheckboxGroup('brand', t('listing.filters.brand'), filters.brands, brandIds, toggleFilterValue(setBrandIds))}
-          {renderCheckboxGroup('model', t('listing.filters.model'), filters.models, modelIds, toggleFilterValue(setModelIds))}
-          {renderCheckboxGroup('partType', t('listing.filters.partType'), filters.partTypes, partTypeIds, toggleFilterValue(setPartTypeIds))}
+        <aside className="h-fit lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] flex flex-col rounded-xl border border-border shadow-futuristic overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3.5 bg-primary border-b border-primary/20 flex-shrink-0">
+            <div className="flex items-center gap-2.5">
+              <SlidersHorizontal className="w-4 h-4 text-accent" />
+              <span className="text-sm font-bold uppercase tracking-widest text-white">Filters</span>
+            </div>
+            {(categoryIds.length + brandIds.length + modelIds.length + partTypeIds.length) > 0 && (
+              <button
+                type="button"
+                onClick={() => { setCategoryIds([]); setBrandIds([]); setModelIds([]); setPartTypeIds([]); setPageNumber(1); }}
+                className="text-[10px] font-bold uppercase tracking-widest text-accent/80 hover:text-accent transition-colors"
+              >
+                Clear all
+              </button>
+            )}
+          </div>
+          <div className="p-3 space-y-2 bg-bg/60 overflow-y-auto flex-1">
+            {renderCheckboxGroup('category', t('listing.filters.category'), filters.categories, categoryIds, toggleFilterValue(setCategoryIds))}
+            {renderCheckboxGroup('brand', t('listing.filters.brand'), filters.brands, brandIds, toggleFilterValue(setBrandIds))}
+            {renderCheckboxGroup('model', t('listing.filters.model'), filters.models, modelIds, toggleFilterValue(setModelIds))}
+            {renderCheckboxGroup('partType', t('listing.filters.partType'), filters.partTypes, partTypeIds, toggleFilterValue(setPartTypeIds))}
+          </div>
         </aside>
 
         <div className="space-y-4">
