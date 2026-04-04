@@ -201,7 +201,7 @@ export function ProductListingPage() {
               </button>
             )}
           </div>
-          <div className="p-3 space-y-2 bg-bg/60 overflow-y-auto max-h-[60vh] lg:max-h-[calc(100vh-11rem)]">
+          <div className="p-3 space-y-2 bg-bg/60 overflow-y-auto h-[60vh] lg:h-[calc(100vh-11rem)]">
             {renderCheckboxGroup('category', t('listing.filters.category'), filters.categories, categoryIds, toggleFilterValue(setCategoryIds))}
             {renderCheckboxGroup('brand', t('listing.filters.brand'), filters.brands, brandIds, toggleFilterValue(setBrandIds))}
             {renderCheckboxGroup('model', t('listing.filters.model'), filters.models, modelIds, toggleFilterValue(setModelIds))}
