@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingCart, ArrowRight, ShieldCheck } from 'lucide-react';
+import { ShoppingCart, ArrowRight, ShieldCheck, Package } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/state/AuthContext';
 import { useCart } from '@/state/CartContext';
