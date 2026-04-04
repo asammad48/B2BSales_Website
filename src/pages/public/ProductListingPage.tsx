@@ -129,9 +129,14 @@ export function ProductListingPage() {
             const id = item.id;
             const isChecked = selectedValues.includes(id);
             return (
-              <label
+              <div
                 key={id}
+                role="checkbox"
+                aria-checked={isChecked}
+                tabIndex={0}
                 onMouseDown={(e) => e.preventDefault()}
+                onClick={() => onToggle(id)}
+                onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); onToggle(id); } }}
                 className={cn(
                   'flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 transition-all duration-150 min-w-0 group',
                   isChecked
@@ -150,12 +155,6 @@ export function ProductListingPage() {
                       <path d="M1.5 5L4 7.5L8.5 2.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   )}
-                  <input
-                    type="checkbox"
-                    checked={isChecked}
-                    onChange={() => onToggle(id)}
-                    className="sr-only"
-                  />
                 </div>
                 <span className={cn(
                   'text-sm truncate transition-colors duration-150',
@@ -163,7 +162,7 @@ export function ProductListingPage() {
                 )}>
                   {item.name || t('listing.common.unknown')}
                 </span>
-              </label>
+              </div>
             );
           })}
         </div>
