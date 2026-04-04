@@ -105,9 +105,10 @@ export function ProductListingPage() {
     selectedValues: string[],
     onToggle: (value: string) => void,
   ) => {
-    const visibleCount = expandedFilters[key] ? items?.length ?? 0 : 6;
-    const visibleItems = (items || []).slice(0, visibleCount);
-    const hasMore = (items?.length ?? 0) > 6;
+    const normalizedItems = (items || []).filter((item): item is PublicLookupItemDto & { id: string } => Boolean(item.id));
+    const visibleCount = expandedFilters[key] ? normalizedItems.length : 6;
+    const visibleItems = normalizedItems.slice(0, visibleCount);
+    const hasMore = normalizedItems.length > 6;
     const selectedCount = selectedValues.length;
 
     return (
@@ -125,7 +126,7 @@ export function ProductListingPage() {
         </div>
         <div className="p-3 space-y-1">
           {visibleItems.map((item) => {
-            const id = item.id || '';
+            const id = item.id;
             const isChecked = selectedValues.includes(id);
             return (
               <label
@@ -183,8 +184,8 @@ export function ProductListingPage() {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] gap-4">
-        <aside className="self-start lg:sticky lg:top-24 rounded-xl border border-border shadow-futuristic overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] gap-4 lg:items-start">
+        <aside className="self-start h-fit rounded-xl border border-border shadow-futuristic overflow-hidden bg-surface">
           <div className="flex items-center justify-between px-4 py-3.5 bg-primary border-b border-primary/20">
             <div className="flex items-center gap-2.5">
               <SlidersHorizontal className="w-4 h-4 text-accent" />
@@ -200,7 +201,7 @@ export function ProductListingPage() {
               </button>
             )}
           </div>
-          <div className="p-3 space-y-2 bg-bg/60 overflow-y-auto max-h-[60vh] lg:max-h-[calc(100vh-11rem)]">
+          <div className="p-3 space-y-2 bg-bg/60 overflow-y-auto overscroll-contain h-[60vh] lg:h-[calc(100vh-11rem)]">
             {renderCheckboxGroup('category', t('listing.filters.category'), filters.categories, categoryIds, toggleFilterValue(setCategoryIds))}
             {renderCheckboxGroup('brand', t('listing.filters.brand'), filters.brands, brandIds, toggleFilterValue(setBrandIds))}
             {renderCheckboxGroup('model', t('listing.filters.model'), filters.models, modelIds, toggleFilterValue(setModelIds))}
