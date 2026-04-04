@@ -6,7 +6,8 @@ import { clientOrderRepository } from '@/repositories/clientOrderRepository';
 import { useToast } from '@/components/common/ToastProvider';
 import { useShop } from '@/state/ShopContext';
 import { useLanguage } from '@/state/LanguageContext';
-import { ShoppingBag, MapPin, FileText, CheckCircle, Package, ChevronRight } from 'lucide-react';
+import { ShoppingBag, MapPin, FileText, CheckCircle, ChevronRight } from 'lucide-react';
+import { ProductThumbnail } from '@/components/product/ProductThumbnail';
 import { cn } from '@/lib/utils';
 
 type CheckoutItem = {
@@ -139,18 +140,11 @@ export function CheckoutPage() {
               {items.map((item) => (
                 <div key={item.product?.id} className="flex items-center gap-4 px-6 py-4">
                   <div className="w-14 h-14 flex-shrink-0 rounded-xl overflow-hidden border border-border bg-bg">
-                    {item.product?.primaryImageUrl || item.product?.imageUrl ? (
-                      <img
-                        src={item.product?.primaryImageUrl || item.product?.imageUrl}
-                        alt={item.product?.name}
-                        className="w-full h-full object-cover"
-                        referrerPolicy="no-referrer"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Package className="w-5 h-5 text-text-muted/30" />
-                      </div>
-                    )}
+                    <ProductThumbnail
+                      src={item.product?.primaryImageUrl || item.product?.imageUrl}
+                      name={item.product?.name}
+                      size="sm"
+                    />
                   </div>
 
                   <div className="flex-grow min-w-0">

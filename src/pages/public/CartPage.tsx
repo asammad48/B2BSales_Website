@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
-import { Minus, Plus, ShoppingCart, Trash2, ArrowRight, Package } from 'lucide-react';
+import { Minus, Plus, ShoppingCart, Trash2, ArrowRight } from 'lucide-react';
 import { useCart } from '@/state/CartContext';
 import { useLanguage } from '@/state/LanguageContext';
 import { cn } from '@/lib/utils';
+import { ProductThumbnail } from '@/components/product/ProductThumbnail';
 
 export function CartPage() {
   const { items, updateQuantity, removeItem, clearCart } = useCart();
@@ -56,18 +57,11 @@ export function CartPage() {
             >
               <div className="flex items-center gap-4 p-4">
                 <div className="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border border-border bg-bg">
-                  {item.product?.primaryImageUrl || item.product?.imageUrl ? (
-                    <img
-                      src={item.product?.primaryImageUrl || item.product?.imageUrl}
-                      alt={item.product?.name}
-                      className="w-full h-full object-cover"
-                      referrerPolicy="no-referrer"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Package className="w-6 h-6 text-text-muted/30" />
-                    </div>
-                  )}
+                  <ProductThumbnail
+                    src={item.product?.primaryImageUrl || item.product?.imageUrl}
+                    name={item.product?.name}
+                    size="md"
+                  />
                 </div>
 
                 <div className="flex-grow min-w-0">

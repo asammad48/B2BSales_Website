@@ -1,14 +1,12 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingCart, ArrowRight, ShieldCheck, Package } from 'lucide-react';
+import { ShoppingCart, ArrowRight, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/state/AuthContext';
 import { useCart } from '@/state/CartContext';
 import { useLanguage } from '@/state/LanguageContext';
 import { qualityTypeLabels, getEnumLabel } from '@/utils/enumLabels';
-
-const DUMMY_IMAGE =
-  'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640" viewBox="0 0 640 640"><rect width="640" height="640" fill="%23f1f5f9"/><g fill="none" stroke="%23cbd5e1" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><rect x="200" y="180" width="240" height="280" rx="20"/><circle cx="320" cy="420" r="24" fill="%23cbd5e1"/><rect x="260" y="200" width="160" height="8" rx="4" fill="%23cbd5e1"/></g></svg>';
+import { ProductThumbnail } from './ProductThumbnail';
 
 export function ProductCard({ product, variant = 'grid' }: { product: any; variant?: 'grid' | 'list' }) {
   const { t } = useLanguage();
@@ -28,7 +26,7 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
     },
   };
 
-  const imageUrl = product?.primaryImageUrl || product?.imageUrl || DUMMY_IMAGE;
+  const imageUrl = product?.primaryImageUrl || product?.imageUrl || null;
   const detailPath = `/products/${product?.id}`;
 
   const onAddToCart = () => {
@@ -47,11 +45,11 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
 
         <div className="flex items-stretch gap-0">
           <div className="relative w-40 flex-shrink-0 overflow-hidden bg-bg">
-            <img
+            <ProductThumbnail
               src={imageUrl}
-              alt={product?.name || t('product.productImage')}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              referrerPolicy="no-referrer"
+              name={product?.name}
+              size="md"
+              imgClassName="transition-transform duration-500 group-hover:scale-105"
             />
             {product?.qualityType && (
               <div className="absolute top-2 left-2">
@@ -156,11 +154,11 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
       className="group relative bg-surface border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300 flex flex-col h-full"
     >
       <div className="relative aspect-square overflow-hidden bg-bg flex-shrink-0">
-        <img
+        <ProductThumbnail
           src={imageUrl}
-          alt={product?.name || t('product.productImage')}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-          referrerPolicy="no-referrer"
+          name={product?.name}
+          size="full"
+          imgClassName="transition-transform duration-500 group-hover:scale-110"
         />
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
