@@ -185,7 +185,7 @@ export function ProductListingPage() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] gap-4">
-        <aside className="self-start rounded-xl border border-border shadow-futuristic overflow-hidden bg-surface flex flex-col h-[70vh] lg:h-[calc(100vh-7rem)]">
+        <aside className="self-start rounded-xl border border-border shadow-futuristic overflow-hidden bg-surface">
           <div className="flex items-center justify-between px-4 py-3.5 bg-primary border-b border-primary/20">
             <div className="flex items-center gap-2.5">
               <SlidersHorizontal className="w-4 h-4 text-accent" />
@@ -201,7 +201,7 @@ export function ProductListingPage() {
               </button>
             )}
           </div>
-          <div className="p-3 space-y-2 bg-bg/60 overflow-y-auto flex-1 min-h-0">
+          <div className="p-3 space-y-2 bg-bg/60 overflow-y-auto max-h-[60vh] lg:max-h-[calc(100vh-11rem)]">
             {renderCheckboxGroup('category', t('listing.filters.category'), filters.categories, categoryIds, toggleFilterValue(setCategoryIds))}
             {renderCheckboxGroup('brand', t('listing.filters.brand'), filters.brands, brandIds, toggleFilterValue(setBrandIds))}
             {renderCheckboxGroup('model', t('listing.filters.model'), filters.models, modelIds, toggleFilterValue(setModelIds))}
