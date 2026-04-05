@@ -8,9 +8,11 @@ import { ProductThumbnail } from '@/components/product/ProductThumbnail';
 export function CartPage() {
   const { items, updateQuantity, removeItem, clearCart } = useCart();
   const { t } = useLanguage();
+  const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
 
   const total = items.reduce((acc, item) => acc + Number(item.product?.price || 0) * item.quantity, 0);
-  const cartCurrency = items[0]?.product?.currencyCode ?? 'USD';
+  const firstCurrency = items.find((item) => item.product?.currencyCode)?.product?.currencyCode;
+  const cartCurrency = firstCurrency || t('common.na');
   const hasMixedCurrencies = items.some((item) => (item.product?.currencyCode ?? cartCurrency) !== cartCurrency);
 
   if (items.length === 0) {
@@ -36,7 +38,9 @@ export function CartPage() {
         <div>
           <h1 className="text-3xl font-black tracking-tight">{t('cart.title')}</h1>
           <p className="text-text-muted text-sm mt-1">
-            {items.length} {items.length === 1 ? 'item' : 'items'} in your cart
+            {items.length === 1
+              ? t('common.itemCount', { count: items.length })
+              : t('common.itemCountPlural', { count: items.length })} in your cart
           </p>
         </div>
         <button
@@ -117,10 +121,10 @@ export function CartPage() {
 
                     <div className="text-right">
                       <span className="text-xs text-text-muted font-medium">
-                        {item.product?.currencyCode ?? 'USD'} {Number(item.product?.price || 0).toFixed(2)} × {item.quantity}
+                        {(item.product?.currencyCode || t('common.na'))} {Number(item.product?.price || 0).toFixed(2)} × {item.quantity}
                       </span>
                       <p className="text-lg font-black text-primary leading-none mt-0.5">
-                        {item.product?.currencyCode ?? 'USD'}{(Number(item.product?.price || 0) * item.quantity).toFixed(2)}
+                        {(item.product?.currencyCode || t('common.na'))}{(Number(item.product?.price || 0) * item.quantity).toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -147,7 +151,7 @@ export function CartPage() {
                 </span>
               </div>
               <p className="text-xs text-white/40 mt-2 font-medium">
-                {items.reduce((acc, item) => acc + item.quantity, 0)} items · Before tax
+                {totalItems === 1 ? t('common.itemCount', { count: totalItems }) : t('common.itemCountPlural', { count: totalItems })} · {t('common.beforeTax')}
               </p>
             </div>
 

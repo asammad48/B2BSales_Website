@@ -34,7 +34,8 @@ export function CheckoutPage() {
     [items],
   );
 
-  const totalCurrency = items[0]?.product?.currencyCode ?? 'USD';
+  const firstCurrency = items.find((item) => item.product?.currencyCode)?.product?.currencyCode;
+  const totalCurrency = firstCurrency || t('common.na');
   const hasMixedCurrencies = items.some((item) => (item.product?.currencyCode ?? totalCurrency) !== totalCurrency);
   const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -132,7 +133,9 @@ export function CheckoutPage() {
               </div>
               <div>
                 <h2 className="text-xs font-black uppercase tracking-widest text-text">{t('checkout.summary.title')}</h2>
-                <p className="text-[10px] text-text-muted font-medium">{totalItems} item{totalItems !== 1 ? 's' : ''}</p>
+                <p className="text-[10px] text-text-muted font-medium">
+                  {totalItems === 1 ? t('common.itemCount', { count: totalItems }) : t('common.itemCountPlural', { count: totalItems })}
+                </p>
               </div>
             </div>
 
@@ -162,10 +165,10 @@ export function CheckoutPage() {
 
                   <div className="text-right flex-shrink-0">
                     <span className="text-[10px] text-text-muted font-medium block">
-                      {item.product?.currencyCode ?? 'USD'} {Number(item.product?.price || 0).toFixed(2)} × {item.quantity}
+                      {(item.product?.currencyCode || t('common.na'))} {Number(item.product?.price || 0).toFixed(2)} × {item.quantity}
                     </span>
                     <p className="text-base font-black text-primary">
-                      {item.product?.currencyCode ?? 'USD'}{(Number(item.product?.price || 0) * item.quantity).toFixed(2)}
+                      {(item.product?.currencyCode || t('common.na'))}{(Number(item.product?.price || 0) * item.quantity).toFixed(2)}
                     </p>
                   </div>
                 </div>

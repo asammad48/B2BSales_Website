@@ -9,7 +9,7 @@ const CurrencyContext = createContext<CurrencyState | null>(null);
 
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   const [currency, setCurrency] = useState(() => {
-    return localStorage.getItem('app_currency') || 'USD';
+    return localStorage.getItem('app_currency') || '';
   });
 
   useEffect(() => {
