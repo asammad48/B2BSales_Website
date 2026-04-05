@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 export type CartItem = {
   product: any;
@@ -14,7 +14,7 @@ type CartState = {
   clearCart: () => void;
 };
 
-const CART_STORAGE_KEY = 'buyer_cart_items';
+const CART_STORAGE_KEY = "buyer_cart_items";
 
 const CartContext = createContext<CartState | null>(null);
 
@@ -43,19 +43,40 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   }, [items]);
 
+  const getMaxOrderableQuantity = (product: any) => {
+    const stockQuantity = Number(product?.stockQuantity ?? 0);
+    const hasStock = product?.isInStock !== false && stockQuantity > 0;
+    return hasStock ? stockQuantity : 0;
+  };
+
   const addItem = (product: any, quantity = 1) => {
     if (!product?.id) {
       return;
     }
 
     setItems((prev) => {
-      const existingIndex = prev.findIndex((item) => item.product?.id === product.id);
+      const maxOrderable = getMaxOrderableQuantity(product);
+      if (maxOrderable < 1) {
+        return prev;
+      }
+
+      const existingIndex = prev.findIndex(
+        (item) => item.product?.id === product.id,
+      );
       if (existingIndex === -1) {
-        return [...prev, { product, quantity }];
+        return [
+          ...prev,
+          { product, quantity: Math.min(quantity, maxOrderable) },
+        ];
       }
 
       return prev.map((item, index) =>
-        index === existingIndex ? { ...item, quantity: item.quantity + quantity } : item,
+        index === existingIndex
+          ? {
+              ...item,
+              quantity: Math.min(item.quantity + quantity, maxOrderable),
+            }
+          : item,
       );
     });
   };
@@ -70,9 +91,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
 
     setItems((prev) =>
-      prev.map((item) =>
-        item.product?.id === productId ? { ...item, quantity } : item,
-      ),
+      prev.map((item) => {
+        if (item.product?.id !== productId) {
+          return item;
+        }
+
+        const maxOrderable = getMaxOrderableQuantity(item.product);
+        if (maxOrderable < 1) {
+          return item;
+        }
+
+        return { ...item, quantity: Math.min(quantity, maxOrderable) };
+      }),
     );
   };
 
@@ -86,7 +116,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   );
 
   const value = useMemo(
-    () => ({ items, itemCount, addItem, removeItem, updateQuantity, clearCart }),
+    () => ({
+      items,
+      itemCount,
+      addItem,
+      removeItem,
+      updateQuantity,
+      clearCart,
+    }),
     [items, itemCount],
   );
 
@@ -96,7 +133,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 export function useCart() {
   const ctx = useContext(CartContext);
   if (!ctx) {
-    throw new Error('useCart must be used inside CartProvider');
+    throw new Error("useCart must be used inside CartProvider");
   }
 
   return ctx;
