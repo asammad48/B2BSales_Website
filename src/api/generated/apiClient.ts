@@ -274,6 +274,10 @@ export interface IApiClient {
     /**
      * @return OK
      */
+    clientInfo(tenantId: string): Promise<PublicTenantClientInfoResponseDtoApiResponse>;
+    /**
+     * @return OK
+     */
     theme(): Promise<ThemeResponseDtoApiResponse>;
     /**
      * @param body (optional) 
@@ -3110,6 +3114,60 @@ export class ApiClient implements IApiClient {
     /**
      * @return OK
      */
+    clientInfo(tenantId: string, cancelToken?: CancelToken): Promise<PublicTenantClientInfoResponseDtoApiResponse> {
+        let url_ = this.baseUrl + "/api/public/tenant/{tenantId}/client-info";
+        if (tenantId === undefined || tenantId === null)
+            throw new Error("The parameter 'tenantId' must be defined.");
+        url_ = url_.replace("{tenantId}", encodeURIComponent("" + tenantId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processClientInfo(_response);
+        });
+    }
+
+    protected processClientInfo(response: AxiosResponse): Promise<PublicTenantClientInfoResponseDtoApiResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<PublicTenantClientInfoResponseDtoApiResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<PublicTenantClientInfoResponseDtoApiResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     theme( cancelToken?: CancelToken): Promise<ThemeResponseDtoApiResponse> {
         let url_ = this.baseUrl + "/api/public/storefront/theme";
         url_ = url_.replace(/[?&]$/, "");
@@ -5477,6 +5535,7 @@ export interface ProductListItemResponseDto {
     partTypeName?: string | undefined;
     trackingType?: TrackingType;
     qualityType?: QualityType;
+    defaultBuyingPrice?: number | undefined;
     defaultSellingPrice?: number | undefined;
     primaryImageUrl?: string | undefined;
     quantityInHand?: number;
@@ -5547,6 +5606,18 @@ export interface PublicCatalogLookupsResponseDtoApiResponse {
     success?: boolean;
     message?: string;
     data?: PublicCatalogLookupsResponseDto;
+}
+
+export interface PublicClientInfoItemDto {
+    clientId?: string;
+    name?: string;
+    businessName?: string;
+    phone?: string | undefined;
+    email?: string | undefined;
+    address?: string | undefined;
+    status?: string;
+    currencyCode?: string | undefined;
+    currencySymbol?: string | undefined;
 }
 
 export interface PublicLookupItemDto {
@@ -5647,6 +5718,21 @@ export interface PublicShopLookupItemDtoIEnumerableApiResponse {
     success?: boolean;
     message?: string;
     data?: PublicShopLookupItemDto[] | undefined;
+}
+
+export interface PublicTenantClientInfoResponseDto {
+    tenantId?: string;
+    tenantName?: string;
+    tenantCode?: string;
+    defaultCurrencyCode?: string;
+    defaultCurrencySymbol?: string;
+    clients?: PublicClientInfoItemDto[];
+}
+
+export interface PublicTenantClientInfoResponseDtoApiResponse {
+    success?: boolean;
+    message?: string;
+    data?: PublicTenantClientInfoResponseDto;
 }
 
 export type QualityType = "Compatible" | "Deji" | "Desconocido" | "Oem" | "Original" | "OriginalDesmontaje" | "ServicePack";
