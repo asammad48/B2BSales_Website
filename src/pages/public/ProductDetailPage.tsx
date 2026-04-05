@@ -8,10 +8,12 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/state/AuthContext';
 import { useCart } from '@/state/CartContext';
 import { ProductCard } from '@/components/product/ProductCard';
+import { ProductThumbnail } from '@/components/product/ProductThumbnail';
 import { useShop } from '@/state/ShopContext';
 import { qualityTypeLabels, getEnumLabel } from '@/utils/enumLabels';
 import { env } from '@/env';
 import { useLanguage } from '@/state/LanguageContext';
+import { useCurrency } from '@/state/CurrencyContext';
 
 const DUMMY_IMAGE =
   'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640" viewBox="0 0 640 640"><rect width="640" height="640" fill="%23f1f5f9"/><g fill="none" stroke="%23cbd5e1" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><rect x="200" y="180" width="240" height="280" rx="20"/><circle cx="320" cy="420" r="24" fill="%23cbd5e1"/><rect x="260" y="200" width="160" height="8" rx="4" fill="%23cbd5e1"/></g></svg>';
@@ -27,6 +29,7 @@ const resolveImageUrl = (path?: string) => {
 
 export function ProductDetailPage() {
   const { t } = useLanguage();
+  const { currencySymbol } = useCurrency();
   const { id = '' } = useParams();
   const { isAuthenticated } = useAuth();
   const { addItem } = useCart();
@@ -105,7 +108,7 @@ export function ProductDetailPage() {
   const canViewPrice = isAuthenticated || !product?.isPriceLocked;
   const canOrder = product?.canOrder !== false;
   const isInStock = product?.isInStock;
-  const productCurrencyCode = product?.currencyCode || t('common.na');
+  const productCurrency = currencySymbol || product?.currencySymbol || product?.currencyCode || t('common.na');
 
   const onAddToCart = () => {
     if (!canOrder) return;
@@ -160,11 +163,12 @@ export function ProductDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="space-y-4">
           <div className="relative aspect-square rounded-2xl overflow-hidden border border-border bg-bg shadow-sm group">
-            <img
+            <ProductThumbnail
               src={activeImageUrl}
-              alt={product?.name || t('product.productImage')}
-              className="w-full h-full object-contain p-8 transition-transform duration-500 group-hover:scale-105"
-              referrerPolicy="no-referrer"
+              name={product?.name || t('product.productImage')}
+              size="full"
+              className="h-full"
+              imgClassName="w-full h-full object-contain p-8 transition-transform duration-500 group-hover:scale-105"
             />
             {product?.qualityType && (
               <div className="absolute top-4 left-4">
@@ -204,11 +208,11 @@ export function ProductDetailPage() {
                     )}
                     aria-pressed={isActive}
                   >
-                    <img
+                    <ProductThumbnail
                       src={url}
-                      alt={`${product?.name || ''} ${index + 1}`}
-                      className="w-full h-full object-cover"
-                      referrerPolicy="no-referrer"
+                      name={`${product?.name || ''} ${index + 1}`}
+                      size="sm"
+                      imgClassName="w-full h-full object-cover"
                     />
                   </button>
                 );
@@ -251,7 +255,7 @@ export function ProductDetailPage() {
               </p>
               {canViewPrice ? (
                 <div className="flex items-baseline gap-2">
-                  <span className="text-sm font-bold text-white/70">{productCurrencyCode}</span>
+                  <span className="text-sm font-bold text-white/70">{productCurrency}</span>
                   <span className="text-4xl font-black text-white leading-none">
                     {Number(product?.price ?? 0).toFixed(2)}
                   </span>
@@ -301,7 +305,7 @@ export function ProductDetailPage() {
               </Link>
             )}
             <p className="text-[10px] text-center text-text-muted font-bold uppercase tracking-widest">
-              {t('productDetail.freeShipping', { currency: productCurrencyCode })}
+              {t('productDetail.freeShipping', { currency: productCurrency })}
             </p>
           </div>
 

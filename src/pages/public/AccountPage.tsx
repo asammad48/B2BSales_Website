@@ -8,6 +8,7 @@ import { useToast } from '@/components/common/ToastProvider';
 import { useNavigate } from 'react-router-dom';
 import type { ClientOrderSummaryDto } from '@/api/generated/apiClient';
 import { useLanguage } from '@/state/LanguageContext';
+import { useCurrency } from '@/state/CurrencyContext';
 
 const PAGE_SIZE = 10;
 
@@ -22,6 +23,7 @@ export function AccountPage() {
   const [isSummaryLoading, setIsSummaryLoading] = useState(false);
   const { showError } = useToast();
   const { t } = useLanguage();
+  const { currencySymbol } = useCurrency();
   const clientId = user?.clientId;
 
   useEffect(() => {
@@ -130,7 +132,7 @@ export function AccountPage() {
                   </div>
                   <div className="text-right">
                     <p className="text-xs font-black uppercase tracking-widest text-text-muted mb-1">Total</p>
-                    <p className="font-bold">{order.currencyCode || t('common.na')}{Number(order.totalAmount || 0).toFixed(2)}</p>
+                    <p className="font-bold">{currencySymbol || order.currencySymbol || order.currencyCode || t('common.na')}{Number(order.totalAmount || 0).toFixed(2)}</p>
                   </div>
                 </div>
               </div>

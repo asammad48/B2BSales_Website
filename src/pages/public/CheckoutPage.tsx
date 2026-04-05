@@ -6,6 +6,7 @@ import { clientOrderRepository } from '@/repositories/clientOrderRepository';
 import { useToast } from '@/components/common/ToastProvider';
 import { useShop } from '@/state/ShopContext';
 import { useLanguage } from '@/state/LanguageContext';
+import { useCurrency } from '@/state/CurrencyContext';
 import { ShoppingBag, MapPin, FileText, CheckCircle, ChevronRight } from 'lucide-react';
 import { ProductThumbnail } from '@/components/product/ProductThumbnail';
 import { cn } from '@/lib/utils';
@@ -28,6 +29,7 @@ export function CheckoutPage() {
   const [orderRef, setOrderRef] = useState('');
   const { showError, showSuccess } = useToast();
   const { t } = useLanguage();
+  const { currencySymbol } = useCurrency();
 
   const total = useMemo(
     () => items.reduce((acc, item) => acc + Number(item.product?.price || 0) * item.quantity, 0),
@@ -35,7 +37,7 @@ export function CheckoutPage() {
   );
 
   const firstCurrency = items.find((item) => item.product?.currencyCode)?.product?.currencyCode;
-  const totalCurrency = firstCurrency || t('common.na');
+  const totalCurrency = currencySymbol || firstCurrency || t('common.na');
   const hasMixedCurrencies = items.some((item) => (item.product?.currencyCode ?? totalCurrency) !== totalCurrency);
   const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -165,10 +167,10 @@ export function CheckoutPage() {
 
                   <div className="text-right flex-shrink-0">
                     <span className="text-[10px] text-text-muted font-medium block">
-                      {(item.product?.currencyCode || t('common.na'))} {Number(item.product?.price || 0).toFixed(2)} × {item.quantity}
+                      {(currencySymbol || item.product?.currencySymbol || item.product?.currencyCode || t('common.na'))} {Number(item.product?.price || 0).toFixed(2)} × {item.quantity}
                     </span>
                     <p className="text-base font-black text-primary">
-                      {(item.product?.currencyCode || t('common.na'))}{(Number(item.product?.price || 0) * item.quantity).toFixed(2)}
+                      {(currencySymbol || item.product?.currencySymbol || item.product?.currencyCode || t('common.na'))}{(Number(item.product?.price || 0) * item.quantity).toFixed(2)}
                     </p>
                   </div>
                 </div>

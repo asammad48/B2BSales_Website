@@ -8,6 +8,7 @@ import { ThemeProvider } from './theme/ThemeProvider';
 import { AuthProvider } from './state/AuthContext';
 import { LanguageProvider } from './state/LanguageContext';
 import { CartProvider } from './state/CartContext';
+import { CurrencyProvider } from './state/CurrencyContext';
 import { ShopProvider } from './state/ShopContext';
 import { ToastProvider } from './components/common/ToastProvider';
 
@@ -17,13 +18,15 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <ThemeProvider>
         <LanguageProvider>
           <AuthProvider>
-            <ToastProvider>
-              <ShopProvider>
-                <CartProvider>
-                  <App />
-                </CartProvider>
-              </ShopProvider>
-            </ToastProvider>
+            <CurrencyProvider>
+              <ToastProvider>
+                <ShopProvider>
+                  <CartProvider>
+                    <App />
+                  </CartProvider>
+                </ShopProvider>
+              </ToastProvider>
+            </CurrencyProvider>
           </AuthProvider>
         </LanguageProvider>
       </ThemeProvider>
