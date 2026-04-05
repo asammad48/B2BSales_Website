@@ -73,7 +73,7 @@ export function ProductDetailPage() {
           ...(catalogSnapshot || {}),
           primaryImageUrl: catalogSnapshot?.primaryImageUrl || detail?.primaryImageUrl,
           price: catalogSnapshot?.price ?? detail?.defaultSellingPrice,
-          currencyCode: catalogSnapshot?.currencyCode || 'USD',
+          currencyCode: catalogSnapshot?.currencyCode || detail?.baseCurrencyCode,
           isInStock: catalogSnapshot?.isInStock ?? ((catalogSnapshot?.stockQuantity ?? 0) > 0),
           stockQuantity: catalogSnapshot?.stockQuantity ?? 0,
           canOrder: catalogSnapshot?.canOrder ?? detail?.canOrder,
@@ -105,6 +105,7 @@ export function ProductDetailPage() {
   const canViewPrice = isAuthenticated || !product?.isPriceLocked;
   const canOrder = product?.canOrder !== false;
   const isInStock = product?.isInStock;
+  const productCurrencyCode = product?.currencyCode || t('common.na');
 
   const onAddToCart = () => {
     if (!canOrder) return;
@@ -250,7 +251,7 @@ export function ProductDetailPage() {
               </p>
               {canViewPrice ? (
                 <div className="flex items-baseline gap-2">
-                  <span className="text-sm font-bold text-white/70">{product?.currencyCode ?? 'USD'}</span>
+                  <span className="text-sm font-bold text-white/70">{productCurrencyCode}</span>
                   <span className="text-4xl font-black text-white leading-none">
                     {Number(product?.price ?? 0).toFixed(2)}
                   </span>
@@ -300,7 +301,7 @@ export function ProductDetailPage() {
               </Link>
             )}
             <p className="text-[10px] text-center text-text-muted font-bold uppercase tracking-widest">
-              {t('productDetail.freeShipping')}
+              {t('productDetail.freeShipping', { currency: productCurrencyCode })}
             </p>
           </div>
 

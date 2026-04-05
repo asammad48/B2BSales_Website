@@ -7,6 +7,7 @@ import { PaginationBar } from '@/components/common/PaginationBar';
 import { useToast } from '@/components/common/ToastProvider';
 import { useNavigate } from 'react-router-dom';
 import type { ClientOrderSummaryDto } from '@/api/generated/apiClient';
+import { useLanguage } from '@/state/LanguageContext';
 
 const PAGE_SIZE = 10;
 
@@ -20,6 +21,7 @@ export function AccountPage() {
   const [orderSummary, setOrderSummary] = useState<ClientOrderSummaryDto | null>(null);
   const [isSummaryLoading, setIsSummaryLoading] = useState(false);
   const { showError } = useToast();
+  const { t } = useLanguage();
   const clientId = user?.clientId;
 
   useEffect(() => {
@@ -111,9 +113,9 @@ export function AccountPage() {
                     <Package className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg">{order.orderNumber || 'N/A'}</h3>
+                    <h3 className="font-bold text-lg">{order.orderNumber || t('common.na')}</h3>
                     <p className="text-xs text-text-muted">
-                      {order.shopName || 'Unknown shop'} • {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown date'}
+                      {order.shopName || t('common.unknownShop')} • {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : t('common.unknownDate')}
                     </p>
                     {order.notes && <p className="text-xs text-text-muted mt-1">{order.notes}</p>}
                   </div>
@@ -123,12 +125,12 @@ export function AccountPage() {
                   <div className="text-right">
                     <p className="text-xs font-black uppercase tracking-widest text-text-muted mb-1">Status</p>
                     <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full border ${getStatusClass(order.statusLabel || order.status)}`}>
-                      {order.statusLabel || order.status || 'Pending'}
+                      {order.statusLabel || order.status || t('common.unknownStatus')}
                     </span>
                   </div>
                   <div className="text-right">
                     <p className="text-xs font-black uppercase tracking-widest text-text-muted mb-1">Total</p>
-                    <p className="font-bold">{order.currencyCode || '$'}{Number(order.totalAmount || 0).toFixed(2)}</p>
+                    <p className="font-bold">{order.currencyCode || t('common.na')}{Number(order.totalAmount || 0).toFixed(2)}</p>
                   </div>
                 </div>
               </div>

@@ -28,6 +28,7 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
 
   const imageUrl = product?.primaryImageUrl || product?.imageUrl || null;
   const detailPath = `/products/${product?.id}`;
+  const productCurrencyCode = product?.currencyCode || t('common.na');
 
   const onAddToCart = () => {
     if (!canOrder) return;
@@ -93,7 +94,7 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
               <div className="flex flex-col items-end">
                 {canViewPrice ? (
                   <>
-                    <span className="text-xs text-text-muted font-medium uppercase tracking-widest mb-0.5">{product?.currencyCode ?? 'USD'}</span>
+                    <span className="text-xs text-text-muted font-medium uppercase tracking-widest mb-0.5">{productCurrencyCode}</span>
                     <span className="text-2xl font-black text-primary leading-none">
                       {Number(product?.price ?? 0).toFixed(2)}
                     </span>
@@ -180,7 +181,7 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
               : 'bg-red-500/90 text-white border-red-400/20',
           )}>
             <span className="w-1.5 h-1.5 rounded-full bg-white/80" />
-            {isInStock ? 'In Stock' : 'Out'}
+            {isInStock ? t('cart.item.inStock') : t('product.outOfStock')}
           </span>
         </div>
 
@@ -227,7 +228,7 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
           <div className="flex flex-col min-w-0">
             {canViewPrice ? (
               <div className="flex items-baseline gap-1">
-                <span className="text-xs text-text-muted font-medium">{product?.currencyCode ?? 'USD'}</span>
+                <span className="text-xs text-text-muted font-medium">{productCurrencyCode}</span>
                 <span className="text-lg font-black text-primary leading-none">
                   {Number(product?.price ?? 0).toFixed(2)}
                 </span>
