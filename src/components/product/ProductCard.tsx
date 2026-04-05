@@ -5,11 +5,13 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/state/AuthContext';
 import { useCart } from '@/state/CartContext';
 import { useLanguage } from '@/state/LanguageContext';
+import { useCurrency } from '@/state/CurrencyContext';
 import { qualityTypeLabels, getEnumLabel } from '@/utils/enumLabels';
 import { ProductThumbnail } from './ProductThumbnail';
 
 export function ProductCard({ product, variant = 'grid' }: { product: any; variant?: 'grid' | 'list' }) {
   const { t } = useLanguage();
+  const { currencySymbol } = useCurrency();
   const { isAuthenticated } = useAuth();
   const { addItem } = useCart();
   const location = useLocation();
@@ -28,7 +30,7 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
 
   const imageUrl = product?.primaryImageUrl || product?.imageUrl || null;
   const detailPath = `/products/${product?.id}`;
-  const productCurrencyCode = product?.currencyCode || t('common.na');
+  const productCurrency = currencySymbol || product?.currencySymbol || product?.currencyCode || t('common.na');
 
   const onAddToCart = () => {
     if (!canOrder) return;
@@ -94,7 +96,7 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
               <div className="flex flex-col items-end">
                 {canViewPrice ? (
                   <>
-                    <span className="text-xs text-text-muted font-medium uppercase tracking-widest mb-0.5">{productCurrencyCode}</span>
+                    <span className="text-xs text-text-muted font-medium uppercase tracking-widest mb-0.5">{productCurrency}</span>
                     <span className="text-2xl font-black text-primary leading-none">
                       {Number(product?.price ?? 0).toFixed(2)}
                     </span>
@@ -228,7 +230,7 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
           <div className="flex flex-col min-w-0">
             {canViewPrice ? (
               <div className="flex items-baseline gap-1">
-                <span className="text-xs text-text-muted font-medium">{productCurrencyCode}</span>
+                <span className="text-xs text-text-muted font-medium">{productCurrency}</span>
                 <span className="text-lg font-black text-primary leading-none">
                   {Number(product?.price ?? 0).toFixed(2)}
                 </span>

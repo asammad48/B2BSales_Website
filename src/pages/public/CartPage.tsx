@@ -2,17 +2,19 @@ import { Link } from 'react-router-dom';
 import { Minus, Plus, ShoppingCart, Trash2, ArrowRight } from 'lucide-react';
 import { useCart } from '@/state/CartContext';
 import { useLanguage } from '@/state/LanguageContext';
+import { useCurrency } from '@/state/CurrencyContext';
 import { cn } from '@/lib/utils';
 import { ProductThumbnail } from '@/components/product/ProductThumbnail';
 
 export function CartPage() {
   const { items, updateQuantity, removeItem, clearCart } = useCart();
   const { t } = useLanguage();
+  const { currencySymbol } = useCurrency();
   const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
 
   const total = items.reduce((acc, item) => acc + Number(item.product?.price || 0) * item.quantity, 0);
   const firstCurrency = items.find((item) => item.product?.currencyCode)?.product?.currencyCode;
-  const cartCurrency = firstCurrency || t('common.na');
+  const cartCurrency = currencySymbol || firstCurrency || t('common.na');
   const hasMixedCurrencies = items.some((item) => (item.product?.currencyCode ?? cartCurrency) !== cartCurrency);
 
   if (items.length === 0) {
@@ -121,10 +123,10 @@ export function CartPage() {
 
                     <div className="text-right">
                       <span className="text-xs text-text-muted font-medium">
-                        {(item.product?.currencyCode || t('common.na'))} {Number(item.product?.price || 0).toFixed(2)} × {item.quantity}
+                        {(currencySymbol || item.product?.currencySymbol || item.product?.currencyCode || t('common.na'))} {Number(item.product?.price || 0).toFixed(2)} × {item.quantity}
                       </span>
                       <p className="text-lg font-black text-primary leading-none mt-0.5">
-                        {(item.product?.currencyCode || t('common.na'))}{(Number(item.product?.price || 0) * item.quantity).toFixed(2)}
+                        {(currencySymbol || item.product?.currencySymbol || item.product?.currencyCode || t('common.na'))}{(Number(item.product?.price || 0) * item.quantity).toFixed(2)}
                       </p>
                     </div>
                   </div>
