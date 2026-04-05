@@ -16,6 +16,11 @@ import {
 } from "lucide-react";
 import { ProductThumbnail } from "@/components/product/ProductThumbnail";
 import { cn } from "@/lib/utils";
+import {
+  ReceiptSnapshot,
+  saveReceiptSnapshot,
+} from "@/lib/receiptHistory";
+import { PrintableReceiptButton } from "@/components/order/PrintableReceiptButton";
 
 type CheckoutItem = {
   product: any;
@@ -39,6 +44,9 @@ export function CheckoutPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [orderRef, setOrderRef] = useState("");
+  const [receiptSnapshot, setReceiptSnapshot] = useState<ReceiptSnapshot | null>(
+    null,
+  );
   const { showError, showSuccess } = useToast();
   const { t } = useLanguage();
   const { currencySymbol } = useCurrency();
@@ -101,6 +109,29 @@ export function CheckoutPage() {
       });
 
       const ref = response.orderNumber || "";
+      const selectedShop = shops.find((shop) => shop.id === selectedShopId);
+      const snapshot: ReceiptSnapshot = {
+        orderNumber: ref || `UNCONFIRMED-${Date.now()}`,
+        createdAt: new Date().toISOString(),
+        shopName: selectedShop?.name,
+        instructions: notes || undefined,
+        currencySymbol,
+        subtotal: total,
+        total,
+        items: items.map((item) => {
+          const unitPrice = Number(item.product?.price || 0);
+          return {
+            productId: item.product?.id,
+            productName: item.product?.name || t("common.na"),
+            quantity: item.quantity,
+            unitPrice,
+            subtotal: unitPrice * item.quantity,
+          };
+        }),
+      };
+
+      saveReceiptSnapshot(snapshot);
+      setReceiptSnapshot(snapshot);
       setOrderRef(ref);
       setIsSuccess(true);
       showSuccess(
@@ -131,6 +162,12 @@ export function CheckoutPage() {
         <Link to="/products" className="btn-primary inline-flex">
           {t("checkout.browseProducts")}
         </Link>
+        {receiptSnapshot && (
+          <PrintableReceiptButton
+            receipt={receiptSnapshot}
+            className="btn-outline inline-flex"
+          />
+        )}
       </div>
     );
   }

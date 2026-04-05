@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import type { ClientOrderSummaryDto } from '@/api/generated/apiClient';
 import { useLanguage } from '@/state/LanguageContext';
 import { useCurrency } from '@/state/CurrencyContext';
+import { getReceiptSnapshot, type ReceiptSnapshot } from '@/lib/receiptHistory';
+import { PrintableReceiptButton } from '@/components/order/PrintableReceiptButton';
 
 const PAGE_SIZE = 10;
 
@@ -78,6 +80,37 @@ export function AccountPage() {
     { id: 'profile', icon: <Settings className="w-5 h-5" />, label: 'Business Profile', desc: 'Update your company information' },
   ];
 
+  const buildReceiptSnapshot = (order: any): ReceiptSnapshot => {
+    const storedSnapshot = getReceiptSnapshot(order.orderNumber);
+    if (storedSnapshot) {
+      return storedSnapshot;
+    }
+
+    const itemRows = Array.isArray(order.items) ? order.items : [];
+    const derivedItems = itemRows.map((item: any) => {
+      const qty = Number(item.quantity ?? 0);
+      const unitPrice = Number(item.unitPrice ?? 0);
+      return {
+        productId: item.productId,
+        productName: item.productName || item.name || t('common.na'),
+        quantity: qty,
+        unitPrice,
+        subtotal: Number(item.subtotal ?? qty * unitPrice),
+      };
+    });
+
+    return {
+      orderNumber: order.orderNumber || order.orderId || `ORDER-${Date.now()}`,
+      createdAt: order.createdAt || new Date().toISOString(),
+      shopName: order.shopName,
+      instructions: order.notes,
+      currencySymbol: currencySymbol || order.currencySymbol || order.currencyCode,
+      subtotal: Number(order.subtotal ?? order.totalAmount ?? 0),
+      total: Number(order.totalAmount ?? order.subtotal ?? 0),
+      items: derivedItems,
+    };
+  };
+
   const summaryCards = [
     { label: 'Total Orders', value: orderSummary?.totalOrders ?? 0, valueClassName: 'text-2xl font-black' },
     { label: 'Completed Orders', value: orderSummary?.completedOrders ?? 0, valueClassName: 'text-2xl font-black text-green-600' },
@@ -124,6 +157,10 @@ export function AccountPage() {
                 </div>
 
                 <div className="flex items-center gap-8">
+                  <PrintableReceiptButton
+                    receipt={buildReceiptSnapshot(order)}
+                    className="text-[10px] font-black uppercase tracking-widest px-3 py-2 rounded-lg border border-border hover:border-primary hover:text-primary transition-colors"
+                  />
                   <div className="text-right">
                     <p className="text-xs font-black uppercase tracking-widest text-text-muted mb-1">Status</p>
                     <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full border ${getStatusClass(order.statusLabel || order.status)}`}>
