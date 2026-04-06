@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { resolveProductImageUrl } from '@/lib/imageUrl';
 
 interface ProductThumbnailProps {
   src?: string | null;
@@ -12,6 +13,7 @@ interface ProductThumbnailProps {
 export function ProductThumbnail({ src, name, className, imgClassName, size = 'md' }: ProductThumbnailProps) {
   const [errored, setErrored] = useState(false);
 
+  const resolvedSrc = resolveProductImageUrl(src);
   const initial = (name || 'P').trim()[0].toUpperCase();
 
   const iconSizes = {
@@ -23,7 +25,7 @@ export function ProductThumbnail({ src, name, className, imgClassName, size = 'm
 
   const s = iconSizes[size];
 
-  if (!src || errored) {
+  if (!resolvedSrc || errored) {
     return (
       <div className={cn('w-full h-full flex flex-col items-center justify-center gap-1.5 bg-gradient-to-br from-primary/8 via-bg to-accent/8', className)}>
         <div className={cn('rounded-2xl bg-primary/10 border border-primary/10 flex items-center justify-center flex-shrink-0', s.icon)}>
@@ -42,7 +44,7 @@ export function ProductThumbnail({ src, name, className, imgClassName, size = 'm
 
   return (
     <img
-      src={src}
+      src={resolvedSrc}
       alt={name || 'Product'}
       onError={() => setErrored(true)}
       className={cn('w-full h-full object-cover', imgClassName)}
