@@ -21,21 +21,13 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { ProductThumbnail } from "@/components/product/ProductThumbnail";
 import { useShop } from "@/state/ShopContext";
 import { qualityTypeLabels, getEnumLabel } from "@/utils/enumLabels";
-import { env } from "@/env";
+import { resolveProductImageUrl } from "@/lib/imageUrl";
 import { useLanguage } from "@/state/LanguageContext";
 import { useCurrency } from "@/state/CurrencyContext";
 
 const DUMMY_IMAGE =
   'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640" viewBox="0 0 640 640"><rect width="640" height="640" fill="%23f1f5f9"/><g fill="none" stroke="%23cbd5e1" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><rect x="200" y="180" width="240" height="280" rx="20"/><circle cx="320" cy="420" r="24" fill="%23cbd5e1"/><rect x="260" y="200" width="160" height="8" rx="4" fill="%23cbd5e1"/></g></svg>';
 
-const resolveImageUrl = (path?: string) => {
-  if (!path) return undefined;
-  if (/^(https?:)?\/\//i.test(path) || path.startsWith("data:")) return path;
-  const normalizedBaseUrl = env.apiBaseUrl.replace(/\/+$/, "");
-  if (!normalizedBaseUrl) return path;
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  return `${normalizedBaseUrl}${normalizedPath}`;
-};
 
 export function ProductDetailPage() {
   const { t } = useLanguage();
@@ -53,9 +45,9 @@ export function ProductDetailPage() {
 
   const imageUrls = useMemo<string[]>(() => {
     const detailImageUrls = (product?.images || [])
-      .map((image: any) => resolveImageUrl(image?.filePath))
+      .map((image: any) => resolveProductImageUrl(image?.filePath))
       .filter((url: string | undefined): url is string => Boolean(url));
-    const fallbackImageUrl = resolveImageUrl(
+    const fallbackImageUrl = resolveProductImageUrl(
       product?.primaryImageUrl || product?.imageUrl,
     );
     if (fallbackImageUrl) detailImageUrls.unshift(fallbackImageUrl);
