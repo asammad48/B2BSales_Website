@@ -4,6 +4,8 @@ import type {
   ProductDetailResponseDtoApiResponse,
   ProductListItemResponseDtoPageResponse,
   ProductListItemResponseDtoPageResponseApiResponse,
+  PublicTenantClientInfoResponseDto,
+  PublicTenantClientInfoResponseDtoApiResponse,
   ThemeResponseDto,
   ThemeResponseDtoApiResponse,
 } from '@/api/generated/apiClient';
@@ -17,6 +19,11 @@ function unwrapResponse<T>(response: { success?: boolean; message?: string; data
 }
 
 export const publicStoreRepository = {
+
+  async getClientInfo(tenantId: string): Promise<PublicTenantClientInfoResponseDto> {
+    const response = await apiClient.clientInfo(tenantId);
+    return unwrapResponse<PublicTenantClientInfoResponseDto>(response as PublicTenantClientInfoResponseDtoApiResponse);
+  },
   async getTheme(): Promise<ThemeResponseDto> {
     const response = await apiClient.theme();
     return unwrapResponse<ThemeResponseDto>(response as ThemeResponseDtoApiResponse);

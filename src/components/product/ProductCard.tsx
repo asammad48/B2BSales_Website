@@ -1,22 +1,34 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ShoppingCart, ArrowRight, ShieldCheck, Package } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useAuth } from '@/state/AuthContext';
-import { useCart } from '@/state/CartContext';
-import { useLanguage } from '@/state/LanguageContext';
-import { qualityTypeLabels, getEnumLabel } from '@/utils/enumLabels';
-import { ProductThumbnail } from './ProductThumbnail';
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { ShoppingCart, ArrowRight, ShieldCheck, Package } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/state/AuthContext";
+import { useCart } from "@/state/CartContext";
+import { useLanguage } from "@/state/LanguageContext";
+import { useCurrency } from "@/state/CurrencyContext";
+import { qualityTypeLabels, getEnumLabel } from "@/utils/enumLabels";
+import { ProductThumbnail } from "./ProductThumbnail";
 
-export function ProductCard({ product, variant = 'grid' }: { product: any; variant?: 'grid' | 'list' }) {
+export function ProductCard({
+  product,
+  variant = "grid",
+}: {
+  product: any;
+  variant?: "grid" | "list";
+}) {
   const { t } = useLanguage();
+  const { currencySymbol } = useCurrency();
   const { isAuthenticated } = useAuth();
-  const { addItem } = useCart();
+  const { addItem, items } = useCart();
   const location = useLocation();
   const navigate = useNavigate();
   const canViewPrice = isAuthenticated || !product?.isPriceLocked;
   const canOrder = product?.canOrder !== false;
-  const isInStock = product?.isInStock;
+  const availableStock = Number(product?.stockQuantity ?? 0);
+  const isInStock = product?.isInStock !== false && availableStock > 0;
+  const quantityInCart =
+    items.find((item) => item.product?.id === product?.id)?.quantity ?? 0;
+  const canAddToCart = canOrder && isInStock && quantityInCart < availableStock;
 
   const loginState = {
     from: {
@@ -28,15 +40,19 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
 
   const imageUrl = product?.primaryImageUrl || product?.imageUrl || null;
   const detailPath = `/products/${product?.id}`;
-  const productCurrencyCode = product?.currencyCode || t('common.na');
+  const productCurrency =
+    currencySymbol ||
+    product?.currencySymbol ||
+    product?.currencyCode ||
+    t("common.na");
 
   const onAddToCart = () => {
-    if (!canOrder) return;
+    if (!canAddToCart) return;
     addItem(product, 1);
-    navigate('/cart');
+    navigate("/cart");
   };
 
-  if (variant === 'list') {
+  if (variant === "list") {
     return (
       <motion.article
         whileHover={{ y: -2 }}
@@ -65,27 +81,40 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
           <div className="flex-grow flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 min-w-0">
             <div className="flex-grow min-w-0 max-w-xl">
               <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[10px] font-black uppercase tracking-widest text-accent">{product?.brandName || t('product.genericBrand')}</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-accent">
+                  {product?.brandName || t("product.genericBrand")}
+                </span>
                 {product?.modelName && (
                   <>
                     <span className="w-1 h-1 rounded-full bg-border" />
-                    <span className="text-[10px] font-medium text-text-muted">{product.modelName}</span>
+                    <span className="text-[10px] font-medium text-text-muted">
+                      {product.modelName}
+                    </span>
                   </>
                 )}
               </div>
 
               <h3 className="font-bold text-base mb-1.5 group-hover:text-primary transition-colors line-clamp-1">
-                {product?.name ?? t('product.premiumSparePart')}
+                {product?.name ?? t("product.premiumSparePart")}
               </h3>
 
               <p className="text-xs text-text-muted line-clamp-1 mb-2">
-                {product?.shortDescription || t('product.shortDescription')}
+                {product?.shortDescription || t("product.shortDescription")}
               </p>
 
               <div className="flex items-center gap-1.5">
-                <span className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', isInStock ? 'bg-green-500' : 'bg-red-400')} />
+                <span
+                  className={cn(
+                    "w-1.5 h-1.5 rounded-full flex-shrink-0",
+                    isInStock ? "bg-green-500" : "bg-red-400",
+                  )}
+                />
                 <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">
-                  {isInStock ? t('product.stockLabel', { count: product?.stockQuantity ?? 0 }) : t('product.outOfStock')}
+                  {isInStock
+                    ? t("product.stockLabel", {
+                        count: product?.stockQuantity ?? 0,
+                      })
+                    : t("product.outOfStock")}
                 </span>
               </div>
             </div>
@@ -94,18 +123,26 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
               <div className="flex flex-col items-end">
                 {canViewPrice ? (
                   <>
-                    <span className="text-xs text-text-muted font-medium uppercase tracking-widest mb-0.5">{productCurrencyCode}</span>
+                    <span className="text-xs text-text-muted font-medium uppercase tracking-widest mb-0.5">
+                      {productCurrency}
+                    </span>
                     <span className="text-2xl font-black text-primary leading-none">
                       {Number(product?.price ?? 0).toFixed(2)}
                     </span>
                   </>
                 ) : (
-                  <Link to="/login" state={loginState} className="text-[10px] font-black uppercase tracking-widest text-accent hover:text-accent/80 transition-colors">
-                    {t('product.loginForPrice')}
+                  <Link
+                    to="/login"
+                    state={loginState}
+                    className="text-[10px] font-black uppercase tracking-widest text-accent hover:text-accent/80 transition-colors"
+                  >
+                    {t("product.loginForPrice")}
                   </Link>
                 )}
                 {product?.isPriceLocked && !isAuthenticated && (
-                  <span className="text-[9px] text-text-muted uppercase tracking-widest mt-1">{t('product.guestPriceLocked')}</span>
+                  <span className="text-[9px] text-text-muted uppercase tracking-widest mt-1">
+                    {t("product.guestPriceLocked")}
+                  </span>
                 )}
               </div>
 
@@ -114,14 +151,18 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
                   <button
                     type="button"
                     onClick={onAddToCart}
-                    disabled={!canOrder}
+                    disabled={!canAddToCart}
                     className={cn(
-                      'w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200',
-                      canOrder
-                        ? 'bg-accent text-white shadow-lg shadow-accent/25 hover:bg-accent/90 hover:scale-110 active:scale-95'
-                        : 'bg-surface border border-border text-text-muted cursor-not-allowed opacity-50',
+                      "w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200",
+                      canAddToCart
+                        ? "bg-accent text-white shadow-lg shadow-accent/25 hover:bg-accent/90 hover:scale-110 active:scale-95"
+                        : "bg-surface border border-border text-text-muted cursor-not-allowed opacity-50",
                     )}
-                    title={canOrder ? t('product.addToCart') : t('product.orderingUnavailable')}
+                    title={
+                      canAddToCart
+                        ? t("product.addToCart")
+                        : t("product.orderingUnavailable")
+                    }
                   >
                     <ShoppingCart className="w-4 h-4" />
                   </button>
@@ -174,14 +215,16 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
         )}
 
         <div className="absolute top-3 right-3">
-          <span className={cn(
-            'flex items-center gap-1 px-2 py-1 text-[9px] font-bold uppercase tracking-wider rounded-full backdrop-blur-md border',
-            isInStock
-              ? 'bg-green-500/90 text-white border-green-400/20'
-              : 'bg-red-500/90 text-white border-red-400/20',
-          )}>
+          <span
+            className={cn(
+              "flex items-center gap-1 px-2 py-1 text-[9px] font-bold uppercase tracking-wider rounded-full backdrop-blur-md border",
+              isInStock
+                ? "bg-green-500/90 text-white border-green-400/20"
+                : "bg-red-500/90 text-white border-red-400/20",
+            )}
+          >
             <span className="w-1.5 h-1.5 rounded-full bg-white/80" />
-            {isInStock ? t('cart.item.inStock') : t('product.outOfStock')}
+            {isInStock ? t("cart.item.inStock") : t("product.outOfStock")}
           </span>
         </div>
 
@@ -198,28 +241,34 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
 
       <div className="p-4 flex flex-col flex-grow">
         <div className="flex items-center gap-1.5 mb-2">
-          <span className="text-[10px] font-black uppercase tracking-widest text-accent">{product?.brandName || t('product.genericBrand')}</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-accent">
+            {product?.brandName || t("product.genericBrand")}
+          </span>
           {product?.modelName && (
             <>
               <span className="w-1 h-1 bg-border rounded-full" />
-              <span className="text-[10px] font-medium text-text-muted truncate">{product?.modelName}</span>
+              <span className="text-[10px] font-medium text-text-muted truncate">
+                {product?.modelName}
+              </span>
             </>
           )}
         </div>
 
         <h3 className="font-bold text-sm leading-snug mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-          {product?.name ?? t('product.premiumSparePart')}
+          {product?.name ?? t("product.premiumSparePart")}
         </h3>
 
         <p className="text-xs text-text-muted line-clamp-2 mb-3 leading-relaxed">
-          {product?.shortDescription || t('product.shortDescriptionLong')}
+          {product?.shortDescription || t("product.shortDescriptionLong")}
         </p>
 
         {isInStock && product?.stockQuantity > 0 && (
           <div className="flex items-center gap-1.5 mb-3">
             <Package className="w-3 h-3 text-text-muted" />
             <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">
-              {t('product.inStockLabel', { count: product?.stockQuantity ?? 0 })}
+              {t("product.inStockLabel", {
+                count: product?.stockQuantity ?? 0,
+              })}
             </span>
           </div>
         )}
@@ -228,18 +277,26 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
           <div className="flex flex-col min-w-0">
             {canViewPrice ? (
               <div className="flex items-baseline gap-1">
-                <span className="text-xs text-text-muted font-medium">{productCurrencyCode}</span>
+                <span className="text-xs text-text-muted font-medium">
+                  {productCurrency}
+                </span>
                 <span className="text-lg font-black text-primary leading-none">
                   {Number(product?.price ?? 0).toFixed(2)}
                 </span>
               </div>
             ) : (
-              <Link to="/login" state={loginState} className="text-[10px] font-black uppercase tracking-widest text-accent hover:text-accent/80 transition-colors">
-                {t('product.loginForPrice')}
+              <Link
+                to="/login"
+                state={loginState}
+                className="text-[10px] font-black uppercase tracking-widest text-accent hover:text-accent/80 transition-colors"
+              >
+                {t("product.loginForPrice")}
               </Link>
             )}
             {product?.isPriceLocked && !isAuthenticated && (
-              <span className="text-[9px] text-text-muted uppercase tracking-widest">{t('product.guestAccessLocked')}</span>
+              <span className="text-[9px] text-text-muted uppercase tracking-widest">
+                {t("product.guestAccessLocked")}
+              </span>
             )}
           </div>
 
@@ -248,14 +305,18 @@ export function ProductCard({ product, variant = 'grid' }: { product: any; varia
               <button
                 type="button"
                 onClick={onAddToCart}
-                disabled={!canOrder}
+                disabled={!canAddToCart}
                 className={cn(
-                  'w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200',
-                  canOrder
-                    ? 'bg-accent text-white shadow-md shadow-accent/25 hover:bg-accent/90 hover:scale-110 active:scale-95'
-                    : 'bg-surface border border-border text-text-muted cursor-not-allowed opacity-40',
+                  "w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200",
+                  canAddToCart
+                    ? "bg-accent text-white shadow-md shadow-accent/25 hover:bg-accent/90 hover:scale-110 active:scale-95"
+                    : "bg-surface border border-border text-text-muted cursor-not-allowed opacity-40",
                 )}
-                title={canOrder ? t('product.addToCart') : t('product.orderingUnavailable')}
+                title={
+                  canAddToCart
+                    ? t("product.addToCart")
+                    : t("product.orderingUnavailable")
+                }
               >
                 <ShoppingCart className="w-4 h-4" />
               </button>
