@@ -16,6 +16,7 @@ export function PublicLayout() {
   const { itemCount } = useCart();
   const { shops, selectedShopId, setSelectedShopId, isLoading: isShopsLoading, isSelectionLocked } = useShop();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -28,6 +29,10 @@ export function PublicLayout() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const navItems = [
     { label: t('nav.products'), path: '/products' },
@@ -144,11 +149,39 @@ export function PublicLayout() {
                 {t('nav.login')}
               </Link>
             )}
-            <button className="md:hidden p-2 hover:bg-bg rounded-full transition-colors text-text-muted">
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen((previous) => !previous)}
+              className="md:hidden p-2 hover:bg-bg rounded-full transition-colors text-text-muted"
+              aria-label="Toggle mobile navigation"
+              aria-expanded={isMobileMenuOpen}
+            >
               <Menu className="w-5 h-5" />
             </button>
           </div>
         </div>
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-border bg-surface/95 backdrop-blur-md">
+            <div className="container py-4 space-y-3">
+              <nav className="grid gap-2">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={cn(
+                      'rounded-lg border px-3 py-2 text-xs font-black uppercase tracking-widest transition-colors',
+                      location.pathname === item.path
+                        ? 'border-primary/40 bg-primary/10 text-primary'
+                        : 'border-border text-text-muted hover:text-primary hover:border-primary/30',
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+          </div>
+        )}
       </header>
 
       <main className="flex-1 container py-12">
