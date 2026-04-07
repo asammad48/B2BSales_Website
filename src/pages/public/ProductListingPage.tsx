@@ -37,9 +37,38 @@ export function ProductListingPage() {
   const [data, setData] = useState<any>({ items: [], totalCount: 0, pageSize: PAGE_SIZE });
   const [isLoading, setIsLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [isDesktopFilters, setIsDesktopFilters] = useState<boolean>(() => {
+    if (typeof window === 'undefined') {
+      return true;
+    }
+    return window.matchMedia('(min-width: 1024px)').matches;
+  });
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState<boolean>(() => {
+    if (typeof window === 'undefined') {
+      return true;
+    }
+    return window.matchMedia('(min-width: 1024px)').matches;
+  });
 
   useEffect(() => {
     publicCatalogRepository.getPublicCatalogFilters().then(setFilters).catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia('(min-width: 1024px)');
+    const syncFiltersWithBreakpoint = (event: MediaQueryList | MediaQueryListEvent) => {
+      const matches = event.matches;
+      setIsDesktopFilters(matches);
+      setIsMobileFiltersOpen(matches);
+    };
+
+    syncFiltersWithBreakpoint(mediaQuery);
+    mediaQuery.addEventListener('change', syncFiltersWithBreakpoint);
+    return () => mediaQuery.removeEventListener('change', syncFiltersWithBreakpoint);
   }, []);
 
   useEffect(() => {
@@ -188,7 +217,21 @@ export function ProductListingPage() {
         <aside className="self-start h-fit rounded-xl border border-border shadow-futuristic overflow-clip bg-surface lg:sticky lg:top-24">
           <div className="flex items-center justify-between px-4 py-3.5 bg-primary border-b border-primary/20">
             <div className="flex items-center gap-2.5">
-              <SlidersHorizontal className="w-4 h-4 text-accent" />
+              <button
+                type="button"
+                onClick={() => setIsMobileFiltersOpen((previous) => !previous)}
+                disabled={isDesktopFilters}
+                aria-label="Toggle filters"
+                aria-expanded={isMobileFiltersOpen}
+                className={cn(
+                  'inline-flex items-center justify-center rounded-md p-1 transition-colors',
+                  isDesktopFilters
+                    ? 'cursor-not-allowed text-accent/60'
+                    : 'text-accent hover:bg-white/10',
+                )}
+              >
+                <SlidersHorizontal className="w-4 h-4" />
+              </button>
               <span className="text-sm font-bold uppercase tracking-widest text-white">Filters</span>
             </div>
             {(categoryIds.length + brandIds.length + modelIds.length + partTypeIds.length) > 0 && (
@@ -201,7 +244,10 @@ export function ProductListingPage() {
               </button>
             )}
           </div>
-          <div className="p-3 space-y-2 bg-bg/60 overflow-y-auto overscroll-contain max-h-[55vh] lg:max-h-[calc(100vh-8rem)]">
+          <div className={cn(
+            'p-3 space-y-2 bg-bg/60 overflow-y-auto overscroll-contain max-h-[55vh] lg:max-h-[calc(100vh-8rem)]',
+            isMobileFiltersOpen ? 'block' : 'hidden lg:block',
+          )}>
             {renderCheckboxGroup('category', t('listing.filters.category'), filters.categories, categoryIds, toggleFilterValue(setCategoryIds))}
             {renderCheckboxGroup('brand', t('listing.filters.brand'), filters.brands, brandIds, toggleFilterValue(setBrandIds))}
             {renderCheckboxGroup('model', t('listing.filters.model'), filters.models, modelIds, toggleFilterValue(setModelIds))}
