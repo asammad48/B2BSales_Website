@@ -38,17 +38,17 @@
 }
 
 :root {
-  /* Business Colors */
-  --color-primary: #0f172a;
-  --color-secondary: #334155;
-  --color-accent: #f59e0b;
+  /* Brand Colors */
+  --color-primary: #345991;
+  --color-secondary: #274776;
+  --color-accent: #3f7a5f;
 
   /* UI Colors */
-  --color-bg: #f8fafc;
+  --color-bg: #9dafbc;
   --color-surface: #ffffff;
-  --color-border: #e2e8f0;
-  --color-text: #0f172a;
-  --color-text-muted: #64748b;
+  --color-border: #d5dee5;
+  --color-text: #1f2a37;
+  --color-text-muted: #5f7282;
 
   /* Spacing & Layout */
   --container-width: 1280px;
@@ -64,5 +64,5 @@
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --shadow-futuristic: 0 20px 40px -10px rgba(15, 23, 42, 0.1);
+  --shadow-futuristic: 0 20px 40px -10px rgba(52, 89, 145, 0.18);
 }

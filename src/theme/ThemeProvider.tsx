@@ -14,9 +14,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     publicStoreRepository.getTheme()
       .then((theme: any) => {
         const root = document.documentElement;
-        root.style.setProperty('--color-primary-custom', theme?.primaryColor ?? '#0f172a');
-        root.style.setProperty('--color-secondary-custom', theme?.secondaryColor ?? '#334155');
-        root.style.setProperty('--color-accent-custom', theme?.accentColor ?? '#f59e0b');
+        root.style.setProperty('--color-primary-custom', theme?.primaryColor ?? '#345991');
+        root.style.setProperty('--color-secondary-custom', theme?.secondaryColor ?? '#274776');
+        root.style.setProperty('--color-accent-custom', theme?.accentColor ?? '#3f7a5f');
       })
       .finally(() => setLoaded(true));
   }, []);
