@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Mobia2z Logo</title>
+  <desc id="desc">Blue and cyan circular A2Z Mobi brand mark.</desc>
+  <defs>
+    <linearGradient id="arcTop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#359BB5"/>
+      <stop offset="100%" stop-color="#1F4F85"/>
+    </linearGradient>
+    <linearGradient id="arcBottom" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1F4F85"/>
+      <stop offset="100%" stop-color="#359BB5"/>
+    </linearGradient>
+  </defs>
+
+  <path d="M76 210C108 120 194 60 286 60c72 0 135 37 173 95l-56 0c-30-31-72-49-117-49-70 0-134 41-164 104z" fill="url(#arcTop)"/>
+  <path d="M436 301c-31 87-114 145-207 145-73 0-138-37-176-96h57c30 31 73 50 119 50 71 0 132-39 161-99z" fill="url(#arcBottom)"/>
+
+  <g fill="#1F4F85" font-family="Segoe UI, Arial, sans-serif" font-weight="700">
+    <text x="256" y="258" text-anchor="middle" font-size="126" letter-spacing="3">A2Z</text>
+  </g>
+  <text x="256" y="345" text-anchor="middle" fill="#359BB5" font-family="Segoe UI, Arial, sans-serif" font-size="62" font-weight="600">Mobi</text>
+</svg>

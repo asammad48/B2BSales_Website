@@ -267,7 +267,7 @@ export function AccountPage() {
                   <label key={i} className="flex items-center justify-between cursor-pointer">
                     <span className="text-sm text-text-muted">{pref.label}</span>
                     <div className={`w-10 h-5 rounded-full transition-colors relative ${pref.active ? 'bg-primary' : 'bg-border'}`}>
-                      <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${pref.active ? 'left-6' : 'left-1'}`} />
+                      <div className={`absolute top-1 w-3 h-3 bg-surface rounded-full transition-all ${pref.active ? 'left-6' : 'left-1'}`} />
                     </div>
                   </label>
                 ))}

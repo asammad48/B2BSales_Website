@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import { ShoppingCart, User, Search, Menu, Globe, Store } from 'lucide-react';
+import { ShoppingCart, User, Menu, Globe, Store } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/state/AuthContext';
@@ -53,10 +53,12 @@ export function PublicLayout() {
         <div className="container h-20 flex items-center justify-between">
           <div className="flex items-center gap-12">
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
-                <Search className="w-6 h-6" />
-              </div>
-              <span className="text-xl font-black tracking-tighter uppercase">Store<span className="text-primary">Front</span></span>
+              <img
+                src="/mobia2z-logo.svg"
+                alt="Mobia2z logo"
+                className="w-10 h-10 object-contain group-hover:scale-110 transition-transform"
+              />
+              <span className="text-xl font-black tracking-tighter uppercase">Mobia2z</span>
             </Link>
 
             <nav className="hidden md:flex items-center gap-8">
@@ -193,10 +195,12 @@ export function PublicLayout() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
             <div className="md:col-span-2 space-y-6">
               <Link to="/" className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
-                  <Search className="w-5 h-5" />
-                </div>
-                <span className="text-lg font-black tracking-tighter uppercase">Store<span className="text-primary">Front</span></span>
+                <img
+                  src="/mobia2z-logo.svg"
+                  alt="Mobia2z logo"
+                  className="w-8 h-8 object-contain"
+                />
+                <span className="text-lg font-black tracking-tighter uppercase">Mobia2z</span>
               </Link>
               <p className="text-sm text-text-muted max-w-sm">
                 {t('footer.description')}

@@ -221,7 +221,7 @@ export function ProductDetailPage() {
                     : "bg-red-500/90 text-white border-red-400/20",
                 )}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-white/80" />
+                <span className="w-1.5 h-1.5 rounded-full bg-surface/90" />
                 {isInStock ? t("cart.item.inStock") : t("product.outOfStock")}
               </span>
             </div>

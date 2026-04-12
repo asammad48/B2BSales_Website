@@ -18,7 +18,7 @@ export function SearchBar({ value, onChange, placeholder = 'Search products...',
         className={cn(
           'w-full h-11 pl-11 pr-11 rounded-xl border text-sm transition-all duration-200 focus:outline-none',
           'bg-surface border-border text-text placeholder:text-text-muted',
-          'focus:border-accent/60 focus:ring-2 focus:ring-accent/15 focus:bg-white',
+          'focus:border-accent/60 focus:ring-2 focus:ring-accent/15 focus:bg-surface',
           'shadow-sm focus:shadow-accent/10 focus:shadow-md',
         )}
         value={value}

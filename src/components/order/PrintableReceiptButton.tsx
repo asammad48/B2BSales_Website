@@ -20,7 +20,7 @@ export function PrintableReceiptButton({
   receipt,
   className,
   label = "Print Receipt",
-  brandName = "Mobia2Z",
+  brandName = "Mobia2z",
 }: PrintableReceiptButtonProps) {
   const onPrint = () => {
     const printWindow = window.open("", "_blank", "width=960,height=720");
@@ -74,7 +74,7 @@ export function PrintableReceiptButton({
             .sheet {
               max-width: 900px;
               margin: 0 auto;
-              background: #ffffff;
+              background: #eaf1f8;
               border: 1px solid var(--line);
               border-radius: 16px;
               padding: 24px;
@@ -159,7 +159,7 @@ export function PrintableReceiptButton({
               border: 1px solid var(--line);
               border-radius: 12px;
               padding: 10px 14px;
-              background: #ffffff;
+              background: #eaf1f8;
             }
             .totals-row {
               display:flex;
