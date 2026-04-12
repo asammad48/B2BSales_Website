@@ -39,16 +39,16 @@
 
 :root {
   /* Brand Colors */
-  --color-primary: #345991;
-  --color-secondary: #274776;
-  --color-accent: #3f7a5f;
+  --color-primary: #1f4f85;
+  --color-secondary: #359bb5;
+  --color-accent: #359bb5;
 
   /* UI Colors */
-  --color-bg: #9dafbc;
+  --color-bg: #f2f2f2;
   --color-surface: #ffffff;
-  --color-border: #d5dee5;
-  --color-text: #1f2a37;
-  --color-text-muted: #5f7282;
+  --color-border: #d7e2ea;
+  --color-text: #17324d;
+  --color-text-muted: #5f7488;
 
   /* Spacing & Layout */
   --container-width: 1280px;
@@ -64,5 +64,5 @@
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --shadow-futuristic: 0 20px 40px -10px rgba(52, 89, 145, 0.18);
+  --shadow-futuristic: 0 20px 40px -10px rgba(31, 79, 133, 0.18);
 }
