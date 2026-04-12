@@ -35,7 +35,7 @@ export function FeaturedProductsPage() {
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white/15 text-white rounded-full"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-surface/25 text-white rounded-full"
           >
             <Star className="w-4 h-4" />
             <span className="text-xs font-black uppercase tracking-widest">{t('featured.badge')}</span>

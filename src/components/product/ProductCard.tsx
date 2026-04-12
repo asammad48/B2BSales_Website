@@ -223,7 +223,7 @@ export function ProductCard({
                 : "bg-red-500/90 text-white border-red-400/20",
             )}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-white/80" />
+            <span className="w-1.5 h-1.5 rounded-full bg-surface/90" />
             {isInStock ? t("cart.item.inStock") : t("product.outOfStock")}
           </span>
         </div>
@@ -232,7 +232,7 @@ export function ProductCard({
           <Link
             to={detailPath}
             state={{ product }}
-            className="w-9 h-9 rounded-full bg-white text-primary flex items-center justify-center shadow-lg hover:bg-accent hover:text-white transition-all"
+            className="w-9 h-9 rounded-full bg-surface text-primary flex items-center justify-center shadow-lg hover:bg-accent hover:text-white transition-all"
           >
             <ArrowRight className="w-4 h-4" />
           </Link>

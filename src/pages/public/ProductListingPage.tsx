@@ -227,7 +227,7 @@ export function ProductListingPage() {
                   'inline-flex items-center justify-center rounded-md p-1 transition-colors',
                   isDesktopFilters
                     ? 'cursor-not-allowed text-accent/60'
-                    : 'text-accent hover:bg-white/10',
+                    : 'text-accent hover:bg-surface/40',
                 )}
               >
                 <SlidersHorizontal className="w-4 h-4" />

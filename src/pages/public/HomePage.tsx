@@ -33,7 +33,7 @@ export function HomePage() {
     <div className="space-y-24 pb-12">
       <section className="relative overflow-hidden rounded-3xl bg-primary py-20 px-8 sm:px-16 text-white shadow-2xl">
         <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-64 h-64 bg-white/10 rounded-full blur-2xl" />
+        <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-64 h-64 bg-surface/20 rounded-full blur-2xl" />
 
         <div className="relative z-10 max-w-2xl">
           <motion.div
@@ -41,7 +41,7 @@ export function HomePage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="inline-block px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-widest mb-6">
+            <span className="inline-block px-4 py-1.5 bg-surface/20 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-widest mb-6">
               {t('home.badge')}
             </span>
             <h1 className="text-5xl sm:text-6xl font-black tracking-tight leading-[1.1] mb-6">
@@ -53,14 +53,14 @@ export function HomePage() {
             <div className="flex flex-wrap gap-4">
               <Link
                 to="/products"
-                className="px-8 py-4 bg-white text-primary font-bold rounded-xl shadow-lg hover:bg-accent hover:text-white transition-all flex items-center gap-2 group"
+                className="px-8 py-4 bg-surface text-primary font-bold rounded-xl shadow-lg hover:bg-accent hover:text-white transition-all flex items-center gap-2 group"
               >
                 {t('home.browseCatalog')}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 to="/login"
-                className="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold rounded-xl hover:bg-white/20 transition-all"
+                className="px-8 py-4 bg-surface/20 backdrop-blur-md border border-surface/40 text-white font-bold rounded-xl hover:bg-surface/30 transition-all"
               >
                 {t('home.partnerLogin')}
               </Link>
