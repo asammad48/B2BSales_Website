@@ -20,7 +20,7 @@ export function PrintableReceiptButton({
   receipt,
   className,
   label = "Print Receipt",
-  brandName = "Mobia2Z",
+  brandName = "Mobia2z",
 }: PrintableReceiptButtonProps) {
   const onPrint = () => {
     const printWindow = window.open("", "_blank", "width=960,height=720");

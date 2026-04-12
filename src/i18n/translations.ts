@@ -9,7 +9,7 @@ export const translations: Record<SupportedLanguage, TranslationTree> = {
     footer: {
       description: 'The future of wholesale electronics. Premium parts, verified quality, and seamless logistics for modern repair businesses.',
       explore: 'Explore', allProducts: 'All Products', support: 'Support', myAccount: 'My Account', shippingPolicy: 'Shipping Policy', contactUs: 'Contact Us',
-      rights: '© 2026 Mobia2Z. All rights reserved.', privacy: 'Privacy', terms: 'Terms',
+      rights: '© 2026 Mobia2z. All rights reserved.', privacy: 'Privacy', terms: 'Terms',
     },
     home: {
       badge: 'B2B Wholesale Marketplace', titlePrefix: 'Premium Parts for', titleAccent: 'Modern', titleSuffix: 'Devices.',
@@ -205,7 +205,7 @@ export const translations: Record<SupportedLanguage, TranslationTree> = {
     footer: {
       description: 'Die Zukunft der Großhandelselektronik. Premium-Teile, geprüfte Qualität und nahtlose Logistik für moderne Reparaturbetriebe.',
       explore: 'Entdecken', allProducts: 'Alle Produkte', support: 'Support', myAccount: 'Mein Konto', shippingPolicy: 'Versandrichtlinie', contactUs: 'Kontakt',
-      rights: '© 2026 Mobia2Z. Alle Rechte vorbehalten.', privacy: 'Datenschutz', terms: 'AGB',
+      rights: '© 2026 Mobia2z. Alle Rechte vorbehalten.', privacy: 'Datenschutz', terms: 'AGB',
     },
     home: {
       badge: 'B2B Großhandelsplattform', titlePrefix: 'Premium-Teile für', titleAccent: 'moderne', titleSuffix: 'Geräte.',
@@ -399,7 +399,7 @@ export const translations: Record<SupportedLanguage, TranslationTree> = {
     footer: {
       description: "L'avenir de l'électronique en gros. Pièces premium, qualité vérifiée et logistique fluide pour les ateliers modernes.",
       explore: 'Explorer', allProducts: 'Tous les produits', support: 'Support', myAccount: 'Mon compte', shippingPolicy: 'Politique de livraison', contactUs: 'Contactez-nous',
-      rights: '© 2026 Mobia2Z. Tous droits réservés.', privacy: 'Confidentialité', terms: 'Conditions',
+      rights: '© 2026 Mobia2z. Tous droits réservés.', privacy: 'Confidentialité', terms: 'Conditions',
     },
     home: {
       badge: 'Marketplace B2B de gros', titlePrefix: 'Pièces premium pour les', titleAccent: 'appareils', titleSuffix: 'modernes.',
