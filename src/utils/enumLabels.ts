@@ -8,7 +8,7 @@ import { getTranslation, type SupportedLanguage } from '@/i18n/translations';
 
 function getLanguage(): SupportedLanguage {
   const language = localStorage.getItem('app_language') as SupportedLanguage | null;
-  return language === 'de' || language === 'fr' ? language : 'en';
+  return language === 'de' || language === 'fr' || language === 'es' ? language : 'en';
 }
 
 const tEnum = (key: string, fallback: string): string => {
