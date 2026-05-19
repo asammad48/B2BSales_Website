@@ -92,7 +92,7 @@ export function PublicLayout() {
             <CustomDropdown
               value={language}
               onChange={(value) => {
-                if (value === 'en' || value === 'de' || value === 'fr') {
+                if (value === 'en' || value === 'de' || value === 'fr' || value === 'es') {
                   setLanguage(value);
                 }
               }}
@@ -100,6 +100,7 @@ export function PublicLayout() {
                 { value: 'en', label: 'EN', icon: <Globe className="w-3 h-3" /> },
                 { value: 'de', label: 'DE', icon: <Globe className="w-3 h-3" /> },
                 { value: 'fr', label: 'FR', icon: <Globe className="w-3 h-3" /> },
+                { value: 'es', label: 'ES', icon: <Globe className="w-3 h-3" /> },
               ]}
               className="hidden sm:block"
             />

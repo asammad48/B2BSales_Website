@@ -8,7 +8,7 @@ type LanguageState = {
 };
 
 const DEFAULT_LANGUAGE: SupportedLanguage = 'en';
-const ALLOWED_LANGUAGES: SupportedLanguage[] = ['en', 'de', 'fr'];
+const ALLOWED_LANGUAGES: SupportedLanguage[] = ['en', 'de', 'fr', 'es'];
 
 const LanguageContext = createContext<LanguageState | null>(null);
 

@@ -51,12 +51,34 @@ export function ProductCard({
     addItem(product, 1);
     navigate("/cart");
   };
+  const onCardNavigate = () => {
+    navigate(detailPath, { state: { product } });
+  };
+
+  const onCardClick = (event: React.MouseEvent<HTMLElement>) => {
+    const target = event.target as HTMLElement;
+    if (target.closest('a, button')) return;
+    onCardNavigate();
+  };
+
+  const onCardKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    const target = event.target as HTMLElement;
+    if (target.closest('a, button')) return;
+    event.preventDefault();
+    onCardNavigate();
+  };
+
 
   if (variant === "list") {
     return (
       <motion.article
         whileHover={{ y: -2 }}
-        className="group relative bg-surface border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:border-primary/20 transition-all duration-300"
+        onClick={onCardClick}
+        onKeyDown={onCardKeyDown}
+        role="link"
+        tabIndex={0}
+        className="group relative bg-surface border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:border-primary/20 transition-all duration-300 cursor-pointer"
       >
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-accent via-accent/60 to-transparent rounded-l-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
@@ -193,7 +215,11 @@ export function ProductCard({
   return (
     <motion.article
       whileHover={{ y: -6 }}
-      className="group relative bg-surface border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300 flex flex-col h-full"
+      onClick={onCardClick}
+      onKeyDown={onCardKeyDown}
+      role="link"
+      tabIndex={0}
+      className="group relative bg-surface border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300 flex flex-col h-full cursor-pointer"
     >
       <div className="relative aspect-square overflow-hidden bg-bg flex-shrink-0">
         <ProductThumbnail
