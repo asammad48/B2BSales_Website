@@ -1,10 +1,9 @@
-export type SupportedLanguage = 'en' | 'de' | 'fr';
+export type SupportedLanguage = 'en' | 'de' | 'fr' | 'es';
 
 type TranslationLeaf = string;
 type TranslationTree = { [key: string]: TranslationLeaf | TranslationTree };
 
-export const translations: Record<SupportedLanguage, TranslationTree> = {
-  en: {
+const enTranslations: TranslationTree = {
     nav: { products: 'Products', newArrivals: 'New Arrivals', qualityGuide: 'Quality Guide', myProfile: 'My Profile', logout: 'Logout', login: 'Login', cart: 'Cart' },
     footer: {
       description: 'The future of wholesale electronics. Premium parts, verified quality, and seamless logistics for modern repair businesses.',
@@ -53,7 +52,7 @@ export const translations: Record<SupportedLanguage, TranslationTree> = {
       errors: { invalidCredentials: 'Invalid email or password. Please try again.' },
       cards: { email: 'Email Us', emailSub: 'Response within 2 hours', call: 'Call Us', callSub: 'Mon-Fri, 9am - 6pm CET', visit: 'Visit Us' },
       form: {
-        emailLabel: 'Email Address', emailPlaceholder: 'name@company.com', passwordLabel: 'Password', passwordPlaceholder: '••••••••', forgotPassword: 'Forgot Password?',
+        emailLabel: 'Email Address', emailPlaceholder: 'name@company.com', passwordLabel: 'Password', passwordPlaceholder: '********', forgotPassword: 'Forgot Password?',
       },
       actions: { signIn: 'Sign In' },
       cta: { noAccount: "Don't have a business account?", applyNow: 'Apply Now' },
@@ -199,6 +198,108 @@ export const translations: Record<SupportedLanguage, TranslationTree> = {
       qualityType: { original: 'Original', oem: 'OEM', highCopy: 'High Copy', refurbished: 'Refurbished' },
       trackingType: { quantityBased: 'Quantity Based', serialized: 'Serialized' },
     },
+};
+
+
+function mapTranslationTree(tree: TranslationTree, transform: (value: string) => string): TranslationTree {
+  const result: TranslationTree = {};
+  for (const [key, value] of Object.entries(tree)) {
+    result[key] = typeof value === 'string' ? transform(value) : mapTranslationTree(value as TranslationTree, transform);
+  }
+  return result;
+}
+
+const esFallbackTranslations: TranslationTree = mapTranslationTree(enTranslations, (value) => `${value} (ES)`);
+
+export const translations: Record<SupportedLanguage, TranslationTree> = {
+  en: enTranslations,
+  es: {
+    ...esFallbackTranslations,
+    nav: { products: 'Productos', newArrivals: 'Novedades', qualityGuide: 'Guía de calidad', myProfile: 'Mi perfil', logout: 'Cerrar sesión', login: 'Iniciar sesión', cart: 'Carrito' },
+    footer: {
+      description: 'El futuro de la electrónica mayorista. Piezas premium, calidad verificada y logística fluida para negocios de reparación modernos.',
+      explore: 'Explorar', allProducts: 'Todos los productos', support: 'Soporte', myAccount: 'Mi cuenta', shippingPolicy: 'Política de envío', contactUs: 'Contáctanos',
+      rights: '© 2026 Mobia2Z. Todos los derechos reservados.', privacy: 'Privacidad', terms: 'Términos',
+    },
+    home: {
+      ...((enTranslations as any).home),
+      badge: 'Marketplace mayorista B2B', titlePrefix: 'Piezas premium para', titleAccent: 'dispositivos', titleSuffix: 'modernos.',
+      subtitle: 'Accede al catálogo más grande del mundo de repuestos móviles verificados. Precios mayoristas bloqueados para empresas registradas.',
+      browseCatalog: 'Ver catálogo', partnerLogin: 'Acceso de socios', sectionTitle: 'Novedades', sectionSubtitle: 'Los componentes más recientes para los dispositivos más nuevos.',
+      viewAll: 'Ver todo', noArrivals: 'No hay novedades disponibles en este momento.', trustTitle: 'Con la confianza de más de 5.000 centros de reparación',
+      trustQuote: '"MobileParts ha transformado nuestra cadena de suministro. La consistencia en la calidad no tiene comparación en el sector y su equipo de soporte siempre está cuando lo necesitamos."',
+      trustAuthor: 'David Chen (ES)', trustRole: 'CEO, TechFix Solutions (ES)',
+      featuredSection: { title: 'Productos destacados', subtitle: 'Selección manual con alta demanda y rendimiento.', empty: 'No hay productos destacados disponibles en este momento.' },
+      features: {
+        qualityTitle: 'Calidad verificada', qualityDesc: 'Cada pieza pasa por un proceso de inspección de 20 puntos antes del envío.',
+        shippingTitle: 'Envío global', shippingDesc: 'Entrega exprés a más de 150 países con seguimiento en tiempo real.',
+        quotesTitle: 'Cotizaciones instantáneas', quotesDesc: 'Precios mayoristas dinámicos según el volumen del pedido y la fidelidad.',
+      },
+    },
+    cart: {
+      ...((enTranslations as any).cart),
+      title: 'Carrito de compras', subtitle: 'Revisa los artículos y continúa al pago.',
+      empty: { title: 'Tu carrito está vacío', description: 'Agrega productos del catálogo para realizar tu pedido.', browseProducts: 'Ver productos' },
+      actions: { clearCart: 'Vaciar carrito', continueShopping: 'Seguir comprando', proceedToCheckout: 'Ir al pago' },
+      item: { noSku: 'Sin SKU', inStock: 'En stock', outOfStock: 'Sin stock', remove: 'Eliminar artículo' },
+      summary: { total: 'Importe total', mixed: 'Mixto' },
+    },
+    checkout: {
+      ...((enTranslations as any).checkout),
+      title: 'Pago', subtitle: 'Revisa tu carrito y realiza tu pedido.',
+      validation: { emptyCart: 'Agrega al menos un producto al carrito antes de realizar tu pedido.', selectPickupShop: 'Selecciona una tienda de recogida antes de realizar tu pedido.' },
+      errors: { submitFailed: 'Error al enviar el pedido. Inténtalo de nuevo.' },
+      success: { submitted: 'Pedido {{orderNumber}} enviado correctamente.' },
+      emptyCart: 'Tu carrito está vacío.', browseProducts: 'Ver productos',
+      summary: { title: 'Resumen del pedido', noSku: 'Sin SKU', qty: 'Cant {{count}}', total: 'Importe total', mixed: 'Mixto' },
+      cards: { email: 'Envíanos un correo', emailSub: 'Respuesta en 2 horas', call: 'Llámanos', callSub: 'Lun-Vie, 9:00 - 18:00 CET', visit: 'Visítanos' },
+      form: {
+        pickupShopLabel: 'Tienda de recogida',
+        shop: { loading: 'Cargando tiendas...', noneAvailable: 'No hay tiendas disponibles', select: 'Selecciona una tienda' },
+        notesLabel: 'Notas (opcional)', notesPlaceholder: 'Añade notas o instrucciones de entrega',
+      },
+      actions: { backToCart: 'Volver al carrito', placeOrder: 'Realizar pedido', placingOrder: 'Realizando pedido...' },
+    },
+    login: {
+      ...((enTranslations as any).login),
+      title: 'Portal de socios', subtitle: 'Inicia sesión para acceder a precios mayoristas e inventario.',
+      errors: { invalidCredentials: 'Correo o contraseña incorrectos. Inténtalo de nuevo.' },
+      cards: { email: 'Envíanos un correo', emailSub: 'Respuesta en 2 horas', call: 'Llámanos', callSub: 'Lun-Vie, 9:00 - 18:00 CET', visit: 'Visítanos' },
+      form: {
+        emailLabel: 'Correo electrónico', emailPlaceholder: 'nombre@empresa.com', passwordLabel: 'Contraseña', passwordPlaceholder: '•••••••• (ES)', forgotPassword: '¿Olvidaste tu contraseña?',
+      },
+      actions: { signIn: 'Iniciar sesión' },
+      cta: { noAccount: '¿No tienes una cuenta empresarial?', applyNow: 'Solicítala ahora' },
+      footer: { support: 'Soporte', privacy: 'Privacidad', terms: 'Términos' },
+    },
+    listing: {
+      ...((enTranslations as any).listing),
+      title: 'Catálogo de piezas', subtitle: 'Explora nuestro inventario completo de componentes móviles verificados.',
+      sort: { name: 'Nombre', price: 'Precio', stock: 'Existencias' },
+      direction: { asc: 'Ascendente', desc: 'Descendente' },
+      searchPlaceholder: 'Buscar por nombre, SKU, marca o modelo...',
+      filters: { category: 'Categoría', brand: 'Marca', model: 'Modelo', partType: 'Tipo de pieza' },
+      empty: { title: 'No se encontraron productos', description: 'Intenta ajustar la búsqueda o los filtros para encontrar lo que buscas.' },
+      common: { all: 'Todos', unknown: 'Desconocido' },
+    },
+    product: {
+      ...((enTranslations as any).product),
+      genericBrand: 'Marca genérica', premiumSparePart: 'Repuesto premium', shortDescription: 'Componente de reemplazo de alta calidad verificado para rendimiento.',
+      shortDescriptionLong: 'Componente de reemplazo de alta calidad verificado para rendimiento y durabilidad.', stockLabel: 'Existencias: {{count}}',
+      inStockLabel: 'En stock ({{count}})', outOfStock: 'Sin stock', loginForPrice: 'Inicia sesión para ver precios', guestPriceLocked: 'Precio bloqueado para invitados',
+      guestAccessLocked: 'Acceso de invitado bloqueado', addToCart: 'Añadir al carrito', orderingUnavailable: 'Pedido no disponible', productImage: 'Imagen del producto', universal: 'Universal (ES)',
+    },
+    common: { na: 'N/D', itemCount: '{{count}} artículo', itemCountPlural: '{{count}} artículos', beforeTax: 'Antes de impuestos', unknownShop: 'Tienda desconocida', unknownDate: 'Fecha desconocida', unknownStatus: 'Pendiente' },
+    notFound: {
+      title: '¿Perdido en la Matrix?',
+      description: 'La pieza o página que buscas fue movida, eliminada o nunca existió en esta dimensión.',
+      cta: 'Volver al inicio',
+    },
+    enum: {
+      pricingMode: { direct: 'Precio directo', percentageBased: 'Basado en porcentaje' },
+      qualityType: { original: 'Original (ES)', oem: 'OEM (ES)', highCopy: 'Alta copia', refurbished: 'Reacondicionado' },
+      trackingType: { quantityBased: 'Por cantidad', serialized: 'Serializado' },
+    },
   },
   de: {
     nav: { products: 'Produkte', newArrivals: 'Neuheiten', qualityGuide: 'Qualitätsleitfaden', myProfile: 'Mein Profil', logout: 'Abmelden', login: 'Anmelden', cart: 'Warenkorb' },
@@ -247,7 +348,7 @@ export const translations: Record<SupportedLanguage, TranslationTree> = {
       title: 'Partner Portal', subtitle: 'Sign in to access wholesale pricing and inventory.',
       errors: { invalidCredentials: 'Invalid email or password. Please try again.' },
       form: {
-        emailLabel: 'Email Address', emailPlaceholder: 'name@company.com', passwordLabel: 'Password', passwordPlaceholder: '••••••••', forgotPassword: 'Forgot Password?',
+        emailLabel: 'Email Address', emailPlaceholder: 'name@company.com', passwordLabel: 'Password', passwordPlaceholder: '********', forgotPassword: 'Forgot Password?',
       },
       actions: { signIn: 'Sign In' },
       cta: { noAccount: "Don't have a business account?", applyNow: 'Apply Now' },
@@ -441,7 +542,7 @@ export const translations: Record<SupportedLanguage, TranslationTree> = {
       title: 'Partner Portal', subtitle: 'Sign in to access wholesale pricing and inventory.',
       errors: { invalidCredentials: 'Invalid email or password. Please try again.' },
       form: {
-        emailLabel: 'Email Address', emailPlaceholder: 'name@company.com', passwordLabel: 'Password', passwordPlaceholder: '••••••••', forgotPassword: 'Forgot Password?',
+        emailLabel: 'Email Address', emailPlaceholder: 'name@company.com', passwordLabel: 'Password', passwordPlaceholder: '********', forgotPassword: 'Forgot Password?',
       },
       actions: { signIn: 'Sign In' },
       cta: { noAccount: "Don't have a business account?", applyNow: 'Apply Now' },
